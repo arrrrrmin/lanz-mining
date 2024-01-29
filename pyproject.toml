@@ -10,6 +10,8 @@ dependencies = [
     "beautifulsoup4>=4.12.3",
     "tqdm>=4.66.1",
     "psycopg2>=2.9.9",
+    "python-dotenv>=1.0.1",
+    "pandas>=2.2.0",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
