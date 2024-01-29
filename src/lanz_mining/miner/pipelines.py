@@ -7,7 +7,9 @@
 import json
 from pathlib import Path
 
-import psycopg2
+from psycopg2.extras import execute_values
+
+from lanz_mining.database.init_database import init_connection
 
 
 class Episode2JsonPipeline:
@@ -19,10 +21,7 @@ class Episode2JsonPipeline:
     def from_crawler(cls, crawler):
         settings = crawler.settings
         output_path = settings.get("PIPELINE_OUTPUT")
-        print(output_path)
-
-        # Instantiate the pipeline with pipeline output from settings
-        return cls(output_path)
+        return cls(output_path)  # Init with pipeline output from settings
 
     def open_spider(self, spider):
         self.output_file = open(self.output_path, "w")
@@ -36,49 +35,17 @@ class Episode2JsonPipeline:
         return item
 
 
-class PostgresDemoPipeline:
+class DatabasePipeline:
     def __init__(self):
-        ## Connection Details
-        hostname = "localhost"
-        username = "postgres"
-        password = "*******"  # your password
-        database = "quotes"
+        self.conn, self.cur = init_connection()
 
-        ## Create/Connect to database
-        self.connection = psycopg2.connect(
-            host=hostname,
-            user=username,
-            password=password,
-            dbname=database,
-        )
-
-        ## Create cursor, used to execute commands
-        self.cur = self.connection.cursor()
-
-        ## Create quotes table if none exists
-        self.cur.execute(
-            """
-        CREATE TABLE IF NOT EXISTS lanzepisode(
-            name text PRIMARY KEY, 
-            date DATE NOT NULL,
-            length int,
-            description text
-        )
-        """
-        )
-        self.cur.execute(
-            """
-        CREATE TABLE IF NOT EXISTS lanzguests(
-            id serial PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            role VARCHAR(255),
-            message text,
-            CONSTRAINT fk_lanzepisode_name 
-            FOREIGN KEY(name) 
-            REFERENCES lanzepisode(name)
-        )
-        """
-        )
+    def close_connection(self):
+        self.cur.close()
 
     def process_item(self, item, spider):
+        self.cur.execute(*item.episode_as_query())
+        self.conn.commit()
+        insert_query, values = item.guests_as_query()
+        execute_values(self.cur, insert_query, values, template=None, page_size=20)
+        self.conn.commit()
         return item

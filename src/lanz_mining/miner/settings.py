@@ -63,7 +63,7 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "miner.pipelines.Episode2JsonPipeline": 100,
+   "miner.pipelines.DatabasePipeline": 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

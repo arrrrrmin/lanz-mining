@@ -1,3 +1,4 @@
+import random
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from uuid import uuid4
@@ -11,6 +12,7 @@ from lanz_mining.miner.spiders.lanz_spider import LanzSpider
 from lanz_mining.params import OUTPUT_DIR_CURRENT, OUTPUT_DIR_HISTORY
 from lanz_mining.utils import link_href_fn, link_filter_fn, export_url_paths
 from miner.spiders.lanz_episode_spider import LanzEpisodeSpider
+import miner.settings as local_settings
 
 
 def call_for_args() -> Namespace:
@@ -22,13 +24,27 @@ def call_for_args() -> Namespace:
     return args
 
 
+def enforce_local_settings(settings: Settings) -> Settings:
+    settings["LOG_LEVEL"] = local_settings.LOG_LEVEL
+    settings["ROBOTSTXT_OBEY"] = local_settings.ROBOTSTXT_OBEY
+    settings["DOWNLOAD_DELAY"] = local_settings.DOWNLOAD_DELAY
+    settings["COOKIES_ENABLED"] = local_settings.COOKIES_ENABLED
+    settings["ITEM_PIPELINES"] = local_settings.ITEM_PIPELINES
+    settings["AUTOTHROTTLE_ENABLED"] = local_settings.AUTOTHROTTLE_ENABLED
+    settings["AUTOTHROTTLE_START_DELAY"] = local_settings.AUTOTHROTTLE_START_DELAY
+    settings["AUTOTHROTTLE_MAX_DELAY"] = local_settings.AUTOTHROTTLE_MAX_DELAY
+    settings["AUTOTHROTTLE_TARGET_CONCURRENCY"] = local_settings.AUTOTHROTTLE_TARGET_CONCURRENCY
+    settings["TWISTED_REACTOR"] = local_settings.TWISTED_REACTOR
+    return settings
+
+
 def init_output_dir(is_history_crawl: bool) -> Settings:
     settings = get_project_settings()
     settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_CURRENT}/{uuid4()}.jsonl"
     if is_history_crawl:
         settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_HISTORY}/items.jsonl"
     Path(settings["PIPELINE_OUTPUT"]).parent.mkdir(parents=True, exist_ok=True)
-    return settings
+    return enforce_local_settings(settings)
 
 
 def main(args):
@@ -47,6 +63,9 @@ def main(args):
         url_list = list(set(url_list))
         out_path = export_url_paths(url_list)
         print(f"Wrote list of found files to {out_path}")
+
+        # For testing
+        url_list = [url_list[random.randint(0, len(url_list) - 1)]]
 
         process = CrawlerProcess(settings)
         process.crawl(LanzEpisodeSpider, paths=url_list, output_path="outputs/")
