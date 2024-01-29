@@ -30,6 +30,9 @@ class EpisodeItem(Item):
             "guests": self["guests"],
         }
 
+    def exists_in_database(self) -> tuple[str, tuple]:
+        return "SELECT EXISTS(SELECT 1 FROM lanzepisode WHERE name=%s)", (self["name"][0],)
+
     def episode_as_query(self) -> tuple[str, tuple]:
         date = datetime.strptime(self["date"][0], "%d.%m.%Y").strftime("%Y-%m-%d")
         return (

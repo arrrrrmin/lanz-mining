@@ -7,6 +7,7 @@
 import json
 from pathlib import Path
 
+from icecream import ic
 from psycopg2.extras import execute_values
 
 from lanz_mining.database.init_database import init_connection
@@ -43,9 +44,13 @@ class DatabasePipeline:
         self.cur.close()
 
     def process_item(self, item, spider):
-        self.cur.execute(*item.episode_as_query())
+        self.cur.execute(*item.exists_in_database())
         self.conn.commit()
-        insert_query, values = item.guests_as_query()
-        execute_values(self.cur, insert_query, values, template=None, page_size=20)
-        self.conn.commit()
+        item_exists = self.cur.fetchone()[0]
+        if not item_exists:
+            self.cur.execute(*item.episode_as_query())
+            self.conn.commit()
+            insert_query, values = item.guests_as_query()
+            execute_values(self.cur, insert_query, values, template=None, page_size=20)
+            self.conn.commit()
         return item
