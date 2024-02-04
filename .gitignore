@@ -160,5 +160,8 @@ cython_debug/
 .idea/
 pdm.lock
 .pdm-python
-outputs/
 database_exports/
+outputs/current/*.jsonl
+outputs/current/*.json
+outputs/history/*.jsonl
+outputs/history/*.json
