@@ -1,4 +1,3 @@
-import random
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from uuid import uuid4
@@ -42,9 +41,16 @@ def init_output_dir(is_history_crawl: bool) -> Settings:
     settings = get_project_settings()
     settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_CURRENT}/{uuid4()}.jsonl"
     if is_history_crawl:
-        settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_HISTORY}/items.jsonl"
+        settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_HISTORY}/historic-items.jsonl"
     Path(settings["PIPELINE_OUTPUT"]).parent.mkdir(parents=True, exist_ok=True)
     return enforce_local_settings(settings)
+
+
+def normalize_urls(urls: list[str]) -> list[str]:
+    return [
+        url.replace("https://www.zdf.de", "") if not url.startswith("/gesellschaft/") else url
+        for url in urls
+    ]
 
 
 def main(args):
@@ -61,11 +67,9 @@ def main(args):
         url_list = filter(link_filter_fn, url_list)
         url_list = map(link_href_fn, url_list)
         url_list = list(set(url_list))
+        url_list = normalize_urls(url_list)
         out_path = export_url_paths(url_list)
         print(f"Wrote list of found files to {out_path}")
-
-        # For testing
-        url_list = [url_list[random.randint(0, len(url_list) - 1)]]
 
         process = CrawlerProcess(settings)
         process.crawl(LanzEpisodeSpider, paths=url_list, output_path="outputs/")
