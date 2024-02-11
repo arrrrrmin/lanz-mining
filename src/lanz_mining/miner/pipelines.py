@@ -41,6 +41,7 @@ class DatabasePipeline:
 
     def close_connection(self):
         self.cur.close()
+        self.conn.close()
 
     def process_item(self, item, spider):  # noqa
         self.cur.execute(*item.exists_in_database())

@@ -32,9 +32,10 @@ def load_history_data(jsonl_file: Path) -> list[EpisodeItem]:
 
 
 def init_connection() -> (any, any):
-    load_dotenv()  # Load environment
+    # Load environment variables
+    load_dotenv()
     try:
-        conn = psycopg2.connect(  # Create/Connect to database
+        conn = psycopg2.connect(
             host=os.getenv("DB_HOSTNAME"),
             user=os.getenv("DB_USERNAME"),
             password=os.getenv("DB_PASSWORD"),
@@ -43,7 +44,12 @@ def init_connection() -> (any, any):
     except psycopg2.DatabaseError as error:
         print("Unable to connect to the database")
         raise error
-    cur = conn.cursor()  # Create cursor
+    # Create cursor
+    cur = conn.cursor()
+    # Create tables, if not existing
+    cur.execute(create_lanzepisode_table_str)
+    cur.execute(create_lanzguest_table_str)
+    conn.commit()
     return conn, cur
 
 
@@ -65,26 +71,3 @@ def guests2query(item) -> tuple[str, list]:
         "INSERT INTO lanzguests (lanzepisode_name, name, role, message) VALUES %s;",
         guests,
     )
-
-
-def init_data(items: list[EpisodeItem], cur, conn) -> None:
-    for item in items:
-        cur.execute(*episode2query(item))
-        conn.commit()
-        insert_query, values = guests2query(item)
-        execute_values(cur, insert_query, values, template=None, page_size=20)
-        conn.commit()
-
-
-def main():
-    items = load_history_data(Path("outputs/history/historic_items.jsonl"))
-    conn, cur = init_connection()
-    cur.execute(create_lanzepisode_table_str)  # Create tables, if not existing
-    cur.execute(create_lanzguest_table_str)
-    conn.commit()
-    init_data(items, cur, conn)  # Insert all the data to database
-    conn.close()
-
-
-if __name__ == "__main__":
-    main()

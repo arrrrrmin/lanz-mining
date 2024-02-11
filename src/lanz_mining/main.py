@@ -1,3 +1,4 @@
+import json
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from uuid import uuid4
@@ -7,11 +8,14 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 
+from lanz_mining import params
 from lanz_mining.miner.spiders.lanz_spider import LanzSpider
-from lanz_mining.params import OUTPUT_DIR_CURRENT, OUTPUT_DIR_HISTORY
-from lanz_mining.utils import link_href_fn, link_filter_fn, export_url_paths
 from miner.spiders.lanz_episode_spider import LanzEpisodeSpider
 import miner.settings as local_settings
+
+
+link_filter_fn = lambda url: params.URL_PREFIX in url.get("href")
+link_href_fn = lambda url: url.get("href")
 
 
 def call_for_args() -> Namespace:
@@ -37,11 +41,17 @@ def enforce_local_settings(settings: Settings) -> Settings:
     return settings
 
 
+def export_url_paths(url_paths: list[str], export_path: str = params.URL_EXPORT_PATH) -> Path:
+    out_path = Path(export_path)
+    json.dump({"url_paths": url_paths}, out_path.open("w", encoding="utf-8"), indent=4)
+    return out_path
+
+
 def init_output_dir(is_history_crawl: bool) -> Settings:
     settings = get_project_settings()
-    settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_CURRENT}/{uuid4()}.jsonl"
+    settings["PIPELINE_OUTPUT"] = f"{params.OUTPUT_DIR_CURRENT}/{uuid4()}.jsonl"
     if is_history_crawl:
-        settings["PIPELINE_OUTPUT"] = f"{OUTPUT_DIR_HISTORY}/historic-items.jsonl"
+        settings["PIPELINE_OUTPUT"] = f"{params.OUTPUT_DIR_HISTORY}/historic-items.jsonl"
     Path(settings["PIPELINE_OUTPUT"]).parent.mkdir(parents=True, exist_ok=True)
     return enforce_local_settings(settings)
 
