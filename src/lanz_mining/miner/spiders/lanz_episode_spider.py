@@ -2,7 +2,6 @@ from pathlib import Path
 
 import scrapy
 from scrapy.http import Request, Response
-from scrapy.loader import ItemLoader
 from tqdm import tqdm
 
 from lanz_mining.miner.items import EpisodeItem
