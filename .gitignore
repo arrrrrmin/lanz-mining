@@ -161,7 +161,7 @@ cython_debug/
 .DS_Store
 pdm.lock
 .pdm-python
-database_exports/
+exports/*.csv
 outputs/current/*.jsonl
 outputs/current/*.json
 outputs/history/*.jsonl
