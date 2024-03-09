@@ -4,7 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from icecream import ic
 
 from lanz_mining.dataproc.utils import preprocess_dataframe
 
@@ -64,7 +63,6 @@ class GuestGenreByYear(DataStack):
                 genre_ind = genre2inds[get_genre(d)]
                 arr_tg[date_ind][genre_ind] += 1
 
-            ic(arr_tg.shape)
             self.json_data[year] = {
                 "values": arr_tg.T.tolist(),
                 "genres": sorted(set_of_genres, reverse=False),
@@ -104,13 +102,3 @@ class GuestGenreDataStack(DataStack):
                 roles_in_genre.append({"name": role_name, "children": persons_in_role})
             genres_and_roles.append({"name": genre_name, "children": roles_in_genre})
         self.json_data = {"name": "guests", "children": genres_and_roles}
-        ic(self.json_data)
-
-
-# Todo: Move this to top-level entry of the package.
-if __name__ == "__main__":
-    input_path = Path("exports/guests.csv")
-    data_stack_1 = GuestGenreByYear(input_path, output_file=Path("vis/guest-genre-by-year.json"))
-    data_stack_2 = GuestGenreDataStack(
-        input_path, output_file=Path("vis/guest-genre-structure.json")
-    )

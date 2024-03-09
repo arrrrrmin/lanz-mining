@@ -51,3 +51,12 @@ FROM lanzguests lg
 INNER JOIN lanzepisode le ON lg.lanzepisode_name = le.name) 
 to '/Users/arminmuller/Devel/lanz-mining/database_exports/guests.csv' with (format csv, header);
 ```
+
+## Process data
+
+The goal is to have accessable visualisations explaining the crawled meta data.
+To achive this we need to process data in a so called *`DataStack`*.
+
+```
+pdm run src/lanzmining/process.py --file guests.csv
+```
