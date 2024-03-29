@@ -7,7 +7,6 @@ import pandas as pd
 
 from lanz_mining.dataproc.utils import preprocess_dataframe
 
-
 get_date = lambda d: d["date"]
 get_genre = lambda d: d["guest_genre"]
 get_date_year = lambda d: datetime.fromisoformat(get_date(d)).year

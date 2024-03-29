@@ -15,7 +15,7 @@ def find_party_membership(name: str, d: Timestamp) -> str or None:
     membership = None
     if name in party_membership_map.keys():
         membership = party_membership_map[name]
-    elif not name in party_membership_map.keys():
+    elif name not in party_membership_map.keys():
         compilcated_membership_map = get_complicated_party_memberships()
         if name in compilcated_membership_map.keys():
             membership_ranges = compilcated_membership_map[name]
@@ -35,7 +35,7 @@ def find_role_genre(role: str, opt_out: str = "Other") -> str or None:
     return opt_out
 
 
-def repair_date_column(df: pd.DataFrame):
+def repair_date_column(df: pd.DataFrame) -> pd.DataFrame:
     locale.setlocale(locale.LC_ALL, "de_DE")
     df["date"] = [
         datetime.strptime(d.strip("Markus Lanz vom").strip().replace(".", ""), "%d %B %Y")
@@ -45,13 +45,11 @@ def repair_date_column(df: pd.DataFrame):
 
 
 def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    # date_convert = lambda datestr: datetime.strptime(datestr, "%Y-%m-%d")
-    party_convert = lambda name, d: find_party_membership(name, d)
-
+    """Remove date column, repair date data type, map party membership and guest genre."""
     del df["date"]  # date refers to publishing date and is not useful
     df = repair_date_column(df)
     df["party_membership"] = [
-        party_convert(name, d) for name, d in df[["name", "date"]].values.tolist()
+        find_party_membership(name, d) for name, d in df[["name", "date"]].values.tolist()
     ]
     df["guest_genre"] = [find_role_genre(role) for role in df["role"].values.tolist()]
     return df
