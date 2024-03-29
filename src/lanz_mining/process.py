@@ -18,8 +18,10 @@ def call_for_args() -> Namespace:
 
 
 def main(args):
-    GuestGenreByYear(args.file, output_file=Path("vis/guest-genre-by-year.json"))
-    GuestGenreDataStack(args.file, output_file=Path("vis/guest-genre-structure.json"))
+    stack = GuestGenreByYear(args.file, output_file=Path("vis/guest-genre-by-year.json"))
+    stack.write_data()
+    stack = GuestGenreDataStack(args.file, output_file=Path("vis/guest-genre-structure.json"))
+    stack.write_data()
 
 
 if __name__ == "__main__":

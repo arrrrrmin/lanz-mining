@@ -7,9 +7,17 @@ import pandas as pd
 
 from lanz_mining.dataproc.utils import preprocess_dataframe
 
-get_date = lambda d: d["date"]
-get_genre = lambda d: d["guest_genre"]
-get_date_year = lambda d: datetime.fromisoformat(get_date(d)).year
+
+def get_date(d: dict) -> str:
+    return d["date"]
+
+
+def get_genre(d: dict) -> str:
+    return d["guest_genre"]
+
+
+def get_date_year(d: dict) -> int:
+    return datetime.fromisoformat(d["date"]).year
 
 
 class DataStack:
@@ -32,7 +40,6 @@ class GuestGenreByYear(DataStack):
         self.json_data = {}
         self.df = self.read_data()
         self.transform()
-        self.write_data()
 
     def read_data(self) -> pd.DataFrame:
         return pd.read_csv(self.input_file.open("r"), sep=",")
@@ -81,7 +88,6 @@ class GuestGenreDataStack(DataStack):
         self.json_data = {}
         self.df = self.read_data()
         self.transform()
-        self.write_data()
 
     def read_data(self) -> pd.DataFrame:
         return pd.read_csv(self.input_file.open("r"), sep=",")
