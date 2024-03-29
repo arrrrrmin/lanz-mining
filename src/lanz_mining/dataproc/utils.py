@@ -8,6 +8,7 @@ from lanz_mining.database.mappings import (
     party_membership_map,
     get_complicated_party_memberships,
     role_genre_map,
+    manual_roles_map,
 )
 
 
@@ -48,10 +49,21 @@ def repair_date_column(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def fill_empty_roles(df: pd.DataFrame) -> pd.DataFrame:
+    """Fixing role entries where no role is present in the raw data."""
+    roles = df["role"].values
+    for i, name in enumerate(df["name"].values):
+        if name in manual_roles_map.keys():
+            roles[i] = manual_roles_map[name]
+    df["role"] = roles
+    return df
+
+
 def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Remove date column, repair date data type, map party membership and guest genre."""
     del df["date"]  # date refers to publishing date and is not useful
     df = repair_date_column(df)
+    df = fill_empty_roles(df)
     df["party_membership"] = [
         find_party_membership(name, d) for name, d in df[["name", "date"]].values.tolist()
     ]

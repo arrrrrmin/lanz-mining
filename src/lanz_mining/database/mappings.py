@@ -5,6 +5,14 @@ from datetime import date
 from src.lanz_mining.database.naming import Party
 
 today = date.today().strftime("%Y-%m-%d")
+
+# This roles map is used for guests without any role in the raw data.
+manual_roles_map = {
+    "Rafael Laguna de la Vera": "SPRIN-D-Direktor",
+    "Sabine Leutheusser-Schnarrenberger": "Ex-Bundesjustizministerin",
+}
+
+# Map of names to political party membership
 party_membership_map = {
     "Alexander Graf Lambsdorff": Party.FDP,
     "Aminata Touré": Party.B90G,
@@ -65,6 +73,7 @@ party_membership_map = {
     "Rüdiger Lucassen": Party.AFD,
     "Saskia Esken": Party.SPD,
     "Sebastian Fiedler": Party.SPD,
+    "Sabine Leutheusser-Schnarrenberger": Party.FDP,
     "Serap Güler": Party.CDU,
     "Sigmar Gabriel": Party.SPD,
     "Steffen Kotré": Party.AFD,
@@ -75,7 +84,7 @@ party_membership_map = {
     "Thomas Heilmann": Party.CDU,
     "Thomas de Maizière": Party.CDU,
     "Thorsten Frei": Party.CDU,
-    "Tino Chrupalla": "",
+    "Tino Chrupalla": Party.AFD,
     "Werner Henning": Party.CDU,
     "Winfried Kretschmann": Party.B90G,
     "Wolfgang Kubicki": Party.FDP,
@@ -97,7 +106,6 @@ politics_keywords = [
     "bsw",
     "afd",
     "bundespräsident",
-    "politik",
     "diplomat",
 ]
 role_genre_map = {
