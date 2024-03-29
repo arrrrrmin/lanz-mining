@@ -12,6 +12,8 @@ from lanz_mining.database.mappings import (
 
 
 def find_party_membership(name: str, d: Timestamp) -> str or None:
+    """Find party membership if one is known in the mapping.
+    For complicated cases party membership depends on the date."""
     membership = None
     if name in party_membership_map.keys():
         membership = party_membership_map[name]
@@ -29,6 +31,7 @@ def find_party_membership(name: str, d: Timestamp) -> str or None:
 
 
 def find_role_genre(role: str, opt_out: str = "Other") -> str or None:
+    """Find the roles genre, applies the mapping or returns Other/None"""
     for genre, fn in role_genre_map.items():
         if isinstance(role, str) and fn(role):
             return genre
@@ -36,6 +39,7 @@ def find_role_genre(role: str, opt_out: str = "Other") -> str or None:
 
 
 def repair_date_column(df: pd.DataFrame) -> pd.DataFrame:
+    """Fix the date column so it provides a unique date striped from the name."""
     locale.setlocale(locale.LC_ALL, "de_DE")
     df["date"] = [
         datetime.strptime(d.strip("Markus Lanz vom").strip().replace(".", ""), "%d %B %Y")
