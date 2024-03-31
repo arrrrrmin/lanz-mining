@@ -11,7 +11,7 @@ def find_unmapped_politicians_helper(input_file: Path) -> list[str]:
     df = preprocess_dataframe(df)
     politicians = get_known_politicians()
     unknown_politicians = list(
-        filter(lambda name: name not in politicians, df[df["guest_genre"] == "Politik"])
+        filter(lambda name: name not in politicians, df[df["guest_genre"] == "Politik"]["name"])
     )
     return unknown_politicians
 
