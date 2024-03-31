@@ -217,7 +217,6 @@ def get_complicated_party_memberships():
 
 
 def get_known_politicians() -> list[str]:
-    list_of_politicians = list(party_membership_map.keys()) + list(
-        get_complicated_party_memberships().keys()
-    )
+    list_of_politicians = list(party_membership_map.keys())
+    list_of_politicians.extend(list(get_complicated_party_memberships().keys()))
     return list(set(list_of_politicians))
