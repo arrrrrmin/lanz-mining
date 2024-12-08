@@ -20,6 +20,10 @@ license = {text = "MIT"}
 [tool.black]
 line-length = 100
 
+[tool.pdm.scripts]
+helpers = "pytest tests/dataproc/test_helpers.py -s -p no:warnings"
+process = "python -m src.lanz_mining.process --file exports/guests.csv --write"
+
 [tool.pdm]
 distribution = true
 
