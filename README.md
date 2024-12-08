@@ -45,11 +45,18 @@ A reminder on how to export a `guests.csv` file, from the database to
 further work on offline.
 
 ```PSQL
-\copy
-(SELECT lg.lanzepisode_name, lg.name, le.date, lg.role, lg.message 
-FROM lanzguests lg 
-INNER JOIN lanzepisode le ON lg.lanzepisode_name = le.name) 
-to '/Users/arminmuller/Devel/lanz-mining/database_exports/guests.csv' with (format csv, header);
+\COPY (SELECT lg.lanzepisode_name, lg.name, le.date, lg.role, lg.message FROM lanzguests lg INNER JOIN lanzepisode le ON lg.lanzepisode_name = le.name) TO '/home/arrrrmin/devel/lanz-mining/exports/guests.csv' WITH (format csv, header);
+```
+
+
+## Steps to do manually
+
+I'm to lazy to look every person up on wikipedia and find a party membership or
+some other detail, so I do this manually from time to time. To find unseen guests,
+run the `pytest` file [tests/dataproc/test_helpers.py](tests/dataproc/test_helpers.py).
+
+```bash
+pdm run pytest tests/dataproc/test_helpers.py -s
 ```
 
 ## Process data
@@ -58,5 +65,5 @@ The goal is to have accessable visualisations explaining the crawled meta data.
 To achive this we need to process data in a so called *`DataStack`*.
 
 ```
-pdm run src/lanzmining/process.py --file guests.csv
+pdm run src/lanz_mining/process.py --file guests.csv
 ```
