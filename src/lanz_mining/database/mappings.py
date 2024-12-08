@@ -12,6 +12,15 @@ manual_roles_map = {
     "Sabine Leutheusser-Schnarrenberger": "Ex-Bundesjustizministerin",
 }
 
+# This map is used to normalise different abbreviated guest names.
+# Use this map searching for the key and replace it with it's value.
+manual_name_map = {
+    "Strack-Zimmermann": "M.- A. Strack-Zimmermann",
+    "Marie-Agnes Strack-Zimmermann": "M.- A. Strack-Zimmermann",
+    "Marie-A. Strack-Zimmermann": "M.- A. Strack-Zimmermann",
+    "Claus Ruhe Madsen": "Claus R. Madsen",
+}
+
 # Map of names to political party membership
 party_membership_map = {
     "Alexander Graf Lambsdorff": Party.FDP,
@@ -88,9 +97,56 @@ party_membership_map = {
     "Werner Henning": Party.CDU,
     "Winfried Kretschmann": Party.B90G,
     "Wolfgang Kubicki": Party.FDP,
+    "Christian Engelhardt": Party.CDU,
+    "Andreas Bausewein": Party.SPD,
+    "Cordelia Koch": Party.B90G,
+    "Sibylle Keupen": Party.NP,
+    "Christian Herrgott": Party.CDU,
+    "Peter Tschentscher": Party.SPD,
+    "Annalena Baerbock": Party.B90G,
+    "Bettina Dickes": Party.CDU,
+    "Tim von Winning": Party.NP,
+    "Ryyan Alshebl": Party.B90G,
+    "Joachim Gauck": Party.NP,
+    "Tanja Schweiger": Party.FW,
+    "Jens Marco Scherf": Party.B90G,
+    "Günther-Martin Pauli": Party.CDU,
+    "Rita Röhrl": Party.SPD,
+    "Mario Czaja": Party.CDU,
+    "Wolfgang Schäuble": Party.CDU,
+    "Ulrike Scharf": Party.CSU,
+    "Herbert Reul": Party.CDU,
+    "Jessica Rosenthal": Party.SPD,
+    "Michael Kretschmer": Party.CDU,
+    "Verena Hubertz": Party.SPD,
+    "Frank Schäffler": Party.FDP,
+    "Friedrich Merz": Party.CDU,
+    "Joachim Stamp": Party.FDP,
+    "Mike Mohring": Party.CDU,
+    "Philipp Türmer": Party.SPD,
+    "Franziska Brandmann": Party.FDP,
+    "Katharina Stolla": Party.B90G,
+    "René Wilke": Party.LINKE,
+    "Olaf von Löwis": Party.CSU,
+    "Mario Voigt": Party.CDU,
+    "Philipp Amthor": Party.CDU,
+    "Katrin Göring-Eckardt": Party.B90G,
+    "Andy Grote": Party.SPD,
+    "Svenja Appuhn": Party.B90G,
+    "Franz Müntefering": Party.SPD,
+    "Dagmar Schulz": Party.NP,
+    "Oliver Schmidt-Gutzat": Party.SPD,
+    "Wiebke Şahin-Schwarzweller": Party.FDP,
+    "Bodo Ramelow": Party.LINKE,
+    "Lars Bökenkröger": Party.CDU,
+    "Richard Arnold": Party.CDU,
+    "Felix Schwenke": Party.SPD,
+    "Christine Herntier": Party.NP,
+    "Yvonne Mosler": Party.B90G,
 }
 politics_keywords = [
-    "politiker",
+    "politik",
+    "bürgermeister",
     "generalsekretär",
     "landrätin",
     "landrat",
@@ -106,7 +162,14 @@ politics_keywords = [
     "bsw",
     "afd",
     "bundespräsident",
-    "diplomat",
+    "bundestagsabgeordnete",
+    "junge liberale",
+    "juso",
+    "tübinger ob",
+    "junge union",
+    "ju-vorsitzende",
+    "juso-vorsitzende",
+    "jl-vorsitzende",
 ]
 role_genre_map = {
     "Aktivismus": lambda role: any(
@@ -116,9 +179,9 @@ role_genre_map = {
         _ in role.lower() for _ in ["reporter", "journalist", "korrespondent"]
     ),
     "Recht": lambda role: any(
-        _ in role.lower() for _ in ["jurist", "richter", "rechtsanwalt", "rechtsanwältin"]
+        _ in role.lower()
+        for _ in ["jurist", "richter", "rechtsanwalt", "rechtsanwältin", "steuerexpert"]
     ),
-    "Politik": lambda role: any(_ in role.lower() for _ in politics_keywords),
     "Bildung": lambda role: any(
         _ in role.lower() for _ in ["lehrer", "pädagog", "schüler", "student", "schulleiter"]
     ),
@@ -130,12 +193,16 @@ role_genre_map = {
             "politolog",
             "politikwissenschaft",
             "islamwissenschaft",
+            "politik-expert",
+            "politikexpert",
             "migrationswissenschaft",
             "mirgationsforscher",
             "extremismusforscher",
+            "zukunftsforscher",
         ]
     ),
-    "Ethik": lambda role: any(_ in role.lower() for _ in ["ethik"]),
+    "Politik": lambda role: any(_ in role.lower() for _ in politics_keywords),
+    # "Ethik": lambda role: any(_ in role.lower() for _ in ["ethik"]),
     "Militär": lambda role: any(
         _ in role.lower() for _ in ["militär", "verteidigung", "bundeswehr"]
     ),
@@ -145,45 +212,6 @@ role_genre_map = {
     "Soziales": lambda role: any(
         _ in role.lower()
         for _ in ["soziolog", "sozialwissenschaft", "sozialpsycholog", "sozialarbeiter"]
-    ),
-    "Naturwissenschaft": lambda role: any(
-        _ in role.lower() for _ in ["wissenschaft", "forscher", "physiker", "biolog"]
-    ),
-    "Literatur": lambda role: any(
-        _ in role.lower() for _ in ["autor", "schriftsteller", "publizist"]
-    ),
-    "Agrar": lambda role: any(_ in role.lower() for _ in ["agrar", "landwirt", "förster"]),
-    "Ökonomie": lambda role: any(
-        _ in role.lower()
-        for _ in [
-            "wirtschaft",
-            "ökonom",
-            "vorstand",
-            "vw-chef",
-            "manager",
-            "industrie",
-            "unternehmer",
-            "unternehmensberater",
-        ]
-    ),
-    "Gesundheit": lambda role: any(
-        _ in role.lower()
-        for _ in [
-            "arzt",
-            "ärztin",
-            "pharmazeut",
-            "psychiater",
-            "mediziner",
-            "virolog",
-            "psycholog",
-            "gynäkolog",
-            "pharmakolog",
-            "gesundheit",
-            "radiolog",
-        ]
-    ),
-    "Inneres": lambda role: any(
-        _ in role.lower() for _ in ["sicherheitsexpert", "polizei", "polizist", "kriminal"]
     ),
     "International": lambda role: any(
         _ in role.lower()
@@ -201,7 +229,58 @@ role_genre_map = {
             "frankreich-expert",
             "osteuropa-expert",
             "türkei-expert",
+            "diplomat",
         ]
+    ),
+    "Naturwissenschaft": lambda role: any(
+        _ in role.lower()
+        for _ in [
+            "wissenschaft",
+            "forscher",
+            "physiker",
+            "biolog",
+            "hydrologe",
+            "ökolog",
+        ]
+    ),
+    "Literatur": lambda role: any(
+        _ in role.lower() for _ in ["autor", "schriftsteller", "publizist"]
+    ),
+    # "Agrar": lambda role: any(_ in role.lower() for _ in ["agrar", "landwirt", "förster"]),
+    "Ökonomie": lambda role: any(
+        _ in role.lower()
+        for _ in [
+            "wirtschaft",
+            "ökonom",
+            "vorstand",
+            "vw-chef",
+            "manager",
+            "industrie",
+            "unternehmer",
+            "unternehmensberater",
+            "volkswirt",
+        ]
+    ),
+    "Gesundheit": lambda role: any(
+        _ in role.lower()
+        for _ in [
+            "arzt",
+            "ärztin",
+            "pharmazeut",
+            "psychiater",
+            "mediziner",
+            "virolog",
+            "psycholog",
+            "gynäkolog",
+            "pharmakolog",
+            "gesundheit",
+            "radiolog",
+            "suchtexpert",
+        ]
+    ),
+    "Inneres": lambda role: any(
+        _ in role.lower()
+        for _ in ["sicherheitsexpert", "polizei", "polizist", "kriminal", "migrationsexpert"]
     ),
 }
 
@@ -210,9 +289,17 @@ def get_complicated_party_memberships():
     """Special cases of politicians switching their party membership at some point in time."""
     return {
         "Boris Palmer": [("1972-1-1", "2023-5-1", Party.B90G), ("2023-1-5", today, Party.NP)],
-        "Claus Ruhe Madsen": [("1972-1-1", "2023-5-1", Party.NP), ("2023-5-1", today, Party.CDU)],
+        "Claus R. Madsen": [("1972-1-1", "2023-5-1", Party.NP), ("2023-5-1", today, Party.CDU)],
         "Jörg Meuthen": [("2015-7-1", "2022-1-28", Party.AFD), ("2022-1-28", today, Party.NP)],
         "Sahra Wagenknecht": [("1969-7-1", "2024-1-8", Party.LINKE), ("2024-1-8", today, "BSW")],
+        "Ursula Baum": [("2004-1-1", "2014-1-1", Party.CDU), ("2014-1-1", today, Party.NP)],
+        "Dirk Neubauer": [("2017-1-1", "2021-1-1", Party.SPD), ("2021-1-1", today, Party.NP)],
+        "Katja Wolf": [("1999-1-1", "2024-1-30", Party.LINKE), ("2024-2-1", today, Party.BSW)],
+        "Amira Mohamed Ali": [
+            ("2015-1-1", "2024-1-30", Party.LINKE),
+            ("2024-2-1", today, Party.BSW),
+        ],
+        "Melis Sekmen": [("1993-9-26", "2024-5-30", Party.B90G), ("2024-6-1", today, Party.CDU)],
     }
 
 
