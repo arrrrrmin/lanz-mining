@@ -27,6 +27,7 @@ def call_for_args() -> Namespace:
     arg_parser.add_argument(
         "--url", type=str, help="A single url to look for new data.", required=False
     )
+    arg_parser.add_argument("--save-to-db", action="store_true", help="Only used with --url <url>.")
     args = arg_parser.parse_args()
     return args
 
@@ -91,8 +92,10 @@ def main(args):
 
     elif args.url:  # Visit target url only and look for new data
         print(f"Visiting <{args.url}> to find new data")
+        if not args.save_to_db:
+            del settings["ITEM_PIPELINES"]
         process = CrawlerProcess(settings)
-        process.crawl(LanzDebugSpider, target_url=args.url)
+        process.crawl(LanzDebugSpider, target_url=args.url, save_to_db=args.save_to_db)
         process.start()
 
     else:  # Visit the main site and check for new urls
