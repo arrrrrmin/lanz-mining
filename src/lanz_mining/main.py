@@ -9,6 +9,7 @@ from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 
 from lanz_mining import params
+from lanz_mining.miner.spiders.lanz_debug_spider import LanzDebugSpider
 from lanz_mining.miner.spiders.lanz_spider import LanzSpider
 from miner.spiders.lanz_episode_spider import LanzEpisodeSpider
 import miner.settings as local_settings
@@ -22,6 +23,9 @@ def call_for_args() -> Namespace:
     arg_parser = ArgumentParser("Crawling data from a history file (html search).")
     arg_parser.add_argument(
         "--file", type=Path, help="Html file of search results.", required=False
+    )
+    arg_parser.add_argument(
+        "--url", type=str, help="A single url to look for new data.", required=False
     )
     args = arg_parser.parse_args()
     return args
@@ -67,8 +71,8 @@ def main(args):
     # Init output dir and set the output file
     settings = init_output_dir(args.file)
     print(f"Writing to output file at '{settings['PIPELINE_OUTPUT']}'")
-    # Find links from history file (html search result page)
-    if args.file:
+
+    if args.file:  # Find links from history file (html search result page)
         print("Crawling data from history file")
 
         html = args.file.open("r").read()
@@ -84,8 +88,14 @@ def main(args):
         process = CrawlerProcess(settings)
         process.crawl(LanzEpisodeSpider, paths=url_list, output_path="outputs/")
         process.start()
-    # Visit the main site and check for new urls
-    else:
+
+    elif args.url:  # Visit target url only and look for new data
+        print(f"Visiting <{args.url}> to find new data")
+        process = CrawlerProcess(settings)
+        process.crawl(LanzDebugSpider, target_url=args.url)
+        process.start()
+
+    else:  # Visit the main site and check for new urls
         print("Searching for new urls on the main page")
 
         process = CrawlerProcess(settings)
