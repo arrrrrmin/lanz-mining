@@ -166,3 +166,4 @@ outputs/current/*.jsonl
 outputs/current/*.json
 outputs/history/*.jsonl
 outputs/history/*.json
+tests/data/*.csv
