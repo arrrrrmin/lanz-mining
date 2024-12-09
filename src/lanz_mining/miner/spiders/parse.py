@@ -16,6 +16,9 @@ def parse_item(response: Response) -> EpisodeItem:
     # participants_loader = loader.nested_xpath(participants_div)
 
     p_texts = response.xpath(f"{guests_div}/p/text()").getall()
+    p_texts = [  # remove empty sets of random artifacts
+        pt.strip() for pt in p_texts if len(pt.strip()) > 0
+    ]
     all_guests = response.xpath(f"{guests_div}/p/b/text()").getall()
     if len(all_guests) < 1:
         all_guests = response.xpath(f"{guests_div}/p/strong/text()").getall()
