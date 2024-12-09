@@ -170,10 +170,11 @@ politics_keywords = [
     "ju-vorsitzende",
     "juso-vorsitzende",
     "jl-vorsitzende",
+    "evp",
 ]
 role_genre_map = {
     "Aktivismus": lambda role: any(
-        _ in role.lower() for _ in ["aktivist", "bürgerrechtler", "whistleblow"]
+        _ in role.lower() for _ in ["aktivist", "bürgerrechtler", "whistleblow", "völkerrechtler"]
     ),
     "Journalismus": lambda role: any(
         _ in role.lower() for _ in ["reporter", "journalist", "korrespondent"]
@@ -204,7 +205,7 @@ role_genre_map = {
     "Politik": lambda role: any(_ in role.lower() for _ in politics_keywords),
     # "Ethik": lambda role: any(_ in role.lower() for _ in ["ethik"]),
     "Militär": lambda role: any(
-        _ in role.lower() for _ in ["militär", "verteidigung", "bundeswehr"]
+        _ in role.lower() for _ in ["militär", "verteidigung", "bundeswehr", "oberst"]
     ),
     "Geschichte": lambda role: any(
         _ in role.lower() for _ in ["historiker", "zeitzeuge", "zeitzeugin", "shoah"]
@@ -276,11 +277,12 @@ role_genre_map = {
             "gesundheit",
             "radiolog",
             "suchtexpert",
+            "onkologe",
         ]
     ),
     "Inneres": lambda role: any(
         _ in role.lower()
-        for _ in ["sicherheitsexpert", "polizei", "polizist", "kriminal", "migrationsexpert"]
+        for _ in ["sicherheitsexpert", "polizei", "polizist", "kriminal", "migrationsexpert", "integrationsexpert"]
     ),
 }
 
