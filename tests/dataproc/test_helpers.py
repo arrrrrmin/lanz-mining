@@ -15,7 +15,7 @@ def test_find_unmapped_politicians_helper(file: Path) -> None:
 def test_find_unmapped_roles_helper(file: Path) -> None:
     unmapped_guest_genre, no_roles = helpers.find_unmapped_roles_helper(file)
     print("*** Guests that are not yet mapped to a genre ('Other') ***:")
-    pprint(unmapped_guest_genre)
+    pprint(sorted(unmapped_guest_genre))
     print("*** Guests without a role in raw data ***")
     pprint(no_roles)
     print()
@@ -33,3 +33,7 @@ def test_find_full_date_range(file: Path) -> None:
     print("*** Date range ***")
     pprint(data_date_range)
     print()
+
+
+def test_find_empty_message(file: Path) -> None:
+    ...
