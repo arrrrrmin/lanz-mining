@@ -10,8 +10,9 @@ dependencies = [
     "beautifulsoup4>=4.12.3",
     "tqdm>=4.66.1",
     "python-dotenv>=1.0.1",
-    "pandas>=2.2.0",
     "psycopg2-binary>=2.9.9",
+    "polars>=1.17.1",
+    "altair>=5.5.0",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
@@ -23,6 +24,7 @@ line-length = 100
 [tool.pdm.scripts]
 helpers = "pytest tests/dataproc/test_helpers.py -s -p no:warnings"
 process = "python -m src.lanz_mining.process --file exports/guests.csv --write"
+explore = "python -m src.lanz_mining.plots.explore --file exports/guests.csv"
 
 [tool.pdm]
 distribution = true

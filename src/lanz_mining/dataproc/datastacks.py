@@ -1,3 +1,10 @@
+"""
+DEPRECATED
+
+Pandas is a deprecated dependency!
+"""
+
+
 import json
 from datetime import datetime
 from pathlib import Path

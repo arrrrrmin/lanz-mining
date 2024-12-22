@@ -9,3 +9,17 @@ class Party:
     FW = "Freie Wähler"
     BSW = "BSW"
     AFD = "AfD"
+
+
+ALL_PARTIES = [
+    "FDP",
+    "B90G",
+    "LINKE",
+    "SPD",
+    "CDU",
+    "CSU",
+    "Parteilos",
+    "Freie Wähler",
+    "BSW",
+    "AfD",
+]
