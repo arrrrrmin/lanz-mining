@@ -312,17 +312,44 @@ ROLE_GENRE_MAP = {
     ),
 }
 
-NEWS_PAPER_MAP = {
-    "Zeit": ['"zeit"'],
+ALL_GENRES = sorted(list(ROLE_GENRE_MAP.keys()), reverse=True)
+
+PUB_PLATFORM_MAP = {
     "Welt": ['"welt"'],
-    "Süddeutsche Zeitung": [' "sz"', "süddeutschen zeitung"],
+    "Süddeutsche Zeitung": [' "sz"', "süddeutschen zeitung", " sz ", " sz-"],
+    "Zeit": ['"zeit"', "zeit-online", "zeit online", "zeit“", '"die zeit"'],
     "Rheinische Post": ["rheinische post", "rheinischen post"],
     "Spiegel": ['"spiegel"', '"der spiegel"', "spiegel-"],
-    "FAZ": ['"faz"', "frankfurter allgemeinen"],
+    "FAZ": ['"faz"', "frankfurter allgemeinen", " faz-", " faz "],
     "Bild": ['"bild"'],
     "TAZ": ['"taz"', "taz-"],
-    "RND": ['"redaktionsnetzwerk deutschland"', '"redaktionsnetzwerks deutschland"', '"rnd"'],
+    "RND": [
+        '"redaktionsnetzwerk deutschland"',
+        '"redaktionsnetzwerks deutschland"',
+        '"rnd"',
+        "redaktions-netzwerk deutschland",
+    ],
     "Tagesspiegel": ['"tagesspiegel"'],
+    "Stern": ['"stern"'],
+    "Handelsblatt": ["handelsblatt"],
+    "The Pioneer": ['"the pioneer"', '"pioneer"', '"thepioneer"'],
+    "Deutschlandradio": ["deutschlandradio"],
+    "Deutschlandfunk": ["deutschlandfunk"],
+    "Wirtschafts Woche": ["wirtschaftswoche", '"wirtschafts woche"'],
+    "Table.Media": ['"table.media"', '"table media"'],
+    "ZDF": ["zdf-", '"heute journal"'],
+    "ARD": ["ard-"],
+    "RTL": ['"rtl"', "rtl-", " rtl "],
+    "FOCUS": ['"focus"'],
+    "CNN": ['"cnn"', "cnn-"],
+    "Correctiv": ['"correctiv"'],
+    "T-Online": ["t-online"],
+    "WDR": ["wdr"],
+    "NDR": ["ndr"],
+    "Wall Street Journal": ['"wall street journal"-'],
+    "FUNKE Mediengruppe": ["funke mediengruppe"],
+    "Jüdischen Allgemeinen": ['"jüdischen allgemeinen"'],
+
 }
 
 

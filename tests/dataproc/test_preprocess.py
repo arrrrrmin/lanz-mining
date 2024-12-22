@@ -58,7 +58,7 @@ def test_apply_genre_affiliation(dataframe: pl.DataFrame):
     # todo more tests
 
 
-def __test_apply_news_paper_affiliation(dataframe: pl.DataFrame): ...  # noqa todo
+def __test_apply_pub_platform(dataframe: pl.DataFrame): ...  # noqa todo
 
 
 def test_apply_main_genre(dataframe: pl.DataFrame):

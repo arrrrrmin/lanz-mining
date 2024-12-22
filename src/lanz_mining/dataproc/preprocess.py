@@ -42,23 +42,26 @@ def find_role_genre(role: str, opt_out: str = "Other") -> str or None:
     return opt_out
 
 
-def find_news_paper_affiliation(row: dict) -> str or None:
+def find_pub_platform(row: dict) -> str or None:
     """Looks for the role and message to find a news paper affiliation"""
 
     def check_row(r) -> bool:
-        return all([key in r for key in ["role", "message"]])
+        return all([key in r for key in ["role", "message", "genre"]])
 
     assert check_row(row), "Expected row to have 'role' and 'message'"
     _role = row["role"].lower()
     _message = row["message"].lower()
-    default_affiliation = None
-    for news_paper_name, indicators in mappings.NEWS_PAPER_MAP.items():
-        is_news_paper = any(
+    _genre = row["genre"]
+    pub_platform = None
+    if _genre != "Journalismus":
+        return pub_platform
+    for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
+        is_platform = any(
             [(indicator in _role or indicator in _message) for indicator in indicators]
         )
-        if is_news_paper:
-            return news_paper_name
-    return default_affiliation
+        if is_platform:
+            return pub_name
+    return pub_platform
 
 
 # *** Pre-processing functions ***
@@ -102,12 +105,12 @@ def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def apply_news_paper_affiliation(df: pl.DataFrame) -> pl.DataFrame:
+def apply_pub_platform(df: pl.DataFrame) -> pl.DataFrame:
     assert_column_exists(df, ["role", "message"])
     return df.with_columns(
-        pl.struct("role", "message")
-        .map_elements(find_news_paper_affiliation, return_dtype=pl.String)
-        .alias("news_paper")
+        pl.struct("role", "genre", "message")
+        .map_elements(find_pub_platform, return_dtype=pl.String)
+        .alias("pub_platform")
     )
 
 
@@ -122,6 +125,6 @@ def apply_main_genre(df: pl.DataFrame) -> pl.DataFrame:
 
 def default_preprocessing(df: pl.DataFrame) -> pl.DataFrame:
     # This could be more elegant?
-    return apply_news_paper_affiliation(
+    return apply_pub_platform(
         apply_genre_affiliation(apply_policial_membership(fix_guest_names(fix_date_col(df))))
     )

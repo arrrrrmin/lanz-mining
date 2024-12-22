@@ -55,3 +55,14 @@ def test_find_empty_message(dataframe: pl.DataFrame) -> None:
     empty_messages = dataframe.filter(pl.col("message").str.len_chars() == 0)
     print("*** Empty messages ***")
     print(empty_messages)
+
+
+def test_find_unmapped_newspapers(dataframe: pl.DataFrame) -> None:
+    no_newspaper = dataframe.filter(pl.col("genre") == "Journalismus").filter(
+        pl.col("pub_platform").is_null()
+    )
+    print("*** Journalists with unmapped newspaper ***")
+    print(no_newspaper)
+    print("*** Corresponding messages ***")
+    for m in no_newspaper["name", "role", "genre", "message"].to_numpy():
+        print(m)
