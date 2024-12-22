@@ -167,3 +167,4 @@ outputs/current/*.json
 outputs/history/*.jsonl
 outputs/history/*.json
 tests/data/*.csv
+figures/*.html
