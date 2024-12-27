@@ -58,7 +58,7 @@ If your want to do manually steps (below), additionally copy the file to
 
 ## Steps to do manually
 
-*This project doesn't want to use machine learning or deep learning for data householding*,
+**This project doesn't want to use machine learning or deep learning for data householding**,
 so to ensure correct data, there are steps to do manually.
 There are helper scripts that find unmapped politicians or journalists without an
 associated publication platform, and much more. It's done with a single test file, just
