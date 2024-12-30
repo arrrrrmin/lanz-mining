@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import polars as pl
 
 from lanz_mining.dataproc import preprocess
@@ -15,12 +18,17 @@ def main():
     num_genres = df["genre"].unique().len()
     genre_counts = df["genre"].value_counts().sort("count", descending=True)
     party_counts = df["party"].value_counts().drop_nulls().sort("count", descending=True)
-    print("Time range:", time_range)
-    print("Number of episodes:", num_episodes)
-    print("Number of guests", num_guests)
-    print("Number of genres", num_genres)
+    meta = {
+        "start": time_range[0],
+        "end": time_range[1],
+        "episodes": num_episodes,
+        "guests": num_guests,
+        "genres": num_genres,
+    }
+    print(meta)
     print("All genres:", genre_counts)
     print("All political parties:", party_counts)
+    json.dump(meta, Path("outputs/meta.json").open("w"), indent=4)
 
 
 if __name__ == "__main__":  #

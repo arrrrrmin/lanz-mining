@@ -7,6 +7,7 @@ import altair as alt
 from lanz_mining.database import mappings, naming
 from lanz_mining.dataproc import preprocess
 
+
 # *** Constants ***
 
 
@@ -116,6 +117,26 @@ def plot_encounter_matrix_pol(df: pl.DataFrame) -> None:
     plot.save(f"figures/party_encounter_matrix.html")
 
 
+def plot_genres(df: pl.DataFrame, n: int):
+    res = df["genre"].value_counts().sort("count", descending=True)
+    res = res[:n]
+    print(res)
+    input()
+
+
+    sort = alt.EncodingSortField(field="count", op="values", order="ascending")
+    x_axes = alt.X("count", title="Invitations")
+    y_axes = alt.Y("genre", title="Genre", sort=sort)
+    plot = (
+        alt.Chart(res)
+        .mark_bar(cornerRadius=4)
+        .encode(x=x_axes, y=y_axes)
+        .properties(width=800, height=n * 20)
+    )
+
+    plot.save(f"figures/genre_counts.html")
+
+
 # *** Exploration  ***
 
 
@@ -123,11 +144,13 @@ def explore(file: Path):
     df = pl.read_csv(file.open("r"), separator=",")
     # Use episode name as date by parsing the name
     df = preprocess.default_preprocessing(df)
-    plot_top_n_guests(df, 40)
-    plot_political_parties(df)
-    plot_invitations_per_newspaper(df)
-    plot_encounter_matrix_pol(df)
+    # plot_top_n_guests(df, 40)
+    # plot_political_parties(df)
+    # plot_invitations_per_newspaper(df)
+    # plot_encounter_matrix_pol(df)
+    # plot_genres(df, n=5)
     # print(df.head(25))
+    df.write_csv("outputs/data.csv")
 
 
 def call_for_args() -> Namespace:
