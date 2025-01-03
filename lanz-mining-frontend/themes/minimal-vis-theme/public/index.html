@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+<head>
+	<meta name="generator" content="Hugo 0.140.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=63820&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Minimal visualization theme</title>
+
+<link rel="stylesheet" href="/css/styles.css">
+<script src="js/d3.min.js"></script>
+</head>
+
+<body class="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+  <section class="mx-auto max-w-3xl px-4 sm:px-6 xl:max-w-5xl xl:px-0">
+    <header class="flex w-full bg-white dark:bg-gray-950 justify-between py-10">
+    <a class="break-words" aria-label="Minimal visualization theme" href="/">
+        <div class="flex items-center justify-between">
+            <h1 class="hidden h-6 text-2xl font-semibold sm:block">Minimal visualization theme</h1>
+        </div>
+    </a>
+    <div class="flex space-x-4 leading-5 sm:space-x-6">
+        <div
+            class="no-scrollbar hidden max-w-40 items-center space-x-4 overflow-x-auto sm:flex sm:space-x-6 md:max-w-72 lg:max-w-96">
+            
+        </div>
+    </div>
+</header>
+    <main>
+      
+  <p class="text-lg leading-7 text-gray-800">
+    Auch schon oft gedacht: <i>Die Person ist aber ständig bei Lanz!</i>? Hier kannst du das Gefühl mit den Fakten abgleichen. 
+    Ein kleiner Service der vielleicht dazu führt das öffentlich-rechtliche Medien etwas transparenter werden. 
+    Am Ende jedes Monats wird der Service aktualisiert und wir wissen welche Person, welche Partei oder  Medienportal bei Lanz redet. 
+    Schlüsse muss jede/r für sich selbst daraus ziehen.
+  </p>
+  
+  <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-5xl md:leading-14 py-10">Aktuell</h1>
+  <div id="greetingsVis">
+    <span class="isolate inline-flex rounded-md shadow-sm">
+      <button type="button" value="guests" 
+        class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        Top Guests
+      </button>
+      <button type="button" value="genres" 
+        class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        Top Genres
+      </button>
+      <button type="button" value="politicians" 
+        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        Top Politicians
+      </button>
+    </span>
+  </div>
+  <script src="js/greetingsVis.js"></script>
+
+    </main>
+    <footer>
+      <p>Copyright 2024. All rights reserved.</p>
+
+    </footer>
+  </section>
+</body>
+
+</html>

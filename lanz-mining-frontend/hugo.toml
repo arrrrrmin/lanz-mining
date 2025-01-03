@@ -1,0 +1,14 @@
+baseURL = 'https://example.org/'
+languageCode = 'de-de'
+title = 'Lanz Transparenz Service'
+theme = 'minimal-vis-theme'
+
+[[menus.main]]
+name = 'Details'
+pageRef = '/details'
+weight = 10
+
+[[menus.main]]
+name = 'About'
+pageRef = '/about'
+weight = 20
