@@ -173,3 +173,5 @@ figures/*.html
 node_modules/
 .hugo_build.lock
 package-lock.json
+lanz-mining-frontend/public
+lanz-mining-frontend/themes/minimal-vis-theme/public
