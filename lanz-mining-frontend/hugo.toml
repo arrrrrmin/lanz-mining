@@ -1,6 +1,6 @@
 baseURL = 'https://example.org/'
 languageCode = 'de-de'
-title = 'Lanz Transparenz Service'
+title = 'Lanz mining'
 theme = 'minimal-vis-theme'
 
 [[menus.main]]

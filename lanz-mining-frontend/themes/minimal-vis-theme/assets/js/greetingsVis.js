@@ -128,13 +128,13 @@ greetingsVis = async () => {
             .enter()
             .append("rect") // Add new elements
             .merge(bar) // Merge with existing elements
-            .attr("x", d => x(d.name))
-            .attr("y", d => y(d.count))
             .on("click", (e, d) => handleBarClick(e, d))
             .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
             .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
             .transition()
             .duration(750)
+            .attr("x", d => x(d.name))
+            .attr("y", d => y(d.count))
             .attr("rx", 3)
             .attr("fill", d => d.name in colors ? colors[d.name] : defaultColors.light)
             .attr("height", d => y(0) - y(d.count))

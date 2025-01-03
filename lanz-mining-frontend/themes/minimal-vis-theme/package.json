@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tailwindcss build -i assets/css/styles.css -o static/css/styles.css",
-    "watch": "npx tailwindcss build -i assets/css/styles.css -o static/css/styles.css --watch"
+    "build": "npx tailwindcss build -i assets/css/main.css -o assets/css/styles.css",
+    "watch": "npx tailwindcss build -i assets/css/main.css -o assets/css/styles.css --watch"
   },
   "keywords": [],
   "author": "",
