@@ -6,7 +6,7 @@ about the selective process of guest invitation and topic selection.
 So this repository aims to record some hands on statistics about this
 largely popular tv format, watched by many german languaged people.
 
-![A tiny demo video to show what we can do with some meta data.](lanz-mining-tiny-demo.mp4)
+![A tiny demo video to show what we can do with some meta data.](lanz-mining-tiny-demo.mov)
 
 ## How to collect data
 
