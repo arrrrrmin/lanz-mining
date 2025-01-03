@@ -7,8 +7,10 @@ So this repository aims to record some hands on statistics about this
 largely popular tv format, watched by many german languaged people.
 
 ![D3js bar chart demo of all the data](figures/demo-1.png)
+> Top 10 Guests, Genres, Parties and Media present at markus lanz
 
 ![Interactive Circle demo of all the data](figures/demo-2.png)
+> Interactive circle packing to comprehend how guest roles are mapped to genres
 
 ## How to collect data
 
