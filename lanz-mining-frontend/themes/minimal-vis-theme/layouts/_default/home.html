@@ -5,8 +5,8 @@
 {{ .Summary }}
 {{ end }}
 */}}
-<div class="mt-6 grid grid-cols-1 gap-4 sm:mt-6 lg:grid-cols-6 lg:grid-rows-1">
-  <div class="lg:col-span-2 py-4">
+<div class="my-6">
+  <div class="py-4">
     <h2
       class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
       Schnelle Übersicht</h2>
@@ -20,28 +20,52 @@
       Schlüsse muss jede/r für sich selbst daraus ziehen.
     </p>
   </div>
-  <div id="greetingsVis" class="lg:col-span-4 py-4">
-    <span class="isolate inline-flex rounded-md shadow-sm">
-      <button type="button" value="guests"
+  <div id="greetingsVis" class="py-4">
+    <span class="isolate inline-flex roundd-md shadow-sm">
+      <button type="button" value="guests" id="greeting-vis-button"
         class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Guests
       </button>
-      <button type="button" value="genres"
+      <button type="button" value="genres" id="greeting-vis-button"
         class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Genres
       </button>
-      <button type="button" value="parties"
+      <button type="button" value="parties" id="greeting-vis-button"
         class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Parteien
       </button>
-      <button type="button" value="media"
+      <button type="button" value="media" id="greeting-vis-button"
         class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Medien
       </button>
+      <div class="relative inline-block text-right">
+        <div>
+          <button type="button"
+            class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            id="greetings-vis-option-button" aria-expanded="true" aria-haspopup="true">
+            <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+              data-slot="icon">
+              <path fill-rule="evenodd"
+                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd" />
+            </svg>
+            Jahr
+          </button>
+        </div>
+        <div
+          id="greetings-vis-options-div"
+          class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+          style="display: none;"
+          role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+          <div id="greetings-vis-option-list" class="py-1">
+            <!-- Active: "bg-gray-100 text-gray-900 outline-none", Not Active: "text-gray-700" -->
+          </div>
+        </div>
+      </div>
+    </div>
     </span>
-  </div>
-  <div id="genreVis" class="sm:order-4 md:order-4 lg:order-3 lg:col-span-4 py-4"></div>
-  <div class="sm:order-3 md:order-3 lg:order-4 lg:col-span-2 py-4">
+    
+  <div class="py-4">
     <h2
       class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
       Lanz nach Genre</h2>
@@ -55,5 +79,17 @@
       Rollen eingeladen worden sein.
     </p>
   </div>
+  <div id="genreVis" class="py-4"></div>
+  <div class="py-4">
+    <h2
+      class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
+      Gäste pro Genre</h2>
+    <p class="text-lg leading-7 text-gray-800">
+      Schon immer gefragt, wer bei welchem Thema den Ton angibt? Hier findest du eine Aufschlüsselung nach Genre und
+      zugehörigen Gästen.
+      Gäste die häufiger mit ihrer Rolle in ein Genre fallen, geben in den Talkrunden deutlicher den Ton an.
+    </p>
+  </div>
+  <div id="genreGuestsVis" class="py-4"></div>
 </div>
 {{ end }}

@@ -21,14 +21,87 @@ greetingsVis = async () => {
 
     loadData = async () => {
         let csvData = await d3.csv("js/data.csv").then(d => d);
+        csvData = csvData.map(d => {
+            d["date"] = getDate(d["date"])
+            return d
+        });
         return csvData
     }
 
     initButtons = () => {
         d3.select("#greetingsVis")
-            .selectAll("button")
+            .selectAll("#greeting-vis-button")
             .join()
-            .on("click", (event) => updateGreetingsVis(event.target.value));
+            .on("click", (event) => updateGreetingsVis(event.target.value, year));
+
+        d3.select("#greetings-vis-option-button")
+            .join()
+            .on("click", (_) => {
+                var div = document.getElementById("greetings-vis-options-div");
+                if (div.style.display == "none") {
+                    div.style.display = "block";
+                }
+                else {
+                    div.style.display = "none";
+                }
+                // return d3.selectAll("#greetings-vis-options-div").style("display", "absolute")
+            });
+
+        const all_years = new Set([...csvData.map(d => d.date.getFullYear())]);
+        all_years.add("Alle");
+        d3.select("#greetings-vis-option-list").selectAll("button")
+            .data(all_years)
+            .join("button")
+            .attr("type", "button")
+            .attr("name", d => d)
+            .attr("value", d => d)
+            .attr("id", (_, i) => `menu-item-${i}`)
+            .attr("class", "block px-4 py-2 text-sm text-gray-700lock")
+            .attr("role", "menuitem")
+            .attr("tabindex", -1)
+            //.attr("onclick", d => {console.log(d);})
+            .on("click", event => updateGreetingsVis(type, event.target.value))
+            //.attr("onclick", d => dataSlice(null, d))
+            .html(d => d)
+
+    }
+
+    dataFilter = (year) => {
+        var filteredData = csvData;
+        if (year != "Alle") {
+            var r = [new Date(`${year}-01-01`), new Date(`${year + 1}-01-01`)]
+            filteredData = d3.filter(csvData, d => (r[0] <= d.date && d.date < r[1]))
+        }
+        return filteredData;
+    }
+
+    dataSlice = (type, year) => {
+        console.log(type, year)
+        var filteredData = dataFilter(year)
+        if (type == "guests") {
+            data = d3.rollups(filteredData, D => D.length, d => d["name"])
+                .sort((a, b) => b[1] - a[1])
+                .map(vals => { return { name: vals[0], count: vals[1] } })
+                .slice(0, n);
+        } else if (type == "genres") {
+            data = d3.rollups(filteredData, D => D.length, d => d["genre"])
+                .sort((a, b) => b[1] - a[1])
+                .map(vals => { return { name: vals[0], count: vals[1] } })
+                .slice(0, n);
+        } else if (type == "parties") {
+            data = d3.rollups(
+                filteredData.filter((d) => d["party"].length > 0), D => D.length, d => d["party"])
+                .sort((a, b) => b[1] - a[1])
+                .map(vals => { return { name: vals[0], count: vals[1] } })
+                .slice(0, n);
+        } else if (type == "media") {
+            data = d3.rollups(
+                filteredData.filter((d) => d["pub_platform"].length > 0), D => D.length, d => d["pub_platform"])
+                .sort((a, b) => b[1] - a[1])
+                .map(vals => { return { name: vals[0], count: vals[1] } })
+                .slice(0, n);
+        }
+        return data;
     }
 
     handleBarClick = (_, d) => {
@@ -42,18 +115,19 @@ greetingsVis = async () => {
             .attr("y", y(d.count) + 3);
     }
 
-    handleBarMouseover = (_, d) => {
-    }
-
-    handleBarMouseout = (_, d) => {
+    handleYearSelection = (event) => {
+        year = event.target.value
 
     }
 
     const margins = { top: 25, right: 0, bottom: 50, left: 25 };
-    const width = 700;
+    const width = 900;
     const height = 500;
-    const n = 10;
+    const n = 16;
     const csvData = await loadData();
+    var year = "Alle";
+    var type = "guests"
+    // var data = dataSlice(type, year)
 
     initButtons();
 
@@ -89,57 +163,19 @@ greetingsVis = async () => {
         .x((d) => d[0])
         .y((d) => d[1]);
 
-    updateGreetingsVis = (type) => {
-        console.log(csvData);
-        if (type == "guests") {
-            data = d3.rollups(csvData, D => D.length, d => d["name"])
-                .sort((a, b) => b[1] - a[1])
-                .map(vals => { return { name: vals[0], count: vals[1] } })
-                .slice(0, n);
-        } else if (type == "genres") {
-            data = d3.rollups(csvData, D => D.length, d => d["genre"])
-                .sort((a, b) => b[1] - a[1])
-                .map(vals => { return { name: vals[0], count: vals[1] } })
-                .slice(0, n);
-        } else if (type == "parties") {
-            data = d3.rollups(
-                csvData.filter((d) => d["party"].length > 0), D => D.length, d => d["party"])
-                .sort((a, b) => b[1] - a[1])
-                .map(vals => { return { name: vals[0], count: vals[1] } })
-                .slice(0, n);
-        } else {  // type == media
-            data = d3.rollups(
-                csvData.filter((d) => d["pub_platform"].length > 0), D => D.length, d => d["pub_platform"])
-                .sort((a, b) => b[1] - a[1])
-                .map(vals => { return { name: vals[0], count: vals[1] } })
-                .slice(0, n);
-        }
+    var bar = svg.selectAll("rect")
+
+    updateGreetingsVis = (iType, iYear) => {
+        year = iYear;
+        type = iType;
+        var data = dataSlice(type, year)
+        console.log(data);
 
         x.domain(data.map(d => d.name));
         y.domain([0, d3.max(data, d => d.count)]).nice();
 
         helper.attr("d", null);
         helperT.text(null);
-
-        var bar = svg.selectAll("rect")
-            .data(data);
-
-        bar
-            .enter()
-            .append("rect") // Add new elements
-            .merge(bar) // Merge with existing elements
-            .on("click", (e, d) => handleBarClick(e, d))
-            .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
-            .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
-            .transition()
-            .duration(750)
-            .attr("x", d => x(d.name))
-            .attr("y", d => y(d.count))
-            .attr("rx", 3)
-            .attr("fill", d => d.name in colors ? colors[d.name] : defaultColors.light)
-            .attr("height", d => y(0) - y(d.count))
-            .attr("width", x.bandwidth());
-
 
         gx.transition()
             .duration(1000)
@@ -158,9 +194,30 @@ greetingsVis = async () => {
             .call(d3.axisLeft(y))
             .call(g => g.select(".domain").remove());
 
+        var bar = svg.selectAll("rect")
+            .data(data)
+
+        bar
+            .join("rect") // Add new elements
+            .on("click", (e, d) => handleBarClick(e, d))
+            .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
+            .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
+            .transition()
+            .duration(750)
+            .attr("x", d => x(d.name))
+            .attr("y", d => y(d.count))
+            .attr("rx", 3)
+            .attr("fill", d => d.name in colors ? colors[d.name] : defaultColors.light)
+            .attr("height", d => y(0) - y(d.count))
+            .attr("width", x.bandwidth());
+
+        bar
+            .exit()
+            .remove();
+
     }
 
-    updateGreetingsVis("guests")
+    updateGreetingsVis(type, year)
 
 }
 

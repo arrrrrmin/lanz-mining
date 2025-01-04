@@ -1,32 +1,6 @@
-/*
-const colors = {
-    // "Agrar": "#dd954d",
-    "Aktivismus": "#e3513f",
-    "Bildung": "#6fcecb",
-    // "Ethik": "#b9ab32",
-    "Gesundheit": "#e89547",
-    "Soziales": "#6ce043",
-    "Journalismus": "#e59786",
-    //
-    "Politik": "#eaf655",
-    "Inneres": "#c6db9b",
-    "Recht": "#eee138",
-    "Militär": "#4cb74d",
-    "Ökonomie": "#30966e",
-    //
-    "Naturwissenschaft": "#7eb1e5",
-    "International": "#0079a7",
-    "Geschichte": "#e981db",
-    "Geisteswissenschaft": "#dd5589",
-    "Literatur": "#938f61",
-    "Other": "#9E9E9E",
-}
-*/
-
 genreVis = async () => {
     loadData = async () => {
         let csvData = await d3.csv("js/data.csv").then(d => d);
-        console.log(csvData);
         var data = d3.groups(csvData, (D) => D.genre)
             .map(genreGrp =>
             ({
@@ -62,7 +36,6 @@ genreVis = async () => {
 
     const svg = d3.select("#genreVis")
         .append("svg")
-        // .attr("id", "guests")
         .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
         .attr("width", width)
         .attr("height", height)
@@ -74,8 +47,6 @@ genreVis = async () => {
         .join("circle")
         .attr("fill", d => d.children ? "#fff" : defaultColors.light)
         .attr("stroke", d => d.children ? defaultColors.light : null)
-        //.attr("opacity", d => findCircleColorAndOpacity(d)[1])
-        //.attr("stroke", "black")
         .attr("stroke-width", 1.0)
         .attr("pointer-events", d => !d.children ? "none" : null)
         .on("mouseover", function () { d3.select(this).attr("stroke-opacity", 0.5); })
