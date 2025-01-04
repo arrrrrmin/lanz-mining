@@ -44,7 +44,6 @@ greetingsVis = async () => {
                 else {
                     div.style.display = "none";
                 }
-                // return d3.selectAll("#greetings-vis-options-div").style("display", "absolute")
             });
 
         const all_years = new Set([...csvData.map(d => d.date.getFullYear())]);
@@ -59,9 +58,7 @@ greetingsVis = async () => {
             .attr("class", "block px-4 py-2 text-sm text-gray-700lock")
             .attr("role", "menuitem")
             .attr("tabindex", -1)
-            //.attr("onclick", d => {console.log(d);})
             .on("click", event => updateGreetingsVis(type, event.target.value))
-            //.attr("onclick", d => dataSlice(null, d))
             .html(d => d)
 
     }
@@ -69,14 +66,19 @@ greetingsVis = async () => {
     dataFilter = (year) => {
         var filteredData = csvData;
         if (year != "Alle") {
-            var r = [new Date(`${year}-01-01`), new Date(`${year + 1}-01-01`)]
+            var r = [new Date(`${year}-01-01`), new Date(`${parseInt(year) + 1}-01-01`)]
+            console.log(r)
             filteredData = d3.filter(csvData, d => (r[0] <= d.date && d.date < r[1]))
         }
+        console.log(filteredData);
+
         return filteredData;
     }
 
-    dataSlice = (type, year) => {
-        console.log(type, year)
+    dataSlice = (iType, iYear) => {
+        console.log(iType, iYear)
+        type = iType;
+        year = iYear;
         var filteredData = dataFilter(year)
         if (type == "guests") {
             data = d3.rollups(filteredData, D => D.length, d => d["name"])
@@ -163,7 +165,6 @@ greetingsVis = async () => {
         .x((d) => d[0])
         .y((d) => d[1]);
 
-    var bar = svg.selectAll("rect")
 
     updateGreetingsVis = (iType, iYear) => {
         year = iYear;
