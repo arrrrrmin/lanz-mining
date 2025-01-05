@@ -21,8 +21,8 @@ genreVis = async () => {
     }
 
     // const margins = { top: 25, right: 0, bottom: 50, left: 25 };
-    const width = 700;
-    const height = 700;
+    const width = 900;
+    const height = width;
 
     const data = await loadData();
 
