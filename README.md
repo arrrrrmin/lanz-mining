@@ -1,7 +1,7 @@
 # lanz-mining (wip)
 
 A repo for collecting data about the german talk show *Markus Lanz*.
-As a public tv station we find awefully less information and statics
+As a public tv station we find awefully less information and statistics
 about the selective process of guest invitation and topic selection.
 So this repository aims to record some hands on statistics about this
 largely popular tv format, watched by many german languaged people.
