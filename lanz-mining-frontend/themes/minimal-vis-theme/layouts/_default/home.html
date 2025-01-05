@@ -5,22 +5,17 @@
 {{ .Summary }}
 {{ end }}
 */}}
-<div class="my-6">
-  <div class="py-4">
-    <h2
-      class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
-      Schnelle Übersicht</h2>
-    <p class="text-lg leading-7 text-gray-800">
-      Auch schon oft gedacht: <i>Die Person ist aber ständig bei Lanz!</i>? Hier kannst du das Gefühl mit den Fakten
-      abgleichen.
-      Ein kleiner Service der vielleicht dazu führt das öffentlich-rechtliche Medien etwas transparenter werden.
-      Am Ende jedes Monats wird der Service aktualisiert und wir wissen welche Person, welche Partei oder Medienportal
-      bei Lanz redet.
-      Die Daten werden seit Mitte Januar 2022 aufgezeichnet und beinhalten keine Videos oder Transktipte.
-      Schlüsse muss jede/r für sich selbst daraus ziehen.
-    </p>
-  </div>
-  <div id="greetingsVis" class="py-4">
+<div class="py-4">
+  <p class="text-md text-justify leading-6 text-gray-800">
+    Auch schon oft gedacht: <i>Die Person ist aber ständig bei Lanz!</i>? Hier kannst du das Gefühl mit den Fakten
+    abgleichen.
+    Lanz-Mining ist ein kleiner Service der dir hilft deine Vermutung mit realen Daten abzugleichen.
+    Am Ende jedes Monats wird der Service aktualisiert und wir wissen welche Person, welche Partei oder Medienportal
+    bei Lanz redet.
+  </p>
+</div>
+<div id="greetingsVis" class="pt-2 pb-10">
+  <div class="flex justify-between">
     <span class="isolate inline-flex roundd-md shadow-sm">
       <button type="button" value="guests" id="greeting-vis-button"
         class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
@@ -38,58 +33,51 @@
         class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Medien
       </button>
-      <div class="relative inline-block text-right">
-        <div>
-          <button type="button"
-            class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            id="greetings-vis-option-button" aria-expanded="true" aria-haspopup="true">
-            <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-              data-slot="icon">
-              <path fill-rule="evenodd"
-                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                clip-rule="evenodd" />
-            </svg>
-            Jahr
-          </button>
-        </div>
-        <div
-          id="greetings-vis-options-div"
-          class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
-          style="display: none;"
-          role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-          <div id="greetings-vis-option-list" class="py-1">
-            <!-- Active: "bg-gray-100 text-gray-900 outline-none", Not Active: "text-gray-700" -->
-          </div>
+    </span>
+    <div class="relative inline-block text-right">
+      <div>
+        <button type="button"
+          class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          id="greetings-vis-option-button" aria-expanded="true" aria-haspopup="true">
+          <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+            data-slot="icon">
+            <path fill-rule="evenodd"
+              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+              clip-rule="evenodd" />
+          </svg>
+          Jahr
+        </button>
+      </div>
+      <div id="greetings-vis-options-div"
+        class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+        style="display: none;" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+        <div id="greetings-vis-option-list" class="py-1">
+          <!-- Active: "bg-gray-100 text-gray-900 outline-none", Not Active: "text-gray-700" -->
         </div>
       </div>
     </div>
-    </span>
-    
-  <div class="py-4">
-    <h2
-      class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
-      Lanz nach Genre</h2>
-    <p class="text-lg leading-7 text-gray-800">
-      Bei Lanz werden viele unterschiedliche Menschen eingeladen. Damit das Ganze visualisierbar wird, werden die
-      Rollen,
-      die den Gästen einer Sendung zugeschrieben werden, zu <i>Genren</i> zusammengefasst. So bekommen wir eine bessere
-      Übersicht über die Hintergründe der Gäste. Die <i>Circle Packing</i>-Visualisierung zeigt die Größe der Cluster
-      basierend darauf, wie oft eine Rolle für eine Person vergeben wurde. Nicht wundern, Gäste können in
-      unterschiedlichen
-      Rollen eingeladen worden sein.
-    </p>
   </div>
-  <div id="genreVis" class="py-4"></div>
-  <div class="py-4">
-    <h2
-      class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10 md:text-2xl md:leading-14 pb-4">
-      Gäste pro Genre</h2>
-    <p class="text-lg leading-7 text-gray-800">
-      Schon immer gefragt, wer bei welchem Thema den Ton angibt? Hier findest du eine Aufschlüsselung nach Genre und
-      zugehörigen Gästen.
-      Gäste die häufiger mit ihrer Rolle in ein Genre fallen, geben in den Talkrunden deutlicher den Ton an.
-    </p>
-  </div>
-  <div id="genreGuestsVis" class="py-4"></div>
+</div>
+<div class="py-2">
+  <p class="text-md text-justify leading-6 text-gray-800">
+    Warum ein Genre? Bei Lanz werden viele unterschiedliche Menschen in verschiedenen Rollen eingeladen. Damit das Ganze
+    visualisierbar
+    wird, werden die
+    Rollen, die den Gästen einer Sendung zugeschrieben werden, zu <i>Genren</i> zusammengefasst. So gewinnt man eine
+    bessere
+    Übersicht über die Rollen, in denen die Gäste eingeladen sind. Die <i>Circle Packing</i>-Visualisierung zeigt die
+    Größe der Cluster
+    basierend darauf, wie oft eine Rolle für eine Person vergeben wurde. Nicht wundern, Gäste können in
+    unterschiedlichen Rollen zu unterschiedlichen Sendungen eingeladen worden sein.
+  </p>
+</div>
+<div id="genreVis" class="py-2"></div>
+<div class="py-2">
+  <p class="text-md text-justify leading-6 text-gray-800">
+    Das Projekt ist auf <a href="https://github.com/arrrrrmin/lanz-mining" class="underline">GitHub</a> verfügbar, würde
+    mich also über Ideen oder
+    Erweiterungen freuen. Sonstige Kommentare gerne auf mastodon <a href="https://chaos.social/@arrrrrmin"
+      class="underline">@arrrrrmin@chaos.social</a>
+  </p>
 </div>
 {{ end }}
