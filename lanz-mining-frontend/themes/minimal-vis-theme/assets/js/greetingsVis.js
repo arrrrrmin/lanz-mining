@@ -19,10 +19,15 @@ defaultColors = {
 
 greetingsVis = async () => {
 
+    getDate = (str) => {
+        const tParser = d3.timeParse("%Y-%m-%d")
+        return tParser(str.split('T')[0])
+    }
+
     loadData = async () => {
         let csvData = await d3.csv("js/data.csv").then(d => d);
         csvData = csvData.map(d => {
-            d["date"] = getDate(d["date"])
+            d["date"] = d3.timeParse("%Y-%m-%d")(d["date"].split('T')[0])
             return d
         });
         return csvData
