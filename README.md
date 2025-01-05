@@ -6,22 +6,18 @@ about the selective process of guest invitation and topic selection.
 So this repository aims to record some hands on statistics about this
 largely popular tv format, watched by many german languaged people.
 
-![D3js bar chart demo of all the data](figures/demo-1.png)
-> Top 10 Guests, Genres, Parties and Media present at markus lanz
-
-![Interactive Circle demo of all the data](figures/demo-2.png)
-> Interactive circle packing to comprehend how guest roles are mapped to genres
-
 ## How to collect data
 
 There are two main ways to collect the data. Both find the data on
-the official zdf media library. Either (1) search for "*Markus Lanz*"
+the official zdf media library. Either (1) regularly trigger the main-page crawler which
+goes through the overview page and loads the most recent episodes. Let the crawler
+run every day, with the default configuration and you will fetch every episode.
+Or (2) search for "*Markus Lanz*"
 on the official page [zdf.de](https://www.zdf.de) and load as many 
 episodes as possible and save the source html. You can then use
 `pdm run src/lanz_mining/main.py --file <PathToHTMLSource>` to 
 download the metadata from every episode listed in this search 
-result page. Or (2) regularly trigger the main-page crawler which
-goes through the overview page and loads the most recent episodes.
+result page. 
 
 ## Initialize database
 
@@ -37,10 +33,10 @@ DB_NAME="<DB_NAME>"
 DB_PORT="<DB_PORT>"
 ```
 
-In (1) you have to edit this file, like shown above.
-(2) will automatically connect to your db and create the tables. From here on,
-every call of the `pipeline` either through `main.py` with or without `--file`
-argument will write to this database.
+Edit the `.env` file, like shown above. Now you can run `main.py`
+, this will automatically connect to your db and create the tables. 
+From here on, every call of the pipeline either through `main.py` 
+will write to this database. 
 
 ## Example exports
 
