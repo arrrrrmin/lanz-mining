@@ -72,20 +72,16 @@ greetingsVis = async () => {
         var filteredData = csvData;
         if (year != "Alle") {
             var r = [new Date(`${year}-01-01`), new Date(`${parseInt(year) + 1}-01-01`)]
-            console.log(r)
             filteredData = d3.filter(csvData, d => (r[0] <= d.date && d.date < r[1]))
         }
-        console.log(filteredData);
-
         return filteredData;
     }
 
     dataSlice = (iType, iYear) => {
-        console.log(iType, iYear)
         type = iType;
         year = iYear;
         var filteredData = dataFilter(year)
-        if (type == "guests") {
+        if (type == "gäste") {
             data = d3.rollups(filteredData, D => D.length, d => d["name"])
                 .sort((a, b) => b[1] - a[1])
                 .map(vals => { return { name: vals[0], count: vals[1] } })
@@ -95,13 +91,13 @@ greetingsVis = async () => {
                 .sort((a, b) => b[1] - a[1])
                 .map(vals => { return { name: vals[0], count: vals[1] } })
                 .slice(0, n);
-        } else if (type == "parties") {
+        } else if (type == "parteien") {
             data = d3.rollups(
                 filteredData.filter((d) => d["party"].length > 0), D => D.length, d => d["party"])
                 .sort((a, b) => b[1] - a[1])
                 .map(vals => { return { name: vals[0], count: vals[1] } })
                 .slice(0, n);
-        } else if (type == "media") {
+        } else if (type == "medien") {
             data = d3.rollups(
                 filteredData.filter((d) => d["pub_platform"].length > 0), D => D.length, d => d["pub_platform"])
                 .sort((a, b) => b[1] - a[1])
@@ -109,6 +105,10 @@ greetingsVis = async () => {
                 .slice(0, n);
         }
         return data;
+    }
+
+    contextText = (iType, iYear) => {
+        return year == "Alle" ? `Top ${n} ${iType} über ${iYear} Jahre` : `Top ${n} ${iType} in ${iYear}`;
     }
 
     handleBarClick = (_, d) => {
@@ -124,7 +124,6 @@ greetingsVis = async () => {
 
     handleYearSelection = (event) => {
         year = event.target.value
-
     }
 
     const margins = { top: 25, right: 0, bottom: 50, left: 25 };
@@ -133,7 +132,7 @@ greetingsVis = async () => {
     const n = 16;
     const csvData = await loadData();
     var year = "Alle";
-    var type = "guests"
+    var type = "gäste"
     // var data = dataSlice(type, year)
 
     initButtons();
@@ -159,23 +158,27 @@ greetingsVis = async () => {
     var helper = svg.append("path")
         .attr("id", "helper")
         .attr("stroke", defaultColors.highlight)
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 1.5);
+
     var helperT = svg.append("text")
-        .attr("id", "helperT")
+        .attr("id", "helper-text")
         .attr("font-weight", 600)
         .attr("fill", defaultColors.highlight)
-        .style("text-anchor", "end")
+        .style("text-anchor", "end");
+
+    var context = svg.append("g")
+        .attr("id", "context-text")
+        .attr("transform", `translate(${width / 2 - 120}, 40)`)
+        .append("text");
 
     const line = d3.line()
         .x((d) => d[0])
         .y((d) => d[1]);
 
-
     updateGreetingsVis = (iType, iYear) => {
         year = iYear;
         type = iType;
         var data = dataSlice(type, year)
-        console.log(data);
 
         x.domain(data.map(d => d.name));
         y.domain([0, d3.max(data, d => d.count)]).nice();
@@ -200,6 +203,15 @@ greetingsVis = async () => {
             .call(d3.axisLeft(y))
             .call(g => g.select(".domain").remove());
 
+
+        context
+            .transition()
+            .duration(750)
+            .attr("font-size", 18)
+            .attr("font-weight", 400)
+            .style("text-transform", "capitalize")
+            .text(contextText(type, year));
+
         var bar = svg.selectAll("rect")
             .data(data)
 
@@ -220,6 +232,11 @@ greetingsVis = async () => {
         bar
             .exit()
             .remove();
+
+        context
+            .exit()
+            .remove();
+
 
     }
 

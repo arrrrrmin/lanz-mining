@@ -6,32 +6,32 @@
 {{ end }}
 */}}
 <div class="py-4">
-  <p class="text-md text-justify leading-6 text-gray-800">
+  <p class="text-base text-justify text-gray-800">
     Auch schon oft gedacht: <i>Die Person ist aber ständig bei Lanz!</i>? Hier kannst du das Gefühl mit den Fakten
     abgleichen.
     Lanz-Mining ist ein kleiner Service der dir hilft deine Vermutung mit realen Daten abzugleichen.
-    Am Ende jedes Monats wird der Service aktualisiert und wir wissen welche Person, welche Partei oder Medienportal
-    bei Lanz redet.
+    Mit gesammelten Daten aus der Mediathek weiß man jetzt, wer, welche Parteien oder Medienhäuser bei Lanz sitzen.
+    Aus Platzgründen werden hier nur die Top 16 nach Auftritten angezeigt. 
   </p>
 </div>
-<div id="greetingsVis" class="pt-2 pb-10">
+<div id="greetingsVis" class="pt-4 pb-10">
   <div class="flex justify-between">
     <span class="isolate inline-flex roundd-md shadow-sm">
-      <button type="button" value="guests" id="greeting-vis-button"
+      <button type="button" value="gäste" id="greeting-vis-button"
         class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-        Top Guests
+        Top Gäste
       </button>
-      <button type="button" value="genres" id="greeting-vis-button"
+      <button type="button" value="parteien" id="greeting-vis-button"
         class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-        Top Genres
-      </button>
-      <button type="button" value="parties" id="greeting-vis-button"
-        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Parteien
       </button>
-      <button type="button" value="media" id="greeting-vis-button"
-        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+      <button type="button" value="medien" id="greeting-vis-button"
+        class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
         Top Medien
+      </button>
+      <button type="button" value="genres" id="greeting-vis-button"
+        class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        Top Genres
       </button>
     </span>
     <div class="relative inline-block text-right">
@@ -58,8 +58,8 @@
     </div>
   </div>
 </div>
-<div class="py-2">
-  <p class="text-md text-justify leading-6 text-gray-800">
+<div class="py-8">
+  <p class="text-base text-justify text-gray-800">
     Warum ein Genre? Bei Lanz werden viele unterschiedliche Menschen in verschiedenen Rollen eingeladen. Damit das Ganze
     visualisierbar
     wird, werden die
@@ -71,13 +71,13 @@
     unterschiedlichen Rollen zu unterschiedlichen Sendungen eingeladen worden sein.
   </p>
 </div>
-<div id="genreVis" class="py-2"></div>
-<div class="py-2">
-  <p class="text-md text-justify leading-6 text-gray-800">
+<div id="genreVis" class="py-2 rounded-sm border-gray-400 border"></div>
+<div class="pt-8">
+  <p class="text-base text-justify text-gray-800">
     Das Projekt ist auf <a href="https://github.com/arrrrrmin/lanz-mining" class="underline">GitHub</a> verfügbar, würde
     mich also über Ideen oder
     Erweiterungen freuen. Sonstige Kommentare gerne auf mastodon <a href="https://chaos.social/@arrrrrmin"
-      class="underline">@arrrrrmin@chaos.social</a>
+      class="underline">@arrrrrmin@chaos.social</a>. 
   </p>
 </div>
 {{ end }}
