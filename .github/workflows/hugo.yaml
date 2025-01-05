@@ -5,7 +5,7 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches:
-      - deploy-gh-pages
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -54,7 +54,7 @@ jobs:
           HUGO_ENVIRONMENT: production
           TZ: America/Los_Angeles
         run: |
-          hugo \
+          cd lanz-mining-frontend && hugo \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
