@@ -4,6 +4,9 @@ name: Build and deploy site to GH Pages
 on:
   # Runs on pushes targeting the default branch
   push:
+    paths:
+      - lanz-mining-frontend/**
+      - .github/**
     branches:
       - main
 
