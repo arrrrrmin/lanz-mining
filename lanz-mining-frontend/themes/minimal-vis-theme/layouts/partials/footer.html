@@ -1,10 +1,12 @@
 <div class="mt-8 py-4 border-t border-gray-900/10 ">
-    <p class="text-sm/6 text-gray-400 md:order-1 md:mt-0">
-        Daten gehen bis 22.1.2022 zurück und beinhalten weder Video noch Transkripte.
+    <p class="text-sm/6 text-gray-400 md:mt-0">
+        Daten zwischen {{ index .Site.Data.meta.start }} und {{ index .Site.Data.meta.end }}. Sie beinhalten weder Videos noch Transkripte.
+        <br/>
+        Datensammlung: {{ index .Site.Data.meta.guests }} Gäste aus {{ index .Site.Data.meta.episodes }} Episoden.
     </p>
 </div>
 <div class="pb-6 flex justify-between">
-    <p class="text-sm/6 text-gray-400 md:order-1 md:mt-0">&copy; {{ now.Year }} arrrrrmin</p>
+    <p class="text-sm/6 text-gray-400 md:mt-0">&copy; {{ now.Year }} arrrrrmin</p>
 
     <div class="flex gap-x-2">
         <a href="https://github.com/arrrrrmin/lanz-mining" class="text-gray-400 hover:text-gray-600">

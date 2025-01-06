@@ -842,12 +842,12 @@ video {
   padding-bottom: 2rem;
 }
 
-.pb-10 {
-  padding-bottom: 2.5rem;
-}
-
 .pb-6 {
   padding-bottom: 1.5rem;
+}
+
+.pb-8 {
+  padding-bottom: 2rem;
 }
 
 .pl-\[calc\(100vw-100\%\)\] {
@@ -1028,16 +1028,8 @@ video {
 }
 
 @media (min-width: 475px) {
-  .xs\:flex {
-    display: flex;
-  }
-
   .xs\:flex-row {
     flex-direction: row;
-  }
-
-  .xs\:flex-col {
-    flex-direction: column;
   }
 }
 
@@ -1048,10 +1040,6 @@ video {
 
   .sm\:max-w-xl {
     max-width: 36rem;
-  }
-
-  .sm\:flex-row {
-    flex-direction: row;
   }
 
   .sm\:space-x-6 > :not([hidden]) ~ :not([hidden]) {
@@ -1077,10 +1065,6 @@ video {
 }
 
 @media (min-width: 768px) {
-  .md\:order-1 {
-    order: 1;
-  }
-
   .md\:mt-0 {
     margin-top: 0px;
   }
