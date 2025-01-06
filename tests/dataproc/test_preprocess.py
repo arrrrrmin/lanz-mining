@@ -4,6 +4,7 @@ import polars as pl
 from _pytest.fixtures import fixture
 
 from lanz_mining.database import mappings
+from lanz_mining.database.mappings import OTHER_GENRE_NAME
 from lanz_mining.database.naming import Party
 from lanz_mining.dataproc import preprocess
 
@@ -53,7 +54,7 @@ def test_apply_genre_affiliation(dataframe: pl.DataFrame):
     _df = preprocess.apply_genre_affiliation(dataframe)
     assert "genre" in _df.columns
     genre_counts = _df["genre"].value_counts()["genre"]
-    all_genres = list(mappings.ROLE_GENRE_MAP.keys()) + ["Other"]
+    all_genres = list(mappings.ROLE_GENRE_MAP.keys()) + [OTHER_GENRE_NAME]
     assert all([genre in all_genres for genre in genre_counts.unique()])
     # todo more tests
 

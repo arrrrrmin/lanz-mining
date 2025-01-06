@@ -1,5 +1,5 @@
 # Party membership mapping aims to resolve the fuzzy role "politician".
-# Other maps aim to find a more general role like "agrar" or "industry"
+# Other maps aim to find a more general role like "economy" or "social"
 from datetime import date
 
 from src.lanz_mining.database.naming import Party
@@ -148,6 +148,7 @@ PARTY_MEMBERSHIP_MAP = {
     "Johannes Volkmann": Party.CDU,
     "Bärbel Bas": Party.SPD,
     "Peer Steinbrück": Party.SPD,
+    "Klaus Müller": Party.B90G,
 }
 
 POLITICS_KEYWORDS = [
@@ -180,7 +181,11 @@ POLITICS_KEYWORDS = [
     "evp",
     "unionsfraktions",
     "juli-vorsitzende",
+    "netzagentur"
+    "politik-expert",
+    "politikexpert",
 ]
+
 ROLE_GENRE_MAP = {
     "Aktivismus": lambda role: any(
         _ in role.lower() for _ in ["aktivist", "bürgerrechtler", "whistleblow", "völkerrechtler"]
@@ -195,24 +200,7 @@ ROLE_GENRE_MAP = {
     "Bildung": lambda role: any(
         _ in role.lower() for _ in ["lehrer", "pädagog", "schüler", "student", "schulleiter"]
     ),
-    "Geisteswissenschaft": lambda role: any(
-        _ in role.lower()
-        for _ in [
-            "philosoph",
-            "theolog",
-            "politolog",
-            "politikwissenschaft",
-            "islamwissenschaft",
-            "politik-expert",
-            "politikexpert",
-            "migrationswissenschaft",
-            "mirgationsforscher",
-            "extremismusforscher",
-            "zukunftsforscher",
-        ]
-    ),
     "Politik": lambda role: any(_ in role.lower() for _ in POLITICS_KEYWORDS),
-    # "Ethik": lambda role: any(_ in role.lower() for _ in ["ethik"]),
     "Militär": lambda role: any(
         _ in role.lower() for _ in ["militär", "verteidigung", "bundeswehr", "oberst", "agent"]
     ),
@@ -251,7 +239,7 @@ ROLE_GENRE_MAP = {
             "islam-expert",
         ]
     ),
-    "Naturwissenschaft": lambda role: any(
+    "Wissenschaft": lambda role: any(
         _ in role.lower()
         for _ in [
             "wissenschaft",
@@ -259,13 +247,20 @@ ROLE_GENRE_MAP = {
             "physiker",
             "biolog",
             "hydrologe",
+            "zukunftsforscher",
             "ökolog",
+            "philosoph",
+            "theolog",
+            "politolog",
+            "politikwissenschaft",
+            "islamwissenschaft",
+            "extremismusforscher"
         ]
     ),
     "Literatur": lambda role: any(
         _ in role.lower() for _ in ["autor", "schriftsteller", "publizist"]
     ),
-    # "Agrar": lambda role: any(_ in role.lower() for _ in ["agrar", "landwirt", "förster"]),
+    "Agrar": lambda role: any(_ in role.lower() for _ in ["agrar", "landwirt", "förster"]),
     "Ökonomie": lambda role: any(
         _ in role.lower()
         for _ in [
@@ -308,9 +303,13 @@ ROLE_GENRE_MAP = {
             "migrationsexpert",
             "integrationsexpert",
             "kriminolog",
+            "migrationswissenschaft",
+            "mirgationsforscher",
         ]
     ),
 }
+
+OTHER_GENRE_NAME = "Sonstiges"
 
 ALL_GENRES = sorted(list(ROLE_GENRE_MAP.keys()), reverse=True)
 
@@ -372,6 +371,7 @@ def get_complicated_party_memberships() -> dict[str, list[tuple[str, str, str]]]
 
 
 def get_known_politicians() -> list[str]:
+    """Returns all names of listed politicians"""
     list_of_politicians = list(PARTY_MEMBERSHIP_MAP.keys())
     list_of_politicians.extend(list(get_complicated_party_memberships().keys()))
     return list(set(list_of_politicians))

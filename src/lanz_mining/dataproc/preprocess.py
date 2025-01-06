@@ -3,6 +3,7 @@ from datetime import datetime
 import polars as pl
 
 from lanz_mining.database import mappings
+from lanz_mining.database.mappings import OTHER_GENRE_NAME
 
 
 # *** Assertation functions ***
@@ -34,7 +35,7 @@ def find_party_membership(name: str, d: datetime) -> str or None:
     return membership
 
 
-def find_role_genre(role: str, opt_out: str = "Other") -> str or None:
+def find_role_genre(role: str, opt_out: str = OTHER_GENRE_NAME) -> str or None:
     """Find the roles genre, applies the mapping or returns Other/None"""
     for genre, fn in mappings.ROLE_GENRE_MAP.items():
         if isinstance(role, str) and fn(role):
@@ -99,9 +100,14 @@ def apply_policial_membership(df: pl.DataFrame) -> pl.DataFrame:
 
 def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
     assert_column_exists(df, ["role"])
-    opt_out = "Other"
     return df.with_columns(
-        genre=pl.col("role").map_elements(lambda r: find_role_genre(r, opt_out), pl.String)
+        genre=pl.col("role").map_elements(
+            lambda r: find_role_genre(
+                r,
+                OTHER_GENRE_NAME,
+            ),
+            pl.String,
+        )
     )
 
 
