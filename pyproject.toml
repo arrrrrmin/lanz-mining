@@ -23,13 +23,11 @@ line-length = 100
 
 [tool.pdm.scripts]
 helpers = "pytest tests/dataproc/test_helpers.py -s -p no:warnings"
-basics = "python -m src.lanz_mining.dataproc.basics"
 process = "python -m src.lanz_mining.process --file exports/guests.csv --write"
 explore = "python -m src.lanz_mining.plots.explore --file exports/guests.csv"
 
 [tool.pdm]
 distribution = true
-
 
 [dependency-groups]
 dev = [

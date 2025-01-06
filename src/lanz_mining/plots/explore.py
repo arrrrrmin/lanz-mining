@@ -144,13 +144,11 @@ def explore(file: Path):
     df = pl.read_csv(file.open("r"), separator=",")
     # Use episode name as date by parsing the name
     df = preprocess.default_preprocessing(df)
-    # plot_top_n_guests(df, 40)
-    # plot_political_parties(df)
-    # plot_invitations_per_newspaper(df)
-    # plot_encounter_matrix_pol(df)
-    # plot_genres(df, n=5)
-    # print(df.head(25))
-    df.write_csv("outputs/data.csv")
+    plot_top_n_guests(df, 40)
+    plot_political_parties(df)
+    plot_invitations_per_newspaper(df)
+    plot_encounter_matrix_pol(df)
+    plot_genres(df, n=5)
 
 
 def call_for_args() -> Namespace:
