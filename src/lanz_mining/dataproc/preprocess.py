@@ -53,16 +53,15 @@ def find_pub_platform(row: dict) -> str or None:
     _role = row["role"].lower()
     _message = row["message"].lower()
     _genre = row["genre"]
-    pub_platform = None
     if _genre != "Journalismus":
-        return pub_platform
+        return None
     for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
         is_platform = any(
             [(indicator in _role or indicator in _message) for indicator in indicators]
         )
         if is_platform:
             return pub_name
-    return pub_platform
+    return None
 
 
 # *** Pre-processing functions ***
