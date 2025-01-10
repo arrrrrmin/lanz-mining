@@ -23,10 +23,25 @@ def call_for_args() -> Namespace:
 
 
 def get_outfile_suffix(path: str, name: str) -> Path:
+    """Builds output file suffix from path and name."""
     assert Path(path).exists(), f"Base path '{path}' does not exist."
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     temp = Path(path) / name
     return Path(path) / f"{temp.stem}-{timestamp}{temp.suffix}"
+
+
+def get_top_experts(df: pl.DataFrame, by_frequency: bool) -> pl.DataFrame:
+    """Finds the most frequent consulted expert in the passed dataframe.
+    When passing by_frequency=False the expert with the most diverse expert-prefixes set is returned.
+    """
+    agg_fn = pl.col("expertise").len() if by_frequency else pl.col("expertise").unique().len()
+    return (
+        df.filter(pl.col("expertise").is_not_null())
+        .group_by("name")
+        .agg(agg_fn)
+        .filter(pl.col("expertise") > 1)
+        # .sort("expertise", descending=True)
+    )
 
 
 def main(input_file: Path, write: bool):
@@ -50,11 +65,11 @@ def main(input_file: Path, write: bool):
         .drop_nulls()
         .sort("count", descending=True)
     )
-    the_special_expert = (
-        df.filter(pl.col("expertise").is_not_null()).group_by("name").agg(pl.col("expertise").unique().len()).filter(pl.col("expertise") > 1)
-    )
-    print(the_special_expert.sort("expertise", descending=True))
-    print(df.filter(pl.col("name") == "Sascha Lobo"))
+
+    print("Top Experts by prefix diversity:")
+    print(get_top_experts(df, False).top_k(3, by="expertise"))
+    print("Top Experts by frequency of consultations:")
+    print(get_top_experts(df, True).top_k(3, by="expertise"))
 
     meta = {
         "start": time_range[0],
