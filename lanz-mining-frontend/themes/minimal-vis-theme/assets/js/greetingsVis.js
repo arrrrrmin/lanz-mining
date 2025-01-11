@@ -133,7 +133,6 @@ greetingsVis = async () => {
     const csvData = await loadData();
     var year = "Alle";
     var type = "gäste"
-    // var data = dataSlice(type, year)
 
     initButtons();
 
@@ -156,12 +155,12 @@ greetingsVis = async () => {
         .attr("transform", `translate(${margins.left},0)`);
 
     var helper = svg.append("path")
-        .attr("id", "helper")
+        .attr("id", "helper-greetings-path")
         .attr("stroke", defaultColors.highlight)
         .attr("stroke-width", 1.5);
 
     var helperT = svg.append("text")
-        .attr("id", "helper-text")
+        .attr("id", "helper-greetings-text")
         .attr("font-weight", 600)
         .attr("fill", defaultColors.highlight)
         .style("text-anchor", "end");

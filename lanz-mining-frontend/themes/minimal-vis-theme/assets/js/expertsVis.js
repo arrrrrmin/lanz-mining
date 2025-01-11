@@ -54,6 +54,23 @@ expertsVis = async () => {
         return data;
     }
 
+    handleExpertsBarClick = (event, d) => {
+        sourceRect = d3.select(`#${event.target.id}`);
+        if (d.name != helperT.node().innerHTML) {
+            helperT
+                .style("top", (event.pageY + 2.5) + "px")
+                .style("left", (event.pageX + 2.5) + "px")
+                .style("display", "block")
+                .html(d.name);
+        } else {
+            helperT
+                .style("top", null)
+                .style("left", null)
+                .style("display", "None")
+                .html(null);
+        }
+    }
+
     const margins = { top: 25, right: 25, bottom: 25, left: 75 };
     const width = 900;
     const height = 1200;
@@ -125,27 +142,10 @@ expertsVis = async () => {
             .selectAll("rect")
             .data(data)
 
-        handleBarClick = (event, d) => {
-            sourceRect = d3.select(`#${event.target.id}`);
-            if (d.name != helperT.node().innerHTML) {
-                helperT
-                    .style("top", (event.pageY + 2.5) + "px")
-                    .style("left", (event.pageX + 2.5) + "px")
-                    .style("display", "block")
-                    .html(d.name);
-            } else {
-                helperT
-                .style("top", null)
-                .style("left", null)
-                .style("display", "None")
-                .html(null);
-            }
-        }
-
         bar
             .join("rect")  // per bar in series
             .attr("id", (_, i) => `expert-rect-${i}`)
-            .on("click", (e, d) => handleBarClick(e, d))
+            .on("click", (e, d) => handleExpertsBarClick(e, d))
             .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
             .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
             .transition()
