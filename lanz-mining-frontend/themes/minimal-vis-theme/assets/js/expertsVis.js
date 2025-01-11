@@ -61,11 +61,6 @@ expertsVis = async () => {
     const csvData = await loadData();
 
     var data = transform();
-<<<<<<< Updated upstream
-    console.log(data);
-=======
->>>>>>> Stashed changes
-
     var svg = d3.select("#expertsVis")
         .append("svg")
         .attr("viewBox", [0, 0, width + margins.right, height])
@@ -163,36 +158,6 @@ expertsVis = async () => {
             .attr("width", d => x(d.end) - x(d.start))
             .attr("height", y.bandwidth());
 
-<<<<<<< Updated upstream
-        // var labels = bar.select("#expert-bar-g")
-        //     .data(data)
-        //     .join("text")
-        //     .attr("id", (_, i) => `expert-tt-${i}`)
-        //     .attr("x", d => x(d.end))
-        //     .attr("y", d => y(d.expertise))
-        //     .attr("font-size", 12)
-        //     .attr("font-weight", 600)
-        //     .attr("stroke", "white")
-        //     .attr("stroke-width", 0.25)
-        //     .attr("dy", "2.5em")
-        //     .style("display", "none")
-        //     .style("text-anchor", "middle")
-        //     .text(d => d.name);
-
-        // svg.select("#expertsVis")
-        //     .data(data)
-        //     .join("div")
-        //     .attr("id", (_, i) => `expert-tt-${i}`)
-        //     .style("position", "relative")
-        //     //.style("display", "none")
-        //     .style("left", d => `${x(d.end)}px`)
-        //     .style("top", d => `${y(d.expertise)}px`)
-        //     .style("background-color", "white")
-        //     .style("padding", "10px")
-        //     .html(d => d.name);
-
-=======
->>>>>>> Stashed changes
         bar.select("#expert-bar-g")
             .data(d3.groups(data, d => d["expertise"]).map(vals => vals[1][vals[1].length - 1]))
             .join("text")
