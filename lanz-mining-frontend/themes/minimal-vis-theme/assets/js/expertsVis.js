@@ -61,7 +61,10 @@ expertsVis = async () => {
     const csvData = await loadData();
 
     var data = transform();
+<<<<<<< Updated upstream
     console.log(data);
+=======
+>>>>>>> Stashed changes
 
     var svg = d3.select("#expertsVis")
         .append("svg")
@@ -160,6 +163,7 @@ expertsVis = async () => {
             .attr("width", d => x(d.end) - x(d.start))
             .attr("height", y.bandwidth());
 
+<<<<<<< Updated upstream
         // var labels = bar.select("#expert-bar-g")
         //     .data(data)
         //     .join("text")
@@ -187,6 +191,8 @@ expertsVis = async () => {
         //     .style("padding", "10px")
         //     .html(d => d.name);
 
+=======
+>>>>>>> Stashed changes
         bar.select("#expert-bar-g")
             .data(d3.groups(data, d => d["expertise"]).map(vals => vals[1][vals[1].length - 1]))
             .join("text")
