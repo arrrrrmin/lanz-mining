@@ -59,8 +59,9 @@ genreVis = async () => {
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-        .attr("font-size", 12)
+        .style("font-size", "14px")
         .attr("font-weight", 600)
+        .attr("fill", "black")
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
         .text(d => d.data.name);
