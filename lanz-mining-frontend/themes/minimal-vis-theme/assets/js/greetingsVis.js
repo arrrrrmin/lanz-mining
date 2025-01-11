@@ -216,12 +216,12 @@ greetingsVis = async () => {
             .data(data)
 
         bar
-            .join("rect") // Add new elements
+            .join("rect")
             .on("click", (e, d) => handleBarClick(e, d))
             .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
             .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
             .transition()
-            .duration(750)
+            .delay((_, i) => i * 100)
             .attr("x", d => x(d.name))
             .attr("y", d => y(d.count))
             .attr("rx", 3)
