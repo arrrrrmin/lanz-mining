@@ -1,0 +1,38 @@
+
+{{- with or site.Title site.Params.title | plainify }}
+<meta name="twitter:title" content="{{ . }}">
+{{- end }}
+
+<meta property="twitter:domain" content="{{ .Permalink }}">
+
+{{- with or .Description .Summary site.Params.description | plainify | htmlUnescape | chomp }}
+<meta name="twitter:description" content="{{ trim . " \n\r\t " }}">
+{{- end }}
+
+{{- with or .Params.locale site.Language.LanguageCode site.Language.Lang }}
+<meta property="og:locale" content="{{ . }}">
+{{- end }}
+
+{{- with or .Title site.Title site.Params.title | plainify }}
+<meta name="twitter:title" content="{{ . }}">
+{{- end }}
+
+{{- with or .Description .Summary site.Params.description | plainify | htmlUnescape }}
+<meta name="twitter:description" content="{{ trim . " \n\r\t " }}">
+{{- end }}
+
+
+{{- if site.Params.Cover.Image -}}
+{{- if (ne site.Params.Cover.relative true) }}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ site.Params.Cover.Image | absURL }}">
+<meta property="twitter:image:alt"
+  content="Circle-Packing Visualisierung aller Gäste und Rollen-Cluster bei Markus Lanz">
+{{- else}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ (path.Join .RelPermalink site.Params.Cover.Image ) | absURL }}">
+<meta property="twitter:image:alt"
+  content="Circle-Packing Visualisierung aller Gäste und Rollen-Cluster bei Markus Lanz">
+{{- end}}
+{{- else }}
+{{- end }}
