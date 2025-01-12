@@ -1,14 +1,28 @@
-baseURL = 'https://example.org/'
-languageCode = 'de-de'
-title = 'Lanz mining'
-theme = 'minimal-vis-theme'
+baseURL = ""
+languageCode = "de-DE"
+title = "Lanz Mining"
+theme = "minimal-vis-theme"
+
+[params]
+    description = "Freie Daten zu Gästen, Themen, Parteien und Experten in der ZDF-Talkshow Markus Lanz. Öffentlich-rechtliche Daten der Medienanstalt ZDF, die uns Allen gehören."
+    subtitle = "Freie Talkshow-Daten"
+    repository = "https://github.com/arrrrrmin/lanz-mining/"
+    [params.schema]
+        publisherType = "WebPage"
+    [params.author]
+        name = "arrrrrmin"
+        social = "https://chaos.social/@arrrrrmin"
+    [locale-site.Language]
+        languageCode = "de-DE"
+    [params.cover]
+        image = "og-lanz-mining-img.png"
 
 [[menus.main]]
-name = 'Details'
-pageRef = '/details'
+name = "Details"
+pageRef = "/details"
 weight = 10
 
 [[menus.main]]
-name = 'About'
-pageRef = '/about'
+name = "About"
+pageRef = "/about"
 weight = 20
