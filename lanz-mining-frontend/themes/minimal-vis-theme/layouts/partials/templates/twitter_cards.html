@@ -1,7 +1,6 @@
 
-{{- with or site.Title site.Params.title | plainify }}
-<meta name="twitter:title" content="{{ . }}">
-{{- end }}
+{{/* Use Title + Subtitle for everything! */}}
+<meta property="twitter:title" content="{{ site.Title | plainify }} - {{site.Params.subtitle | plainify}}">
 
 <meta property="twitter:domain" content="{{ .Permalink }}">
 
@@ -11,10 +10,6 @@
 
 {{- with or .Params.locale site.Language.LanguageCode site.Language.Lang }}
 <meta property="og:locale" content="{{ . }}">
-{{- end }}
-
-{{- with or .Title site.Title site.Params.title | plainify }}
-<meta name="twitter:title" content="{{ . }}">
 {{- end }}
 
 {{- with or .Description .Summary site.Params.description | plainify | htmlUnescape }}

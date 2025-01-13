@@ -1,58 +1,24 @@
+mainVisualization = async () => {
 
-colors = {
-    "SPD": "#ef4444",
-    "CDU": "#292524",
-    "CSU": "#292524",
-    "B90G": "#16a34a",
-    "FDP": "#facc15",
-    "LINKE": "#db2777",
-    "Parteilos": "#a8a29e",
-    "AfD": "#60a5fa",
-    "BSW": "#9333ea",
-    "Freie Wähler": "#57534e",
-}
-defaultColors = {
-    dark: "#334155",
-    light: "#94a3b8",
-    highlight: "#f87171",
-}
-
-greetingsVis = async () => {
-
-    getDate = (str) => {
-        const tParser = d3.timeParse("%Y-%m-%d")
-        return tParser(str.split('T')[0])
-    }
-
-    loadData = async () => {
-        let csvData = await d3.csv("js/data.csv").then(d => d);
-        csvData = csvData.map(d => {
-            d["date"] = d3.timeParse("%Y-%m-%d")(d["date"].split('T')[0])
-            return d
-        });
-        return csvData
-    }
-
-    initButtons = () => {
+    initializeButtons = () => {
         d3.select("#greetingsVis")
             .selectAll("#greeting-vis-button")
             .join()
-            .on("click", (event) => updateGreetingsVis(event.target.value, year));
+            .on("click", (event) => updateMainVisualization(event.target.value, year));
 
         d3.select("#greetings-vis-option-button")
             .join()
             .on("click", (_) => {
-                var div = document.getElementById("greetings-vis-options-div");
-                if (div.style.display == "none") {
-                    div.style.display = "block";
-                }
-                else {
-                    div.style.display = "none";
-                }
+                triggerDisplayStyle(
+                    document.getElementById("greetings-vis-options-div"), 
+                    "none", 
+                    "block"
+                )
             });
 
-        const all_years = new Set([...csvData.map(d => d.date.getFullYear())]);
+        var all_years = new Set([...csvData.map(d => d.date.getFullYear())]);
         all_years.add("Alle");
+
         d3.select("#greetings-vis-option-list").selectAll("button")
             .data(all_years)
             .join("button")
@@ -60,27 +26,27 @@ greetingsVis = async () => {
             .attr("name", d => d)
             .attr("value", d => d)
             .attr("id", (_, i) => `menu-item-${i}`)
-            .attr("class", "block px-4 py-2 text-sm text-gray-700lock")
+            .attr("class", "block px-4 py-2 text-sm text-gray-700")
             .attr("role", "menuitem")
             .attr("tabindex", -1)
-            .on("click", event => updateGreetingsVis(type, event.target.value))
+            .on("click", event => updateMainVisualization(type, event.target.value))
             .html(d => d)
 
-    }
+    };
 
-    dataFilter = (year) => {
-        var filteredData = csvData;
+    filterDataByYear = (year) => {
+        var filteredData = csvData; // Reset to all data by default
         if (year != "Alle") {
             var r = [new Date(`${year}-01-01`), new Date(`${parseInt(year) + 1}-01-01`)]
             filteredData = d3.filter(csvData, d => (r[0] <= d.date && d.date < r[1]))
         }
         return filteredData;
-    }
+    };
 
-    dataSlice = (iType, iYear) => {
+    sliceDataByTypeAndYear = (iType, iYear) => {
         type = iType;
         year = iYear;
-        var filteredData = dataFilter(year)
+        var filteredData = filterDataByYear(year)
         if (type == "gäste") {
             data = d3.rollups(filteredData, D => D.length, d => d["name"])
                 .sort((a, b) => b[1] - a[1])
@@ -105,36 +71,32 @@ greetingsVis = async () => {
                 .slice(0, n);
         }
         return data;
-    }
+    };
 
-    contextText = (iType, iYear) => {
+    getContextString = (iType, iYear) => {
         return year == "Alle" ? `Top ${n} ${iType} über ${iYear} Jahre` : `Top ${n} ${iType} in ${iYear}`;
-    }
+    };
 
-    handleBarClick = (_, d) => {
-        var s = x(data[0].name) - 12
-        var lineData = [
-            [s, y(d.count)], [s - 8, y(d.count)]
-        ];
-        helper.attr("d", line(lineData))
-        helperT.text(d.count)
-            .attr("x", s - 10)
+    clickMainBarAction = (_, d) => {
+        var start = x(data[0].name) - 10;
+        var lineData = [[start, y(d.count)], [start - 7, y(d.count)]];
+        helper
+            .attr("d", line(lineData));
+        helperText
+            .text(d.count)
+            .attr("x", start - 10)
             .attr("y", y(d.count) + 3);
-    }
-
-    handleYearSelection = (event) => {
-        year = event.target.value
-    }
+    };
 
     const margins = { top: 25, right: 0, bottom: 50, left: 25 };
     const width = 900;
     const height = 500;
     const n = 16;
-    const csvData = await loadData();
+    const csvData = await loadData("js/data.csv");
     var year = "Alle";
     var type = "gäste"
 
-    initButtons();
+    initializeButtons();
 
     var svg = d3.select("#greetingsVis")
         .append("svg")
@@ -147,25 +109,31 @@ greetingsVis = async () => {
     var y = d3.scaleLinear()
         .range([height - margins.bottom, margins.top]);
 
-    var gx = svg.append("g")
+    var gx = svg
+        .append("g")
         .attr("id", "gx")
         .attr("transform", `translate(0,${height - margins.bottom})`);
-    var gy = svg.append("g")
+    var gy = svg
+        .append("g")
         .attr("id", "gy")
         .attr("transform", `translate(${margins.left},0)`);
 
-    var helper = svg.append("path")
+    var helper = svg
+        .append("path")
         .attr("id", "helper-greetings-path")
         .attr("stroke", defaultColors.highlight)
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", 1.15);
 
-    var helperT = svg.append("text")
+    var helperText = svg
+        .append("text")
         .attr("id", "helper-greetings-text")
-        .attr("font-weight", 600)
         .attr("fill", defaultColors.highlight)
         .style("text-anchor", "end");
 
-    var context = svg.append("g")
+    applyFontConfig(helperText);
+
+    var context = svg
+        .append("g")
         .attr("id", "context-text")
         .attr("transform", `translate(${width / 2 - 120}, 40)`)
         .append("text");
@@ -174,49 +142,50 @@ greetingsVis = async () => {
         .x((d) => d[0])
         .y((d) => d[1]);
 
-    updateGreetingsVis = (iType, iYear) => {
+    updateMainVisualization = (iType, iYear) => {
         year = iYear;
         type = iType;
-        var data = dataSlice(type, year)
+        var data = sliceDataByTypeAndYear(type, year)
 
         x.domain(data.map(d => d.name));
         y.domain([0, d3.max(data, d => d.count)]).nice();
 
         helper.attr("d", null);
-        helperT.text(null);
+        helperText.text(null);
 
         gx.transition()
             .duration(1000)
             .call(d3.axisBottom(x).tickSizeOuter(0))
+            .call(g => g.selectAll(".tick").select("line").remove())
             .call(g => g.select(".domain").remove())
             .selectAll("text")
-            .attr("font-size", 12)
-            .attr("font-weight", 600)
             .style("text-anchor", "end")
-            .attr("dx", "-0.5em")
-            .attr("dy", "-0.5em")
-            .attr("transform", "rotate(-90)");
+            .attr("transform", "rotate(-70)");
+        
+        applyFontConfig(gx, true);
+        applyTextOffset(gx, "-0.5em", "-0.25em", true);
 
         gy.transition()
             .duration(1000)
             .call(d3.axisLeft(y))
             .call(g => g.select(".domain").remove());
 
+        applyFontConfig(gy, true);
 
         context
             .transition()
             .duration(750)
-            .attr("font-size", 18)
+            .attr("font-size", 20)
             .attr("font-weight", 400)
             .style("text-transform", "capitalize")
-            .text(contextText(type, year));
+            .text(getContextString(type, year));
 
         var bar = svg.selectAll("rect")
             .data(data)
 
         bar
             .join("rect")
-            .on("click", (e, d) => handleBarClick(e, d))
+            .on("click", (e, d) => clickMainBarAction(e, d))
             .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
             .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
             .transition()
@@ -235,12 +204,10 @@ greetingsVis = async () => {
         context
             .exit()
             .remove();
-
-
     }
 
-    updateGreetingsVis(type, year)
+    updateMainVisualization(type, year)
 
 }
 
-greetingsVis();
+mainVisualization();
