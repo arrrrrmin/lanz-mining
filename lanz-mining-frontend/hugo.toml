@@ -16,13 +16,3 @@ theme = "minimal-vis-theme"
         languageCode = "de-DE"
     [params.cover]
         image = "og-lanz-mining-img.png"
-
-[[menus.main]]
-name = "Details"
-pageRef = "/details"
-weight = 10
-
-[[menus.main]]
-name = "About"
-pageRef = "/about"
-weight = 20
