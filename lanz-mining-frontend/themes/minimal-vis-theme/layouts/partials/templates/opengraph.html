@@ -1,16 +1,11 @@
 <meta property="og:url" content="{{ .Permalink }}">
 
-
-
 {{- with or site.Title site.Params.title | plainify }}
   <meta property="og:site_name" content="{{ . }}">
 {{- end }}
 
-{{- if .IsHome }}
-
+{{/* Use Title + Subtitle for everything! */}}
 <meta property="og:title" content="{{ site.Title | plainify }} - {{site.Params.subtitle | plainify}}">
-
-{{- end }}
 
 {{- with or .Description .Summary site.Params.description | plainify | htmlUnescape | chomp }}
 <meta property="og:description" content="{{ . }}">
