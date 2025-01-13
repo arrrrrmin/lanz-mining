@@ -1,28 +1,31 @@
-# lanz-mining (wip)
+# Lanz Mining
 
-A repo for collecting data about the german talk show *Markus Lanz*.
-As a public tv station we find awefully less information and statistics
-about the selective process of guest invitation and topic selection.
-So this repository aims to record some hands on statistics about this
-largely popular tv format, watched by many german languaged people.
+Free data on guests, topics, parties and experts on the german ZDF talk show 
+*Markus Lanz*. Public data from the ZDF media organisation that belongs to all 
+citizens.
 
-## How to collect data
+## What's it about?
 
-There are two main ways to collect the data. Both find the data on
-the official zdf media library. Either (1) regularly trigger the main-page crawler which
-goes through the overview page and loads the most recent episodes. Let the crawler
-run every day, with the default configuration and you will fetch every episode.
-Or (2) search for "*Markus Lanz*"
-on the official page [zdf.de](https://www.zdf.de) and load as many 
-episodes as possible and save the source html. You can then use
-`pdm run src/lanz_mining/main.py --file <PathToHTMLSource>` to 
-download the metadata from every episode listed in this search 
-result page. 
+Is a **work-in-progress** project to crawl data from the german talk show
+*Markus Lanz*. This project aims to free up some data that is part of
+germany's public service media media landscape. Open data approaches 
+should be a standard for every public service. 
+Open data and transparency also helps the credibility of public service media 
+as a whole.  
 
-## Initialize database
+## Requires
 
-1. `touch .env` 
-2. `pdm run src/lanz_mining/main.py --file <PathToHTMLSource>`
+* Python3.11
+* Postgres installed for development
+* (Optional) Node installed
+
+## Installation
+
+* Fork and clone the repo
+* Install the python dependencies with you'r favourite package management tools 
+* Create your postgres database
+* Run `touch .env` and fill the entries for you'r database (see below)
+* Run `pdm run src/lanz_mining/main.py` to crawl actual pages not existing in your db
 
 The `.env` file look like:
 ```bash
@@ -33,49 +36,50 @@ DB_NAME="<DB_NAME>"
 DB_PORT="<DB_PORT>"
 ```
 
-Edit the `.env` file, like shown above. Now you can run `main.py`
-, this will automatically connect to your db and create the tables. 
-From here on, every call of the pipeline either through `main.py` 
-will write to this database. 
+Ok, now deploy it on you'r server or instance and run it through a cron-job and 
+get new data as soon as it appears.
 
-## Example exports
+## Work with aquired data
 
-A reminder on how to export a `guests.csv` file, from the database to
-further work on offline.
-
+To work further with the data, we need to export and copy things to our repository.
+Export it like so:
 ```PSQL
 \COPY (SELECT lg.lanzepisode_name, lg.name, le.date, lg.role, lg.message FROM lanzguests lg INNER JOIN lanzepisode le ON lg.lanzepisode_name = le.name) TO '<project-path>/lanz-mining/exports/guests.csv' WITH (format csv, header);
 ```
-
-Transfer the export file to your local directory using `scp` from you'r local 
-machine with:
-
+And transfer it to your repo like so:
 ```shell
-scp <user>@<server.tld>:<project-dir>/exports/guests.csv ./exports/guests.csv
+scp <user>@<server.tld>:<project-dir>/exports/guests.csv exports/guests.csv
+cp exports/guests.csv tests/data/guests.csv
 ```
 
-If your want to do manually steps (below), additionally copy the file to 
-`./tests/data/guests.csv`, which is the default file for tests to run.
+If you now want to process the data and find genres, party associations or 
+media platforms of journalists, run `pdm run process`. 
+For more details on what this does see `src/lanz_mining/process.py`.
+You can also skip this and explore the data directly with some example plots
+with `pdm run explore`. This writes a few plots to `figures/`. 
 
+### Check data quality
 
-## Steps to do manually
-
-**This project doesn't want to use machine learning or deep learning for data householding**,
-so to ensure correct data, there are steps to do manually.
+To ensure correct data, there are steps to do manually.
 There are helper scripts that find unmapped politicians or journalists without an
-associated publication platform, and much more. It's done with a single test file, just
-run:
+associated publication platform, and much more. It's done with a few tests, 
+just run: `pdm run helpers`. The tests step through a few categories and show
+uncovered mappings for genres, politicians or media outlets.
 
-`pdm run helpers`
+### More data
 
-Details can be found in [tests/dataproc/test_helpers.py](tests/dataproc/test_helpers.py).
+Simply running the crawler for a while will take ages to get a reasonable 
+amount of data, so there's a little solution for this. Open your browser
+go to the official [zdf.de](https://www.zdf.de) page and search for "*Markus Lanz*".
+Load as many episodes as possible and save the source html. You can then use
+`pdm run src/lanz_mining/main.py --file <PathToHTMLSource>` to 
+download the data from every episode listed in this search result page.
 
-```bash
-pdm run pytest tests/dataproc/test_helpers.py -s
-```
+# Contributions
 
-## Exploration
-
-Now that the crawler has looked up data for a while, we can take a look at it and
-visualise a few things. Maybe there's something of interest and if not, we found a bit
-of transparency for public broadcasting.
+Currently I'm looking to reduce the manual tasks more, so idealy everything runs
+automatically. To get this reliable, I'd be thankful for any hints on public 
+APIs or other methods to map genres, identify party memberships and alike.
+Further I'd really be happy if you let me know what you think, DM me on 
+[chaos.social/@arrrrrmin](https://chaos.social/@arrrrrmin), or open an issue to
+further improve things.
