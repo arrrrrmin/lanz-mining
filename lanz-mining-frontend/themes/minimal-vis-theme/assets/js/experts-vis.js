@@ -1,31 +1,15 @@
+expertsVisualization = async () => {
 
-
-expertsVis = async () => {
-
-    loadData = async () => {
-        let csvData = await d3.csv("js/data.csv").then(d => d);
-        csvData = csvData.map(d => {
-            d["date"] = d3.timeParse("%Y-%m-%d")(d["date"].split('T')[0])
-            return d
-        });
-        return csvData
-    }
-
-    transform = () => {
-
+    transformToStackedBar = (rawData) => {
         pairwiseCumsum = (d) => {
             var dSort = d.sort((a, b) => a["count"] - b["count"]);
-            var values = d3.pairs(
-                [0, ...d3.cumsum(dSort, d => d["count"])]
-            );
+            var values = d3.pairs([0, ...d3.cumsum(dSort, d => d["count"])]);
             return dSort.map((d, i) => ({ name: d["name"], start: values[i][0], end: values[i][1] }))
         }
 
-        maxOfEnds = (d) => {
-            return d3.max(d["experts"].map(D => D["end"]));
-        }
+        maxOfEnds = (d) => d3.max(d["experts"].map(D => D["end"]));
 
-        var filteredData = d3.filter(csvData, d => !!d["expertise"])
+        var filteredData = d3.filter(rawData, d => !!d["expertise"])
         var data = d3.rollups(
             filteredData,
             (D) => (d3.rollups(D, E => E.length, e => e["name"]).map(
@@ -42,7 +26,7 @@ expertsVis = async () => {
             })
         ).sort((a, b) => maxOfEnds(b) - maxOfEnds(a)).slice(0, n);
 
-        data = data.flatMap((d, i) => {
+        data = data.flatMap(d => {
             const expertise = d.expertise;
             return d.experts.map(D => ({
                 expertise: expertise,
@@ -54,16 +38,16 @@ expertsVis = async () => {
         return data;
     }
 
-    handleExpertsBarClick = (event, d) => {
+    clickExpertsBarAction = (event, d) => {
         sourceRect = d3.select(`#${event.target.id}`);
-        if (d.name != helperT.node().innerHTML) {
-            helperT
+        if (d.name != helperText.node().innerHTML) {
+            helperText
                 .style("top", (event.pageY + 2.5) + "px")
                 .style("left", (event.pageX + 2.5) + "px")
                 .style("display", "block")
                 .html(d.name);
         } else {
-            helperT
+            helperText
                 .style("top", null)
                 .style("left", null)
                 .style("display", "None")
@@ -71,14 +55,14 @@ expertsVis = async () => {
         }
     }
 
-    const margins = { top: 25, right: 25, bottom: 25, left: 75 };
+    const margins = { top: 25, right: 25, bottom: 25, left: 65 };
     const width = 900;
     const height = 1200;
-    const n = 20;
-    const csvData = await loadData();
+    const n = 16;
+    const csvData = await loadData("js/data.csv");
+    var data = transformToStackedBar(csvData);
 
-    var data = transform();
-    var svg = d3.select("#expertsVis")
+    var svg = d3.select("#experts-vis")
         .append("svg")
         .attr("viewBox", [0, 0, width + margins.right, height])
         .attr("style", `max-width: ${width}px; height: auto; font: 10px sans-serif; overflow: visible;`);
@@ -100,16 +84,18 @@ expertsVis = async () => {
         .attr("id", "gy-experts")
         .attr("transform", `translate(${margins.left + margins.right},0)`);
 
-    var helperT = d3.select("#expertsVis").append("div")
+    var helperText = d3.select("#experts-vis").append("div")
         .attr("id", "expert-helper-tt-div")
         .attr("class", "px-1 py-0.5 bg-white rounded-sm")
-        .style("font-size", "10px")
-        .style("font-weight", 600)
+        // Here we need to apply a different font size, since we'r not inside the svg.
+        .style("font-size", "11px")
+        .style("font-weight", 400)
         .style("position", "absolute")
         .style("display", "none")
         .style("text-anchor", "end");
 
-    updateExpertsVis = () => {
+
+    updateExpertsVisualization = () => {
 
         x.domain([d3.max(data, d => d["end"]), 0]).nice();
         y.domain(data.map(d => d["expertise"]));
@@ -118,22 +104,18 @@ expertsVis = async () => {
         gx.transition()
             .duration(1000)
             .call(d3.axisBottom(x).tickSizeOuter(0))
-            .call(g => g.select(".domain").remove())
-            .selectAll("text")
-            .attr("font-size", 12)
-            .attr("font-weight", 600)
-            .attr("dy", "-1em");
+            .call(g => g.select(".domain").remove());
+        
+        applyFontConfig(gx, true);
+        applyTextOffset(gx, "0em", "-0.75em", true)
 
         gy.transition()
             .duration(1000)
             .call(d3.axisLeft(y))
-            .call(g => g.select(".domain").remove())
-            .call(g => g.selectAll(".tick").select("line").remove())
-            .selectAll("text")
-            .attr("dx", "0.5rem")
-            .attr("dy", "2.5rem")
-            .attr("font-size", 10)
-            .attr("font-weight", 600);
+            .call(g => g.select(".domain").remove());
+        
+        applyFontConfig(gy, true);
+        applyTextOffset(gy, "-0.25em", "0.25em", true)
 
         var bar = svg
             .append("g")
@@ -145,8 +127,8 @@ expertsVis = async () => {
         bar
             .join("rect")  // per bar in series
             .attr("id", (_, i) => `expert-rect-${i}`)
-            .on("click", (e, d) => handleExpertsBarClick(e, d))
-            .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.9) })
+            .on("click", (e, d) => clickExpertsBarAction(e, d))
+            .on("mouseover", function () { d3.select(this).attr("fill-opacity", 0.85) })
             .on("mouseout", function () { d3.select(this).attr("fill-opacity", 1.0) })
             .transition()
             .delay((_, i) => i * 50)
@@ -158,26 +140,24 @@ expertsVis = async () => {
             .attr("width", d => x(d.end) - x(d.start))
             .attr("height", y.bandwidth());
 
-        bar.select("#expert-bar-g")
+        var mainExpertLabels = bar.select("#expert-bar-g")
             .data(d3.groups(data, d => d["expertise"]).map(vals => vals[1][vals[1].length - 1]))
             .join("text")
             .attr("x", d => x(d.end))
             .attr("y", d => y(d.expertise))
-            .attr("fill", d => c(d.end - d.start))
             .style("text-anchor", "start")
-            .attr("font-size", 12)
-            .attr("font-weight", 600)
-            .attr("dy", "2.5em")
-            .attr("dx", "0.25em")
             .text(d => d.name);
+
+        applyFontConfig(mainExpertLabels, false);
+        applyTextOffset(mainExpertLabels, "0.25em", "2em", false);
 
         bar
             .exit()
             .remove();
     }
 
-    updateExpertsVis();
+    updateExpertsVisualization();
 
 }
 
-expertsVis();
+expertsVisualization();
