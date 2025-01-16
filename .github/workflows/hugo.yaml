@@ -5,7 +5,7 @@ on:
   # Runs on pushes targeting the default branch
   push:
     paths:
-      - lanz-mining-frontend/**
+      - web/**
       - .github/**
     branches:
       - main
@@ -57,14 +57,14 @@ jobs:
           HUGO_ENVIRONMENT: production
           TZ: America/Los_Angeles
         run: |
-          cd lanz-mining-frontend && hugo \
+          cd web && hugo \
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./lanz-mining-frontend/public
+          path: ./web/public
 
   # Deployment job
   deploy:

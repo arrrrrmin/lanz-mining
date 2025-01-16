@@ -1,0 +1,20 @@
+baseURL: ""
+languageCode: de-DE
+title: Lanz Mining
+theme: minimal-vis-theme
+params:
+  description: Freie Daten zu Gästen, Themen, Parteien und Experten in der
+    ZDF-Talkshow Markus Lanz. Öffentlich-rechtliche Daten der Medienanstalt ZDF,
+    die uns Allen gehören.
+  subtitle: Freie Talkshow-Daten
+  repository: https://github.com/arrrrrmin/lanz-mining/
+  schema:
+    publisherType: WebPage
+  author:
+    name: arrrrrmin
+    social: https://chaos.social/@arrrrrmin
+  cover:
+    image: og-lanz-mining-img.png
+locale-site:
+  Language:
+    languageCode: de-DE
