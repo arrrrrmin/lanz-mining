@@ -1,0 +1,6 @@
+{{ define "main" }}
+
+{{ .Content | safeHTML }}
+  {{ range site.RegularPages }}
+  {{ end }}
+{{ end }}

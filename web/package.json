@@ -1,0 +1,23 @@
+{
+  "name": "hugo-datavis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss build -i assets/css/main.css -o assets/css/styles.css",
+    "watch": "npx tailwindcss build -i assets/css/main.css -o assets/css/styles.css --watch"
+  },
+  "repository": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arrrrrmin/hugo-datavis/issues"
+  },
+  "homepage": "https://github.com/arrrrrmin/hugo-datavis#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
