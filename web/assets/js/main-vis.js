@@ -162,7 +162,6 @@ mainVisualization = async (targetId, dataPath) => {
             .selectAll("text")
             .style("text-anchor", "end")
             .attr("transform", "rotate(-70)");
-
         applyFontConfig(gx, true);
         applyTextOffset(gx, "-0.5em", "-0.25em", true);
 

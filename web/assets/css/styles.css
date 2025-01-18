@@ -964,6 +964,17 @@ td {
   padding-left: calc(100vw - 100%);
 }
 
+<<<<<<< HEAD:web/assets/css/styles.css
+=======
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+>>>>>>> main:lanz-mining-frontend/themes/minimal-vis-theme/assets/css/styles.css
 .text-right {
   text-align: right;
 }
