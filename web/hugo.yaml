@@ -26,10 +26,10 @@ params:
   socialIcons:
     - name: Github
       title: View Source on Github
-      url: https://github.com/arrrrrmin/laz-mining
+      url: https://github.com/arrrrrmin/lanz-mining
     - name: Mastodon
       title: See you on mastodon
-      url: https://chaos.social/@arrrrrmin"
+      url: https://chaos.social/@arrrrrmin
     - name: Bluesky
       title: See you on bluesky
       url: https://bsky.app/profile/arrrrrmin.bsky.social
