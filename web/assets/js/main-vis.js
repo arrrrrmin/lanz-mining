@@ -1,8 +1,9 @@
-mainVisualization = async () => {
+mainVisualization = async (targetId, dataPath) => {
 
-    initializeButtons = () => {
-        d3.select("#greetingsVis")
-            .selectAll("#greeting-vis-button")
+    initializeButtons = (targetId) => {
+
+        /** Applying functionality */
+        d3.selectAll("#greeting-vis-button")
             .join()
             .on("click", (event) => updateMainVisualization(event.target.value, year));
 
@@ -10,8 +11,8 @@ mainVisualization = async () => {
             .join()
             .on("click", (_) => {
                 triggerDisplayStyle(
-                    document.getElementById("greetings-vis-options-div"), 
-                    "none", 
+                    document.getElementById("greetings-vis-options-div"),
+                    "none",
                     "block"
                 )
             });
@@ -92,13 +93,13 @@ mainVisualization = async () => {
     const width = 900;
     const height = 500;
     const n = 16;
-    const csvData = await loadData("js/data.csv");
+    const csvData = await loadData(dataPath);
     var year = "Alle";
     var type = "gäste"
 
-    initializeButtons();
+    initializeButtons(targetId);
 
-    var svg = d3.select("#greetingsVis")
+    var svg = d3.select(`div#${targetId}`)
         .append("svg")
         .attr("viewBox", [0, 0, width, height + margins.bottom])
         .attr("style", `max-width: ${width}px; height: auto; font: 10px sans-serif; overflow: visible;`);
@@ -161,7 +162,6 @@ mainVisualization = async () => {
             .selectAll("text")
             .style("text-anchor", "end")
             .attr("transform", "rotate(-70)");
-        
         applyFontConfig(gx, true);
         applyTextOffset(gx, "-0.5em", "-0.25em", true);
 
@@ -209,5 +209,3 @@ mainVisualization = async () => {
     updateMainVisualization(type, year)
 
 }
-
-mainVisualization();

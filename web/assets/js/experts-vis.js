@@ -1,4 +1,4 @@
-expertsVisualization = async () => {
+expertsVisualization = async (targetId, dataPath) => {
 
     transformToStackedBar = (rawData) => {
         pairwiseCumsum = (d) => {
@@ -57,12 +57,12 @@ expertsVisualization = async () => {
 
     const margins = { top: 25, right: 25, bottom: 25, left: 65 };
     const width = 900;
-    const height = 1200;
+    const height = 900;
     const n = 16;
-    const csvData = await loadData("js/data.csv");
+    const csvData = await loadData(dataPath);
     var data = transformToStackedBar(csvData);
 
-    var svg = d3.select("#experts-vis")
+    var svg = d3.select(`div#${targetId}`)
         .append("svg")
         .attr("viewBox", [0, 0, width + margins.right, height])
         .attr("style", `max-width: ${width}px; height: auto; font: 10px sans-serif; overflow: visible;`);
@@ -159,5 +159,3 @@ expertsVisualization = async () => {
     updateExpertsVisualization();
 
 }
-
-expertsVisualization();

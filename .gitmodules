@@ -1,0 +1,3 @@
+[submodule "web/themes/hugo-datavis"]
+	path = web/themes/hugo-datavis
+	url = https://github.com/arrrrrmin/hugo-datavis

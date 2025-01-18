@@ -1,4 +1,4 @@
-genreVisualization = async () => {
+genreVisualization = async (targetId, dataPath) => {
     
     transformToCirclePack = (rawData) => {
         //let csvData = await d3.csv("js/data.csv").then(d => d);
@@ -24,7 +24,7 @@ genreVisualization = async () => {
     const width = 900;
     const height = width;
 
-    const csvData = await loadData("js/data.csv");
+    const csvData = await loadData(dataPath);
     var data = transformToCirclePack(csvData);
 
     const pack = data => d3.pack()
@@ -35,7 +35,7 @@ genreVisualization = async () => {
             .sort((a, b) => b.value - a.value));
     const root = pack(data);
 
-    const svg = d3.select("#genre-vis")
+    const svg = d3.select(`div#${targetId}`)
         .append("svg")
         .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
         .attr("width", width)
@@ -100,5 +100,3 @@ genreVisualization = async () => {
     }
 
 }
-
-genreVisualization();
