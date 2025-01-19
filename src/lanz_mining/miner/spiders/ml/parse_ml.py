@@ -1,13 +1,13 @@
 from scrapy.http import Response
 from scrapy.loader import ItemLoader
 
-from lanz_mining.miner.items import EpisodeItem
+from lanz_mining.miner.items import EpisodeItemML
 
 
-def parse_item(response: Response) -> EpisodeItem:
+def parse_item_ml(response: Response, debug: bool) -> EpisodeItemML:
     details_div = '//div[@class="details cell medium-7 large-8"]'
     teaser_info_div = '/div[@class="other-infos"]/dl/dd[@class="teaser-info"]'
-    loader = ItemLoader(item=EpisodeItem(), response=response)
+    loader = ItemLoader(item=EpisodeItemML(), response=response)
     loader.add_xpath("name", '//h1[@id="main-content"]/text()')
     loader.add_xpath("date", f"{details_div}{teaser_info_div}[2]/text()")
     loader.add_xpath("length", f"{details_div}{teaser_info_div}[1]/text()")
@@ -24,7 +24,10 @@ def parse_item(response: Response) -> EpisodeItem:
         all_guests = response.xpath(f"{guests_div}/p/strong/text()").getall()
     guests = map_guests_to_desc(all_guests, p_texts, response)
     loader.add_value("guests", guests)
-    return loader.load_item()
+    item = loader.load_item()
+    if debug:
+        print(item)
+    return item
 
 
 def map_guests_to_desc(all_guests: str, texts: list[str], response: Response) -> list[dict]:

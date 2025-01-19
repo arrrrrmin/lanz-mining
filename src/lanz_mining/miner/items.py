@@ -14,7 +14,9 @@ def fix_length_string(l: str) -> int:
     return int(l.strip(" min"))
 
 
-class EpisodeItem(Item):
+class EpisodeItemML(Item):
+    ep_table = "lanzepisode"
+    g_table = "lanzguests"
     name = Field(output_processor=MapCompose(str.strip))
     date = Field(output_processor=MapCompose(str.strip))
     length = Field(output_processor=MapCompose(str.strip, fix_length_string))
@@ -31,7 +33,7 @@ class EpisodeItem(Item):
         }
 
     def exists_in_database(self) -> tuple[str, tuple]:
-        return "SELECT EXISTS(SELECT 1 FROM lanzepisode WHERE name=%s)", (self["name"][0],)
+        return "SELECT EXISTS(SELECT 1 FROM %s WHERE name=%s)", (self.ep_table, self["name"][0])
 
     def episode_as_query(self) -> tuple[str, tuple]:
         date = datetime.strptime(self["date"][0], "%d.%m.%Y").strftime("%Y-%m-%d")
@@ -40,17 +42,20 @@ class EpisodeItem(Item):
             (self["name"][0], date, self["length"][0], self["description"][0]),
         )
 
-    def guests_as_query(self) -> tuple[str, list]:
+    def guests_as_query(self) -> tuple[str, tuple]:
         guests = [
             (self["name"][0], guest["name"], guest["role"], guest["text"])
             for guest in self["guests"]
         ]
         return (
-            "INSERT INTO lanzguests (lanzepisode_name, name, role, message) VALUES %s;",
-            guests,
+            "INSERT INTO %s (lanzepisode_name, name, role, message) VALUES %s;",
+            (self.g_table, guests),
         )
 
     @classmethod
-    def from_jsonl_entry(cls, line: str) -> "EpisodeItem":
+    def from_jsonl_entry(cls, line: str) -> "EpisodeItemML":
         fields = json.loads(line)
-        return EpisodeItem(**fields)
+        return EpisodeItemML(**fields)
+
+
+class EpisodeItemMI(Item): ...

@@ -4,20 +4,20 @@ import scrapy
 from scrapy.http import Request, Response
 from tqdm import tqdm
 
-from lanz_mining.miner.items import EpisodeItem
-from lanz_mining.miner.spiders.parse import parse_item
+from lanz_mining.miner.items import EpisodeItemML
+from lanz_mining.miner.spiders.ml.parse_ml import parse_item_ml
 
 
 class LanzEpisodeSpider(scrapy.Spider):
     name: str = "lanzepisodespider"
     allowed_domains: list[str] = ["www.zdf.de"]
     start_urls: list[str] = []
+    debug: bool = False
 
-    def __init__(self, paths: list[str], output_path: str, *args: any, **kwargs: any) -> None:
+    def __init__(self, paths: list[str], debug: bool, *args: any, **kwargs: any) -> None:
         super(LanzEpisodeSpider, self).__init__(*args, **kwargs)
         self.start_urls = [f"https://{self.allowed_domains[0]}{url}" for url in paths]
-        self.output_path = Path(output_path)
-        self.output_path.mkdir(parents=True, exist_ok=True)
+        self.debug = debug
 
     def start_requests(self):
         num_urls = len(self.start_urls)
@@ -28,5 +28,6 @@ class LanzEpisodeSpider(scrapy.Spider):
             pbar.update(1)
             yield r
 
-    def parse(self, response: Response, **kwargs: any) -> EpisodeItem:
-        return parse_item(response)
+    def parse(self, response: Response, **kwargs: any) -> EpisodeItemML:
+        ep_item = parse_item_ml(response, self.debug)
+        return ep_item
