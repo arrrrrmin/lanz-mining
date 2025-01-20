@@ -31,11 +31,11 @@ Warum ein Genre? Bei Lanz werden viele unterschiedliche Menschen in verschiedene
     genreVisualization("genre-vis", "data.csv")
 {{< /js >}}
 
-Wenn man weiter in die Daten hinein schaut, gibt es dort auch Beschreibungen zu jeder geladenen Person. In dieser Beschreibung, wir die Person kurz vorgestellt und wozu sie sich äußern möchte. Dabei merkt man schnell das das Wort Expert*in häufig auftritt. Also kann man auch das analysieren. Expert*innen werden je nach Ankündigung in der Mediathek einem Thema zugeordnet. Auch hier kann eine Person über die Zeit für mehr als nur ein Thema geladen werden.
+Wenn man weiter in die Daten hinein schaut, gibt es dort auch Beschreibungen zu jeder geladenen Person. In dieser Beschreibung, wird die Person kurz vorgestellt und wozu sie sich äußern möchte. Dabei merkt man schnell das das Wort Expert*in häufig auftritt. Also kann man auch das analysieren. Expert*innen werden je nach Ankündigung in der Mediathek einem Thema zugeordnet. Auch hier kann eine Person über die Zeit für mehr als nur ein Thema geladen werden.
 
 {{< js id="experts-vis" src="js/experts-vis.js" class="my-2" >}}
     expertsVisualization("experts-vis", "data.csv")
 {{< /js >}}
 
-Die Visualisualisierung der Expert*innen pro Themngebiet, ist beschränkt auf die Top 16, sonst wird das Ganze zu lang und unübersichtlich. Funfakt an dieser Stelle, der Award als Expert*in der der Expert*innen, wird zur Zeit von Sascha Lobo gehalten. Er hat die meisten Themengebiete abgedenkt.
+Die Visualisualisierung der Expert*innen pro Themengebiet, ist beschränkt auf die Top 16, sonst wird das Ganze zu lang und unübersichtlich. Funfakt an dieser Stelle, der Award als Expert*in der der Expert*innen, wird zur Zeit von Sascha Lobo gehalten. Er hat die meisten Themengebiete abgedenkt.
 Das Projekt ist auf [GitHub](https://github.com/arrrrrmin/lanz-mining) verfügbar, würde mich also über Ideen oder Erweiterungen freuen. Sonstige Ideen, Kommentare und alles Andere gerne auch auf [Mastodon](@arrrrrmin@chaos.social) oder wenn es sein muss auch [Bluesky](https://bsky.app/profile/arrrrrmin.bsky.social).
