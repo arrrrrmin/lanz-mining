@@ -3,8 +3,8 @@ from typing import Union, Optional
 
 import scrapy
 
-from lanz_mining.miner.spiders.ml.lanz_episode_spider import LanzEpisodeSpider
-from lanz_mining.miner.spiders.ml.lanz_spider import LanzSpider
+from lanz_mining.miner.spiders.lanz_spider import LanzSpider, LanzEpisodeSpider
+from lanz_mining.miner.spiders.illner_spider import IllnerSpider, IllnerEpisodeSpider
 
 
 OUTPUT_DIR = "outputs"
@@ -26,10 +26,11 @@ TALKSHOWS = {
         "tld": "https://www.zdf.de",
         "url-prefix": "/politik/maybrit-illner/",
         "slug-suffix": "/politik/",
-        # "list-spider": LanzSpider,
-        # "item-spider": LanzEpisodeSpider,
+        "list-spider": IllnerSpider,
+        "item-spider": IllnerEpisodeSpider,
     },
 }
+
 
 def detect_talkshow(url_lists: Union[list[str]]) -> Optional[str]:
     urls = [url_lists] if isinstance(url_lists, str) else url_lists

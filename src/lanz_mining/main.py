@@ -15,7 +15,7 @@ import lanz_mining.miner.settings as local_settings
 def call_for_args() -> Namespace:
     arg_parser = ArgumentParser("Crawling data from a history file (html search).")
     arg_parser.add_argument(
-        "--talkshow",
+        "-t", "--talkshow",
         type=str,
         help="What type of website is expect.",
         choices=list(params.TALKSHOWS.keys()),
