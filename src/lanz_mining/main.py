@@ -90,7 +90,7 @@ def main(args: Namespace) -> None:
         # Find links from history file (html search result page)
         print("Crawling data from history file")
 
-        url_list, out_path = find_all_urls(args.file.open("r").read(), args.show)
+        url_list, out_path = find_all_urls(args.file.open("r").read(), args.talkshow)
         print(f"Wrote list of found files to {out_path}")
 
         spider_cls = params.TALKSHOWS[args.talkshow]["item-spider"]

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from lanz_mining.miner.items import LanzEpisodeItem
 
+
 create_lanzepisode_table_str = """
 CREATE TABLE IF NOT EXISTS lanzepisode (
     name VARCHAR(255) PRIMARY KEY, 
@@ -22,6 +23,23 @@ CREATE TABLE IF NOT EXISTS lanzguests (
     role VARCHAR(255),
     message text,
     CONSTRAINT pk_episodename_name PRIMARY KEY (lanzepisode_name, name)
+)
+"""
+create_illnerepisode_table_str = """
+CREATE TABLE IF NOT EXISTS illnerepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    length int,
+    description text,
+    factcheck boolean
+)
+"""
+create_illnerguest_table_str = """
+CREATE TABLE IF NOT EXISTS illnerguests (
+    illnerepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255),
+    CONSTRAINT pk_illnerepisodename_name PRIMARY KEY (illnerepisode_name, name)
 )
 """
 
@@ -48,11 +66,13 @@ def init_connection() -> (any, any):
     # Create tables, if not existing
     cur.execute(create_lanzepisode_table_str)
     cur.execute(create_lanzguest_table_str)
+    cur.execute(create_illnerepisode_table_str)
+    cur.execute(create_illnerguest_table_str)
     conn.commit()
     return conn, cur
 
 
-# Copy of items.EpisodeItem.episode_as_query due to the item differences, when loading from json.
+@DeprecationWarning
 def episode2query(item) -> tuple[str, tuple]:
     date = datetime.strptime(item["date"], "%d.%m.%Y").strftime("%Y-%m-%d")
     return (
@@ -61,7 +81,7 @@ def episode2query(item) -> tuple[str, tuple]:
     )
 
 
-# Copy of items.EpisodeItem.guests_as_query due to the item differences, when loading from json.
+@DeprecationWarning
 def guests2query(item) -> tuple[str, list]:
     guests = [
         (item["name"], guest["name"], guest["role"], guest["text"]) for guest in item["guests"]

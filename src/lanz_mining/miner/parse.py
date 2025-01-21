@@ -13,7 +13,9 @@ def parse_illner_episode(response: Response, debug: bool) -> IllnerEpisodeItem:
     date_select = f"{details_div}{teaser_info_div}[2]/text()"
     length_select = f"{details_div}{teaser_info_div}[1]/text()"
     description_select = f'{details_div}/p[@class="item-description"]/text()'
-    factcheck_select = f'//div[@class="b-post-content"]/section[@class="b-group-contentbox"]/div/div/h3/text()'
+    factcheck_select = (
+        f'//div[@class="b-post-content"]/section[@class="b-group-contentbox"]/div/div/h3/text()'
+    )
 
     loader = ItemLoader(item=IllnerEpisodeItem(), response=response)
     loader.add_xpath("name", name_select)
@@ -23,19 +25,24 @@ def parse_illner_episode(response: Response, debug: bool) -> IllnerEpisodeItem:
     extended_desc = get_illner_extended_decription(response).strip()
     description += f" {extended_desc}"
     loader.add_value("description", description)
-    loader.add_xpath("factcheck", factcheck_select)
-    guests_div = '//article[@class="b-group-persons"]/div/div/ul/li'
-    names = response.xpath(f'{guests_div}/div/div[@class="guest-text"]/h3/button/text()').getall()
-    roles = response.xpath(f'{guests_div}/div/div[@class="guest-text"]/div/p/text()').getall()
+    factcheck = response.xpath(factcheck_select).get()
+    loader.add_value("factcheck", factcheck is not None)
+    names = response.xpath('//div[@class="guest-text"]/h3/button/text()').getall()
+    roles = response.xpath('//div[@class="guest-text"]/div/p/text()').getall()
     guests: list[dict] = []
     for i, n in enumerate(names):
+        existing_names = list(map(lambda g: g["name"], guests))
+        if n.strip() in existing_names:
+            # Fixes a rare issue, where an episode is split into two parts and
+            # guests appear in both parts, which would cause trouble with p_keys in psql.
+            continue
         r = roles[i] if i <= len(roles) else None  # Just in case
         guests.append({"name": n.strip(), "role": r.strip()})
 
     loader.add_value("guests", guests)
     item = loader.load_item()
     if debug:
-        ic(item)
+        ic(item.as_dict())
     return item
 
 
@@ -60,7 +67,6 @@ def parse_lanz_episode(response: Response, debug: bool) -> LanzEpisodeItem:
     loader.add_xpath("length", f"{details_div}{teaser_info_div}[1]/text()")
     loader.add_xpath("description", f'{details_div}/p[@class="item-description"]/text()')
     guests_div = '//div[@class="b-post-content"]/div/div'
-    # participants_loader = loader.nested_xpath(participants_div)
 
     p_texts = response.xpath(f"{guests_div}/p/text()").getall()
     p_texts = [  # remove empty sets of random artifacts
