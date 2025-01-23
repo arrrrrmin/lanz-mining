@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from lanz_mining.miner.items import LanzEpisodeItem
 
 
+# Tables for markuslanz
 create_lanzepisode_table_str = """
 CREATE TABLE IF NOT EXISTS lanzepisode (
     name VARCHAR(255) PRIMARY KEY, 
@@ -25,6 +26,8 @@ CREATE TABLE IF NOT EXISTS lanzguests (
     CONSTRAINT pk_episodename_name PRIMARY KEY (lanzepisode_name, name)
 )
 """
+
+# Tables for maybritillner
 create_illnerepisode_table_str = """
 CREATE TABLE IF NOT EXISTS illnerepisode (
     name VARCHAR(255) PRIMARY KEY, 
@@ -40,6 +43,25 @@ CREATE TABLE IF NOT EXISTS illnerguests (
     name VARCHAR(255) NOT NULL,
     role VARCHAR(255),
     CONSTRAINT pk_illnerepisodename_name PRIMARY KEY (illnerepisode_name, name)
+)
+"""
+
+# Tables for carenmiosga
+create_miosgaepisode_table_str = """
+CREATE TABLE IF NOT EXISTS miosgaepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    description text,
+    factcheck boolean
+) 
+"""
+create_miosgaguest_table_str = """
+CREATE TABLE IF NOT EXISTS miosgaguests (
+    miosgaepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255),
+    message text,
+    CONSTRAINT pk_miosgaepisodename_name PRIMARY KEY (miosgaepisode_name, name)
 )
 """
 
@@ -68,6 +90,8 @@ def init_connection() -> (any, any):
     cur.execute(create_lanzguest_table_str)
     cur.execute(create_illnerepisode_table_str)
     cur.execute(create_illnerguest_table_str)
+    cur.execute(create_miosgaepisode_table_str)
+    cur.execute(create_miosgaguest_table_str)
     conn.commit()
     return conn, cur
 

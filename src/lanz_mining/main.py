@@ -15,7 +15,8 @@ import lanz_mining.miner.settings as local_settings
 def call_for_args() -> Namespace:
     arg_parser = ArgumentParser("Crawling data from a history file (html search).")
     arg_parser.add_argument(
-        "-t", "--talkshow",
+        "-t",
+        "--talkshow",
         type=str,
         help="What type of website is expect.",
         choices=list(params.TALKSHOWS.keys()),
@@ -93,8 +94,9 @@ def main(args: Namespace) -> None:
         url_list, out_path = find_all_urls(args.file.open("r").read(), args.talkshow)
         print(f"Wrote list of found files to {out_path}")
 
-        spider_cls = params.TALKSHOWS[args.talkshow]["item-spider"]
-        spider_args = {"paths": url_list, "debug": args.debug}
+        spider_cls = params.TALKSHOWS[args.talkshow]["file"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["file"]["args"]
+        spider_args = {"paths": url_list, "debug": args.debug, **default_args}
 
     elif args.url:
         # Visit target url only and look for new data
@@ -104,14 +106,16 @@ def main(args: Namespace) -> None:
         slug_suffix = params.TALKSHOWS[args.talkshow]["slug-suffix"]
         url = normalize_url(args.url, tld, slug_suffix)
 
-        spider_cls = params.TALKSHOWS[args.talkshow]["item-spider"]
-        spider_args = {"paths": [url], "debug": args.debug}
+        spider_cls = params.TALKSHOWS[args.talkshow]["url"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["url"]["args"]
+        spider_args = {"paths": [url], "debug": args.debug, **default_args}
 
-    else:
+    else:  # Default mode
         # Visit the main site and check for new urls
         print("Searching for new urls on the main page")
-        spider_cls = params.TALKSHOWS[args.talkshow]["list-spider"]
-        spider_args = {"debug": args.debug}
+        spider_cls = params.TALKSHOWS[args.talkshow]["default"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["default"]["args"]
+        spider_args = {"debug": args.debug, **default_args}
 
     process = CrawlerProcess(settings)
     process.crawl(spider_cls, **spider_args)
