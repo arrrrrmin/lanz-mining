@@ -32,3 +32,11 @@ def miosga_example() -> TextResponse:
     url = "https://www.zdf.de/mocked-miosga-example.html"
     response = TextResponse(url=url, request=Request(url=url), body=file_content)
     return response
+
+
+@pytest.fixture
+def maisch_example() -> TextResponse:
+    file_content = open("tests/html/maischberger-example.html", "rb").read()
+    url = "https://www.zdf.de/mocked-maisch-example.html"
+    response = TextResponse(url=url, request=Request(url=url), body=file_content)
+    return response
