@@ -11,13 +11,18 @@ from lanz_mining.miner.parse import parse_illner_episode
 class IllnerSpider(scrapy.Spider):
     name: str = "illnerspider"
     watch_slug = "/politik/maybrit-illner/"
+    excludes = ["die-maybrit-illner-fakten-box"]
     allowed_domains: list[str] = ["www.zdf.de"]
     start_urls: list[str] = ["https://www.zdf.de/politik/maybrit-illner/"]
     debug: bool = False
 
     def parse(self, response: Response, **kwargs: any) -> any:
         recent_episodes = response.xpath("//article/div/div/div/div/div/h3/a/@href").getall()
-        recent_episodes = list(set(filter(lambda url: self.watch_slug in url, recent_episodes)))
+        recent_episodes = filter(lambda url: self.watch_slug in url, recent_episodes)
+        recent_episodes = filter(
+            lambda url: all([ex not in url for ex in self.excludes]), recent_episodes
+        )
+        recent_episodes = list(set(recent_episodes))
         if self.debug:
             ic(recent_episodes)
         cb_kwargs = {"debug": self.debug}
