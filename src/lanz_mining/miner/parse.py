@@ -1,21 +1,74 @@
 import datetime
 import re
+from typing import Optional
 
 from icecream import ic
 
 from scrapy.http import Response
 from scrapy.loader import ItemLoader
 
-from lanz_mining.miner.items import LanzEpisodeItem, IllnerEpisodeItem, MiosgaEpisodeItem
+from lanz_mining.miner.items import (
+    LanzEpisodeItem,
+    IllnerEpisodeItem,
+    MiosgaEpisodeItem,
+    MaischEpisodeItem,
+)
 
 
-def match_datestr(l: str) -> str:
-    m = re.search(r"\d{2}\.\d{2}\.\d{2}", l)
-    if not m.group(0):
-        # Fallback to today, when there's no day to match
-        return datetime.datetime.now().strftime("%d.%m.%Y")
-    d = datetime.datetime.strptime(m.group(0), "%d.%m.%y")
+def match_datestr(l: str, ny_digits: int = 2, no_fallback: bool = False) -> Optional[str]:
+    assert ny_digits in (2, 4), "Date match only supports 2 or 4 digits."
+    pattern = r"\d{2}\.\d{2}\.\d{2}" if ny_digits == 2 else r"\d{2}\.\d{2}\.\d{4}"
+    year_format = "%y" if ny_digits == 2 else "%Y"
+    m = re.search(pattern, l)
+    if not m or not m.group(0):
+        if not no_fallback:
+            # Fallback to today, when there's no day to match
+            return datetime.datetime.now().strftime(f"%d.%m.%Y")
+        else:
+            return None
+    d = datetime.datetime.strptime(m.group(0), f"%d.%m.{year_format}")
     return datetime.datetime(d.year, d.month, d.day).strftime("%d.%m.%Y")
+
+
+def parse_maisch_episode(response: Response, debug: bool) -> MaischEpisodeItem:
+    def match_guests(ls: list[str]) -> list[str]:
+        ls = list(map(lambda _: _.replace("\xa0", ""), ls))
+        guest_names = []
+        for l in ls:
+            names = re.search(r"(.+)[(|]", l)
+            if names and names.group(1):
+                names = names.group(1).replace(" und ", ", ")
+                names = [
+                    re.search(r"(.+) \(", n).group(1) if "(" in n else n for n in names.split(", ")
+                ]
+                guest_names.extend(names)
+        return list(set(guest_names))
+
+    name = response.xpath("/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/h1/text()").get()
+    # Check uniquness of 'name'
+    date = match_datestr(name, 4, True)
+    if date is None:
+        date_text = response.xpath('//*[@id="content"]/div/div[3]/div[1]/div/div[3]/p/text()').get()
+        date = match_datestr(date_text, 2, True)
+        name = f"{name} vom {date}"
+
+    description = response.xpath(
+        "/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p[1]/text()"
+    ).get()
+    guest_sections = response.xpath(
+        '//div/div/div/div/div[@class="mediaCon mediaTop small"]/div/div/span/text()'
+    ).getall()[1:]
+    guests = match_guests(guest_sections)
+    guests = list(map(lambda n: {"name": n}, guests))
+    loader = ItemLoader(item=MaischEpisodeItem(), response=response)
+    loader.add_value("name", name)
+    loader.add_value("date", date)
+    loader.add_value("description", description)
+    loader.add_value("guests", guests)
+    item = loader.load_item()
+    if debug:
+        ic(item)
+    return item
 
 
 def parse_miosga_episode(response: Response, debug: bool) -> MiosgaEpisodeItem:

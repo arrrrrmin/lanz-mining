@@ -29,6 +29,46 @@ def cleanup_name(l: str) -> str:
         return l
 
 
+class MaischEpisodeItem(Item):
+    ep_table = sql.Identifier("maischepisode")
+    g_table = sql.Identifier("maischguests")
+    name = Field(output_processor=MapCompose(str.strip))
+    date = Field(output_processor=MapCompose(str.strip))
+    description = Field(output_processor=MapCompose(str.strip))
+    guests = Field()
+
+    def as_dict(self):
+        return {
+            "name": self["name"][0],
+            "date": self["date"][0],
+            "description": self["description"][0] if "description" in self.keys() else None,
+            "guests": self["guests"] if "guests" in self.keys() else None,
+        }
+
+    def exists_in_database(self) -> tuple[Composed, tuple]:
+        return sql.SQL("SELECT EXISTS(SELECT 1 FROM {table} WHERE name=%s)").format(
+            table=self.ep_table
+        ), (self["name"][0],)
+
+    def episode_as_query(self) -> tuple[Composed, tuple]:
+        date = datetime.strptime(self["date"][0], "%d.%m.%Y").strftime("%Y-%m-%d")
+        return (
+            sql.SQL("INSERT INTO {table} (name, date, description) VALUES (%s, %s, %s);").format(
+                table=self.ep_table
+            ),
+            (self["name"][0], date, self["description"][0]),
+        )
+
+    def guests_as_query(self) -> tuple[Composed, list]:
+        guests = [(self["name"][0], guest["name"]) for guest in self["guests"]]
+        return (
+            sql.SQL("INSERT INTO {table} (maischepisode_name, name) VALUES %s;").format(
+                table=self.g_table
+            ),
+            guests,
+        )
+
+
 class MiosgaEpisodeItem(Item):
     ep_table = sql.Identifier("miosgaepisode")
     g_table = sql.Identifier("miosgaguests")

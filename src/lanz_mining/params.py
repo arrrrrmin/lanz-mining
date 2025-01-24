@@ -2,6 +2,7 @@ from pathlib import Path
 
 from lanz_mining.miner.spiders.lanz_spider import LanzSpider, LanzEpisodeSpider
 from lanz_mining.miner.spiders.illner_spider import IllnerSpider, IllnerEpisodeSpider
+from lanz_mining.miner.spiders.maisch_spider import MaischSpider, MaischEpisodeSpider
 from lanz_mining.miner.spiders.miosga_spider import MiosgaSpider, MiosgaEpisodeSpider
 
 OUTPUT_DIR = "outputs"
@@ -17,6 +18,7 @@ TALKSHOWS = {
         "tld": "https://www.zdf.de",
         "url-prefix": "/gesellschaft/markus-lanz/markus-lanz-vom",
         "slug-suffix": "/gesellschaft/",
+        # No excludes needed
         "file": {"spider": LanzEpisodeSpider, "args": {}},
         "url": {"spider": LanzEpisodeSpider, "args": {}},
         "default": {"spider": LanzSpider, "args": {}},
@@ -25,6 +27,7 @@ TALKSHOWS = {
         "tld": "https://www.zdf.de",
         "url-prefix": "/politik/maybrit-illner/",
         "slug-suffix": "/politik/",
+        # No excludes needed
         "file": {"spider": IllnerEpisodeSpider, "args": {}},
         "url": {"spider": IllnerEpisodeSpider, "args": {}},
         "default": {"spider": IllnerSpider, "args": {}},
@@ -33,11 +36,19 @@ TALKSHOWS = {
         "tld": "https://www.daserste.de",
         "url-prefix": "/information/talk/caren-miosga/sendung/",
         "slug-suffix": "/caren-miosga/sendung/",
+        "excludes": ["/videos/web-only", "index.html"],
         "file": {"spider": MiosgaSpider, "args": {"crawl_first": False}},
         "url": {"spider": MiosgaEpisodeSpider, "args": {}},
         "default": {"spider": MiosgaSpider, "args": {"crawl_first": True}},
-        # https://www.daserste.de/information/talk/caren-miosga/sendung/trump-zurueck-im-weissen-haus-was-jetzt-frau-baerbock-100.html
-        # https://www.daserste.de/information/talk/caren-miosga/index.html
+    },
+    "maischberger": {
+        "tld": "https://www.daserste.de",
+        "url-prefix": "/information/talk/maischberger/sendung/",
+        "slug-suffix": "/maischberger/sendung/",
+        "excludes": ["-sendungen-filter", "index.html"],
+        "file": {"spider": MaischEpisodeSpider, "args": {"crawl_first": False}},
+        "url": {"spider": MaischEpisodeSpider, "args": {}},
+        "default": {"spider": MaischSpider, "args": {"crawl_first": True}},
     },
 }
 

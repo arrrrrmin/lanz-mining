@@ -72,8 +72,18 @@ def find_all_urls(html: str, talkshow: str) -> tuple[list[str], Path]:
     url_prefix = params.TALKSHOWS[talkshow]["url-prefix"]
     slug_suffix = params.TALKSHOWS[talkshow]["slug-suffix"]
     soup = BeautifulSoup(html, "html.parser")
-    url_list = soup.find_all("a")
+    url_list = soup.find_all("a", href=True)
     url_list = filter(lambda url: url_prefix in url.get("href"), url_list)
+    if "excludes" in params.TALKSHOWS[talkshow]:
+        url_list = filter(
+            lambda url: all(
+                [
+                    exclude not in url.get("href")
+                    for exclude in params.TALKSHOWS[talkshow]["excludes"]
+                ]
+            ),
+            url_list,
+        )
     url_list = list(set(map(lambda url: url.get("href"), url_list)))
     url_list = [normalize_url(url, tld, slug_suffix) for url in url_list]
     out_path = params.url_export_path(talkshow)

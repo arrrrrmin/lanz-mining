@@ -65,6 +65,22 @@ CREATE TABLE IF NOT EXISTS miosgaguests (
 )
 """
 
+# Tables for carenmiosga
+create_maischepisode_table_str = """
+CREATE TABLE IF NOT EXISTS maischepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    description text
+) 
+"""
+create_maischguest_table_str = """
+CREATE TABLE IF NOT EXISTS maischguests (
+    maischepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT maischepisode_name PRIMARY KEY (maischepisode_name, name)
+)
+"""
+
 
 def load_history_data(jsonl_file: Path) -> list[LanzEpisodeItem]:
     return [LanzEpisodeItem.from_jsonl_entry(line) for line in jsonl_file.open("r").readlines()]
@@ -92,6 +108,8 @@ def init_connection() -> (any, any):
     cur.execute(create_illnerguest_table_str)
     cur.execute(create_miosgaepisode_table_str)
     cur.execute(create_miosgaguest_table_str)
+    cur.execute(create_maischepisode_table_str)
+    cur.execute(create_maischguest_table_str)
     conn.commit()
     return conn, cur
 
