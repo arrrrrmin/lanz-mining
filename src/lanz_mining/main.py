@@ -9,25 +9,29 @@ from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 
 from lanz_mining import params
-from lanz_mining.miner.spiders.lanz_debug_spider import LanzDebugSpider
-from lanz_mining.miner.spiders.lanz_spider import LanzSpider
-from miner.spiders.lanz_episode_spider import LanzEpisodeSpider
-import miner.settings as local_settings
-
-
-link_filter_fn = lambda url: params.URL_PREFIX in url.get("href")
-link_href_fn = lambda url: url.get("href")
+import lanz_mining.miner.settings as local_settings
 
 
 def call_for_args() -> Namespace:
     arg_parser = ArgumentParser("Crawling data from a history file (html search).")
+    arg_parser.add_argument(
+        "-t",
+        "--talkshow",
+        type=str,
+        help="What type of website is expect.",
+        choices=list(params.TALKSHOWS.keys()),
+        required=True,
+    )
     arg_parser.add_argument(
         "--file", type=Path, help="Html file of search results.", required=False
     )
     arg_parser.add_argument(
         "--url", type=str, help="A single url to look for new data.", required=False
     )
-    arg_parser.add_argument("--save-to-db", action="store_true", help="Only used with --url <url>.")
+    arg_parser.add_argument(
+        "--debug", action="store_true", help="Use any spider in debug mode", required=False
+    )
+    # arg_parser.add_argument("--save-to-db", action="store_true", help="Only used with --url <url>.")
     args = arg_parser.parse_args()
     return args
 
@@ -46,64 +50,86 @@ def enforce_local_settings(settings: Settings) -> Settings:
     return settings
 
 
-def export_url_paths(url_paths: list[str], export_path: str = params.URL_EXPORT_PATH) -> Path:
-    out_path = Path(export_path)
-    json.dump({"url_paths": url_paths}, out_path.open("w", encoding="utf-8"), indent=4)
-    return out_path
-
-
-def init_output_dir(is_history_crawl: bool) -> Settings:
+def init_settings_and_dirs(is_history_crawl: bool, debug: bool) -> Settings:
     settings = get_project_settings()
     settings["PIPELINE_OUTPUT"] = f"{params.OUTPUT_DIR_CURRENT}/{uuid4()}.jsonl"
     if is_history_crawl:
         settings["PIPELINE_OUTPUT"] = f"{params.OUTPUT_DIR_HISTORY}/historic-items.jsonl"
     Path(settings["PIPELINE_OUTPUT"]).parent.mkdir(parents=True, exist_ok=True)
-    return enforce_local_settings(settings)
+    settings = enforce_local_settings(settings)
+    if debug:
+        del settings["ITEM_PIPELINES"]
+    return settings
 
 
-def normalize_urls(urls: list[str]) -> list[str]:
-    return [
-        url.replace("https://www.zdf.de", "") if not url.startswith("/gesellschaft/") else url
-        for url in urls
-    ]
+def normalize_url(url: str, tld: str, slug_suffix: str) -> str:
+    return url.replace(tld, "") if not url.startswith(slug_suffix) else url
 
 
-def main(args):
+def find_all_urls(html: str, talkshow: str) -> tuple[list[str], Path]:
+    params.check_talkshow(talkshow)  # assert or None
+    tld = params.TALKSHOWS[talkshow]["tld"]
+    url_prefix = params.TALKSHOWS[talkshow]["url-prefix"]
+    slug_suffix = params.TALKSHOWS[talkshow]["slug-suffix"]
+    soup = BeautifulSoup(html, "html.parser")
+    url_list = soup.find_all("a", href=True)
+    url_list = filter(lambda url: url_prefix in url.get("href"), url_list)
+    if "excludes" in params.TALKSHOWS[talkshow]:
+        url_list = filter(
+            lambda url: all(
+                [
+                    exclude not in url.get("href")
+                    for exclude in params.TALKSHOWS[talkshow]["excludes"]
+                ]
+            ),
+            url_list,
+        )
+    url_list = list(set(map(lambda url: url.get("href"), url_list)))
+    url_list = [normalize_url(url, tld, slug_suffix) for url in url_list]
+    out_path = params.url_export_path(talkshow)
+    json.dump({"url_paths": url_list}, out_path.open("w", encoding="utf-8"), indent=4)
+    return url_list, out_path
+
+
+def main(args: Namespace) -> None:
     # Init output dir and set the output file
-    settings = init_output_dir(args.file)
+    settings = init_settings_and_dirs(args.file, args.debug)
+
     print(f"Writing to output file at '{settings['PIPELINE_OUTPUT']}'")
 
-    if args.file:  # Find links from history file (html search result page)
+    if args.file:
+        # Find links from history file (html search result page)
         print("Crawling data from history file")
 
-        html = args.file.open("r").read()
-        soup = BeautifulSoup(html, "html.parser")
-        url_list = soup.find_all("a")
-        url_list = filter(link_filter_fn, url_list)
-        url_list = map(link_href_fn, url_list)
-        url_list = list(set(url_list))
-        url_list = normalize_urls(url_list)
-        out_path = export_url_paths(url_list)
+        url_list, out_path = find_all_urls(args.file.open("r").read(), args.talkshow)
         print(f"Wrote list of found files to {out_path}")
 
-        process = CrawlerProcess(settings)
-        process.crawl(LanzEpisodeSpider, paths=url_list, output_path="outputs/")
-        process.start()
+        spider_cls = params.TALKSHOWS[args.talkshow]["file"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["file"]["args"]
+        spider_args = {"paths": url_list, "debug": args.debug, **default_args}
 
-    elif args.url:  # Visit target url only and look for new data
+    elif args.url:
+        # Visit target url only and look for new data
         print(f"Visiting <{args.url}> to find new data")
-        if not args.save_to_db:
-            del settings["ITEM_PIPELINES"]
-        process = CrawlerProcess(settings)
-        process.crawl(LanzDebugSpider, target_url=args.url, save_to_db=args.save_to_db)
-        process.start()
 
-    else:  # Visit the main site and check for new urls
+        tld = params.TALKSHOWS[args.talkshow]["tld"]
+        slug_suffix = params.TALKSHOWS[args.talkshow]["slug-suffix"]
+        url = normalize_url(args.url, tld, slug_suffix)
+
+        spider_cls = params.TALKSHOWS[args.talkshow]["url"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["url"]["args"]
+        spider_args = {"paths": [url], "debug": args.debug, **default_args}
+
+    else:  # Default mode
+        # Visit the main site and check for new urls
         print("Searching for new urls on the main page")
+        spider_cls = params.TALKSHOWS[args.talkshow]["default"]["spider"]
+        default_args = params.TALKSHOWS[args.talkshow]["default"]["args"]
+        spider_args = {"debug": args.debug, **default_args}
 
-        process = CrawlerProcess(settings)
-        process.crawl(LanzSpider)
-        process.start()
+    process = CrawlerProcess(settings)
+    process.crawl(spider_cls, **spider_args)
+    process.start()
 
 
 if __name__ == "__main__":

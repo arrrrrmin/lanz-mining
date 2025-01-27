@@ -9,8 +9,8 @@
 
 BOT_NAME = "miner"
 
-SPIDER_MODULES = ["miner.spiders"]
-NEWSPIDER_MODULE = "miner.spiders"
+SPIDER_MODULES = ["lanz_mining.miner.spiders"]
+NEWSPIDER_MODULE = "lanz_mining.miner.spiders"
 LOG_LEVEL = "INFO"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -63,7 +63,7 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "miner.pipelines.DatabasePipeline": 100,
+   "lanz_mining.miner.pipelines.DatabasePipeline": 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

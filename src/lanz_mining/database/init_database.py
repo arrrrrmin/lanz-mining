@@ -4,10 +4,11 @@ from pathlib import Path
 
 import psycopg2
 from dotenv import load_dotenv
-from psycopg2.extras import execute_values
 
-from lanz_mining.miner.items import EpisodeItem
+from lanz_mining.miner.items import LanzEpisodeItem
 
+
+# Tables for markuslanz
 create_lanzepisode_table_str = """
 CREATE TABLE IF NOT EXISTS lanzepisode (
     name VARCHAR(255) PRIMARY KEY, 
@@ -26,9 +27,63 @@ CREATE TABLE IF NOT EXISTS lanzguests (
 )
 """
 
+# Tables for maybritillner
+create_illnerepisode_table_str = """
+CREATE TABLE IF NOT EXISTS illnerepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    length int,
+    description text,
+    factcheck boolean
+)
+"""
+create_illnerguest_table_str = """
+CREATE TABLE IF NOT EXISTS illnerguests (
+    illnerepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255),
+    CONSTRAINT pk_illnerepisodename_name PRIMARY KEY (illnerepisode_name, name)
+)
+"""
 
-def load_history_data(jsonl_file: Path) -> list[EpisodeItem]:
-    return [EpisodeItem.from_jsonl_entry(line) for line in jsonl_file.open("r").readlines()]
+# Tables for carenmiosga
+create_miosgaepisode_table_str = """
+CREATE TABLE IF NOT EXISTS miosgaepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    description text,
+    factcheck boolean
+) 
+"""
+create_miosgaguest_table_str = """
+CREATE TABLE IF NOT EXISTS miosgaguests (
+    miosgaepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(255),
+    message text,
+    CONSTRAINT pk_miosgaepisodename_name PRIMARY KEY (miosgaepisode_name, name)
+)
+"""
+
+# Tables for carenmiosga
+create_maischepisode_table_str = """
+CREATE TABLE IF NOT EXISTS maischepisode (
+    name VARCHAR(255) PRIMARY KEY, 
+    date DATE NOT NULL,
+    description text
+) 
+"""
+create_maischguest_table_str = """
+CREATE TABLE IF NOT EXISTS maischguests (
+    maischepisode_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT maischepisode_name PRIMARY KEY (maischepisode_name, name)
+)
+"""
+
+
+def load_history_data(jsonl_file: Path) -> list[LanzEpisodeItem]:
+    return [LanzEpisodeItem.from_jsonl_entry(line) for line in jsonl_file.open("r").readlines()]
 
 
 def init_connection() -> (any, any):
@@ -49,11 +104,17 @@ def init_connection() -> (any, any):
     # Create tables, if not existing
     cur.execute(create_lanzepisode_table_str)
     cur.execute(create_lanzguest_table_str)
+    cur.execute(create_illnerepisode_table_str)
+    cur.execute(create_illnerguest_table_str)
+    cur.execute(create_miosgaepisode_table_str)
+    cur.execute(create_miosgaguest_table_str)
+    cur.execute(create_maischepisode_table_str)
+    cur.execute(create_maischguest_table_str)
     conn.commit()
     return conn, cur
 
 
-# Copy of items.EpisodeItem.episode_as_query due to the item differences, when loading from json.
+@DeprecationWarning
 def episode2query(item) -> tuple[str, tuple]:
     date = datetime.strptime(item["date"], "%d.%m.%Y").strftime("%Y-%m-%d")
     return (
@@ -62,7 +123,7 @@ def episode2query(item) -> tuple[str, tuple]:
     )
 
 
-# Copy of items.EpisodeItem.guests_as_query due to the item differences, when loading from json.
+@DeprecationWarning
 def guests2query(item) -> tuple[str, list]:
     guests = [
         (item["name"], guest["name"], guest["role"], guest["text"]) for guest in item["guests"]

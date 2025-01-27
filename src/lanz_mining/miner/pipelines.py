@@ -49,8 +49,10 @@ class DatabasePipeline:
         item_exists = self.cur.fetchone()[0]
         if not item_exists:
             self.cur.execute(*item.episode_as_query())
-            self.conn.commit()
             insert_query, values = item.guests_as_query()
-            execute_values(self.cur, insert_query, values, template=None, page_size=20)
-            self.conn.commit()
+            if len(values) > 0:
+                execute_values(self.cur, insert_query, values, template=None, page_size=20)
+                self.conn.commit()
+            else:
+                print("No guest values found, not writing to database...")
         return item
