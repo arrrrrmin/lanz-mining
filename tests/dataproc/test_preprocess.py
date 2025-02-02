@@ -10,14 +10,14 @@ from lanz_mining.dataproc import preprocess
 
 
 def test_fix_date_col(dataframe: pl.DataFrame):
-    _df = preprocess.fix_date_col(dataframe)
+    _df = preprocess.fix_date_col_by_title(dataframe)
     assert "date" in _df.columns
     assert _df["date"].dtype == pl.Datetime(time_unit="us", time_zone=None)
     assert len(_df) == len(dataframe)
 
 
 def test_fix_guest_names(dataframe: pl.DataFrame):
-    _df = preprocess.fix_guest_names(dataframe)
+    _df = preprocess.norm_abbreviated_names(dataframe)
     assert "name" in _df.columns
     assert len(_df.filter(pl.col("name").str.contains("Madsen"))) > 0
     assert len(_df.filter(pl.col("name").str.contains("M.-A. Strack-Zimmermann"))) > 0
@@ -29,7 +29,7 @@ def test_apply_policial_membership(dataframe: pl.DataFrame):
     def check_all_mapped(name: str, party: str) -> bool:
         return all(_df.filter(pl.col("name") == name)["party"] == party)  # noqa
 
-    _df = preprocess.fix_date_col(dataframe)
+    _df = preprocess.fix_date_col_by_title(dataframe)
     _df = preprocess.apply_policial_membership(_df)
     assert "party" in _df.columns
     assert check_all_mapped("Cem Özdemir", Party.B90G)
@@ -61,7 +61,7 @@ def test_apply_main_genre(dataframe: pl.DataFrame):
     def check_all_mapped(name: str, main_genre: str) -> bool:
         return all([g == main_genre for g in _df.filter(pl.col("name") == name)["main_genre"]])
 
-    _df = preprocess.apply_genre_affiliation(preprocess.fix_date_col(dataframe))
+    _df = preprocess.apply_genre_affiliation(preprocess.fix_date_col_by_title(dataframe))
     _df = preprocess.apply_main_genre(_df)
 
     assert check_all_mapped("Ursula Weidenfeld", "Journalismus")

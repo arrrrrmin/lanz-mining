@@ -1,9 +1,13 @@
 import locale
+import re
 from datetime import datetime
+from typing import Optional
+
 import polars as pl
 
 from lanz_mining.database import mappings
 from lanz_mining.database.mappings import OTHER_GENRE_NAME
+from lanz_mining.dataproc.utils import requires_columns, requires_keys
 
 
 # *** Assertation functions ***
@@ -16,14 +20,56 @@ def assert_column_exists(df: pl.DataFrame, columns: list[str]) -> None:
 # *** Utility functions ***
 
 
-def find_party_membership(name: str, d: datetime) -> str or None:
+def convert_factcheck_column(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(factcheck=(pl.col("factcheck") == "t"))
+
+
+def convert_date_column(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("date").str.to_datetime("%Y-%m-%d").alias("date")
+    )
+
+
+def norm_str_columns(df: pl.DataFrame, columns: list[str]) -> pl.DataFrame:
+    def text_cleaner(text: str) -> str:
+        return re.sub(r"„(.+)“", r'"\g<1>"', text)
+
+    for col_name in columns:
+        df = df.with_columns(
+            pl.col(col_name)
+            .map_elements(lambda x: text_cleaner(x), pl.String)
+            .alias(col_name)
+        )
+    return df
+
+
+@requires_columns("name")
+def norm_names(df: pl.DataFrame) -> pl.DataFrame:
+    def __norm(line: str) -> str:
+        line = re.sub(r"(\(.+\))", "", line)
+        line = re.sub(r", (.+)", "", line)
+        return line.strip()
+
+    return df.with_columns(pl.col("name").map_elements(__norm, pl.String))
+
+
+def norm_quote_marks(text: str) -> str:
+    return_text = re.sub(r"„(.+)“", r'"\g<1>"', text)
+    return return_text
+
+
+def find_party_membership(row: dict) -> Optional[str]:
     """Find party membership if one is known in the mapping.
     For complicated cases party membership depends on the date."""
+    name = row["name"]
+    d = row["date"]
     membership = None
     if name in mappings.PARTY_MEMBERSHIP_MAP.keys():
         membership = mappings.PARTY_MEMBERSHIP_MAP[name]
     elif name not in mappings.PARTY_MEMBERSHIP_MAP.keys():
-        compilcated_membership_map = mappings.get_complicated_party_memberships()
+        compilcated_membership_map = (
+            mappings.get_complicated_party_memberships()
+        )
         if name in compilcated_membership_map.keys():
             membership_ranges = compilcated_membership_map[name]
             for start, end, party in membership_ranges:
@@ -35,7 +81,9 @@ def find_party_membership(name: str, d: datetime) -> str or None:
     return membership
 
 
-def find_role_genre(role: str, opt_out: str = OTHER_GENRE_NAME) -> str or None:
+def find_role_genre(
+    role: str, opt_out: str = OTHER_GENRE_NAME
+) -> Optional[str]:
     """Find the roles genre, applies the mapping or returns Other/None"""
     for genre, fn in mappings.ROLE_GENRE_MAP.items():
         if isinstance(role, str) and fn(role):
@@ -43,13 +91,18 @@ def find_role_genre(role: str, opt_out: str = OTHER_GENRE_NAME) -> str or None:
     return opt_out
 
 
-def find_pub_platform(row: dict) -> str or None:
+@requires_keys(["role", "party"])
+def find_genre_by_role_party(row: dict) -> Optional[str]:
+    """Tries to find a genre by looking at party and role columns."""
+    role, party = row["role"], row["party"]
+    if party:
+        return "Politik"
+    return find_role_genre(role)  # defaults to mappings.OTHER_GENRE_NAME
+
+
+@requires_keys(["role", "message", "genre"])
+def find_pub_platform_by_role_messsage(row: dict) -> Optional[str]:
     """Looks for the role and message to find a news paper affiliation"""
-
-    def check_row(r) -> bool:
-        return all([key in r for key in ["role", "message", "genre"]])
-
-    assert check_row(row), "Expected row to have 'role' and 'message'"
     _role = row["role"].lower()
     _message = row["message"].lower()
     _genre = row["genre"]
@@ -57,8 +110,23 @@ def find_pub_platform(row: dict) -> str or None:
         return None
     for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
         is_platform = any(
-            [(indicator in _role or indicator in _message) for indicator in indicators]
+            [
+                (indicator in _role or indicator in _message)
+                for indicator in indicators
+            ]
         )
+        if is_platform:
+            return pub_name
+    return None
+
+
+@requires_keys(["role", "genre"])
+def find_pub_platform_by_role(row: dict) -> Optional[str]:
+    _role, _genre = row["role"].lower(), row["genre"]
+    if _genre != "Journalismus":
+        return None
+    for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
+        is_platform = any([(ind in _role) for ind in indicators])
         if is_platform:
             return pub_name
     return None
@@ -67,13 +135,15 @@ def find_pub_platform(row: dict) -> str or None:
 # *** Pre-processing functions ***
 
 
-def fix_date_col(df: pl.DataFrame) -> pl.DataFrame:
-    assert_column_exists(df, ["lanzepisode_name"])
+@requires_columns("lanzepisode_name")
+def fix_date_col_by_title(df: pl.DataFrame) -> pl.DataFrame:
     locale.setlocale(locale.LC_ALL, "de_DE")
     return df.with_columns(
         date=pl.col("lanzepisode_name").map_elements(
             lambda lanzepisode_name: datetime.strptime(
-                lanzepisode_name.strip("Markus Lanz vom").strip().replace(".", ""),
+                lanzepisode_name.strip("Markus Lanz vom")
+                .strip()
+                .replace(".", ""),
                 "%d %B %Y",
             ),
             return_dtype=pl.Datetime,
@@ -81,24 +151,32 @@ def fix_date_col(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def fix_guest_names(df: pl.DataFrame) -> pl.DataFrame:
+@requires_columns("name")
+def norm_abbreviated_names(df: pl.DataFrame) -> pl.DataFrame:
     # Normalizes ambiguous names
     def map_task(name) -> str:
-        return mappings.MANUAL_NAME_MAP[name] if name in mappings.MANUAL_NAME_MAP.keys() else name
+        return (
+            mappings.MANUAL_NAME_MAP[name]
+            if name in mappings.MANUAL_NAME_MAP.keys()
+            else name
+        )
 
-    assert_column_exists(df, ["name"])
-    return df.with_columns(name=pl.col("name").map_elements(lambda n: map_task(n), pl.String))
+    return df.with_columns(
+        name=pl.col("name").map_elements(lambda n: map_task(n), pl.String)
+    )
 
 
+@requires_columns(["name", "date"])
 def apply_policial_membership(df: pl.DataFrame) -> pl.DataFrame:
-    assert_column_exists(df, ["date"])
-    assert df["date"].dtype == pl.Datetime, "Function expects 'date' column of type pl.Datetime"
-    political_party = df[["name", "date"]].map_rows(lambda nd: find_party_membership(nd[0], nd[1]))
-    return df.insert_column(-1, pl.Series("party", political_party))
+    return df.with_columns(
+        pl.struct(pl.all())
+        .map_elements(find_party_membership, return_dtype=pl.String)
+        .alias("party")
+    )
 
 
+@requires_columns("role")
 def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
-    assert_column_exists(df, ["role"])
     return df.with_columns(
         genre=pl.col("role").map_elements(
             lambda r: find_role_genre(
@@ -110,11 +188,13 @@ def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+@requires_columns(["role", "genre", "message"])
 def apply_pub_platform(df: pl.DataFrame) -> pl.DataFrame:
-    assert_column_exists(df, ["role", "message"])
     return df.with_columns(
         pl.struct("role", "genre", "message")
-        .map_elements(find_pub_platform, return_dtype=pl.String)
+        .map_elements(
+            find_pub_platform_by_role_messsage, return_dtype=pl.String
+        )
         .alias("pub_platform")
     )
 
@@ -131,5 +211,9 @@ def apply_main_genre(df: pl.DataFrame) -> pl.DataFrame:
 def default_preprocessing(df: pl.DataFrame) -> pl.DataFrame:
     # This could be more elegant?
     return apply_pub_platform(
-        apply_genre_affiliation(apply_policial_membership(fix_guest_names(fix_date_col(df))))
+        apply_genre_affiliation(
+            apply_policial_membership(
+                norm_abbreviated_names(fix_date_col_by_title(df))
+            )
+        )
     )

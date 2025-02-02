@@ -3,7 +3,7 @@ name = "lanz-mining"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
-    {name = "arrrrrmin", email = "info@dotarmin.info"},
+    {name = "arrrrrmin", email = "info@dotarmin.info"}
 ]
 dependencies = [
     "scrapy>=2.11.0",
@@ -13,6 +13,8 @@ dependencies = [
     "psycopg2-binary>=2.9.9",
     "polars>=1.17.1",
     "altair>=5.5.0",
+    "transformers>=4.48.1",
+    "torch>=2.5.1",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
