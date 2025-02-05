@@ -25,6 +25,8 @@ SEQ_TEMPLATE = {
 
 def batched_dataframe(dataframe: pl.DataFrame, batch_size: int = 32) -> list[pl.DataFrame]:
     size = dataframe.shape[0]
+    if size < batch_size:
+        return [dataframe]
     is_even = size % batch_size > 0
     n_batches = size // batch_size + is_even
     batches: list[pl.DataFrame] = []
@@ -101,7 +103,9 @@ class TalkshowRegister:
         assert self.register, "No register computed yet."
         dataframe = self.__compare(dataframe)
         if dataframe.is_empty():
+            print("No new entries found in dataframe.")
             return self.register
+        print(f"Updating {dataframe.shape[0]} guest rows ...")
         register = self.__compute_register(dataframe, batch_size)
         self.__update(register)
         return self.register
