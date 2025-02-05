@@ -79,6 +79,7 @@ def parse_miosga_episode(response: Response, debug: bool) -> MiosgaEpisodeItem:
         # Case one: "Annalena Baerbock (Bundesministerin des Auswärtigen, Grüne) | ..."
         # Case two: "Bijan Djir-Sarai, FDP-Generalsekretär | ..."
         # Case three: "Marie-A. Strack-Zimmermann, Vorsitzende des Verteidigungsausschusses (FDP) | ..."
+        l = re.sub(r"(\W\|\WBild:)\W(.+)", "", l)
         brackets_match = re.search(r"\((.+)\)", l)
         if brackets_match is not None and len(brackets_match.group(1)) > 5:
             name_pattern = re.search(r"(.+) \(", l)
@@ -170,7 +171,7 @@ def parse_illner_episode(response: Response, debug: bool) -> IllnerEpisodeItem:
     loader.add_value("guests", guests)
     item = loader.load_item()
     if debug:
-        ic(item.as_dict())
+        ic(item)
     return item
 
 
