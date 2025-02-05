@@ -161,6 +161,7 @@ cython_debug/
 .DS_Store
 pdm.lock
 .pdm-python
+
 exports/*.csv
 outputs/current/*.jsonl
 outputs/current/*.json
@@ -168,8 +169,9 @@ outputs/history/*.jsonl
 outputs/history/*.json
 outputs/*.json
 outputs/*.csv
+outputs/register/*.pkl
 tests/data/*.csv
-figures/*.html
+
 node_modules/
 .hugo_build.lock
 package-lock.json
