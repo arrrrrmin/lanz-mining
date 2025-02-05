@@ -190,18 +190,28 @@ class MiosgaProcessor(BaseProcessor):
         )
 
 
-class MaischProcessor(BaseProcessor):
+class MaischProcessor:
     talkshow: str = "maischberger"
 
-    def __init__(self, file: Path, register: TalkshowRegister):
-        super().__init__(file, register)
-        self.add_processing_fn(
-            [
-                self.__text_clearing,
-                preprocess.apply_policial_membership,
-            ]
-        )
-        self.process()
+    def __init__(
+        self,
+        file: Path,
+    ):
+        self.file = file
+        self.dataframe = pl.read_csv(file, separator=",")
+        self.__add_index()
+        self.__apply_label()
+        processing_fns = [self.__text_clearing, preprocess.apply_policial_membership]
+        for fn in processing_fns:
+            self.dataframe = fn(self.dataframe)
+
+    def __add_index(self) -> None:
+        self.dataframe = self.dataframe.with_row_index("index")
+
+    def __apply_label(self) -> None:
+        size = self.dataframe.shape[0]
+        talkshow_label = pl.Series("talkshow", [self.talkshow] * size)
+        self.dataframe.insert_column(-1, talkshow_label)
 
     @requires_columns(["maischepisode_name", "date", "description"])
     def __text_clearing(self, *_: tuple[Any, ...]) -> pl.DataFrame:

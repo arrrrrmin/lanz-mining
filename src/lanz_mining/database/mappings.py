@@ -2,7 +2,7 @@
 # Other maps aim to find a more general role like "economy" or "social"
 from datetime import date
 
-from src.lanz_mining.database.naming import Party
+from lanz_mining.database.naming import Party
 
 TODAY = date.today().strftime("%Y-%m-%d")
 
@@ -149,6 +149,9 @@ PARTY_MEMBERSHIP_MAP = {
     "Bärbel Bas": Party.SPD,
     "Peer Steinbrück": Party.SPD,
     "Klaus Müller": Party.B90G,
+    "Angela Merkel": Party.CDU,
+    "Felix Banaszak": Party.B90G,
+    "Alexander Dobrindt": Party.CSU,
 }
 
 POLITICS_KEYWORDS = [
@@ -181,9 +184,9 @@ POLITICS_KEYWORDS = [
     "evp",
     "unionsfraktions",
     "juli-vorsitzende",
-    "netzagentur"
-    "politik-expert",
+    "netzagentur" "politik-expert",
     "politikexpert",
+    "fraktionsvorsitzend",
 ]
 
 ROLE_GENRE_MAP = {
@@ -254,7 +257,7 @@ ROLE_GENRE_MAP = {
             "politolog",
             "politikwissenschaft",
             "islamwissenschaft",
-            "extremismusforscher"
+            "extremismusforscher",
         ]
     ),
     "Literatur": lambda role: any(
@@ -348,7 +351,6 @@ PUB_PLATFORM_MAP = {
     "Wall Street Journal": ['"wall street journal"-'],
     "FUNKE Mediengruppe": ["funke mediengruppe"],
     "Jüdischen Allgemeinen": ['"jüdischen allgemeinen"'],
-
 }
 
 
