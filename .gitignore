@@ -170,6 +170,7 @@ outputs/history/*.json
 outputs/*.json
 outputs/*.csv
 outputs/register/*.pkl
+outputs/html/*/
 tests/data/*.csv
 
 node_modules/
