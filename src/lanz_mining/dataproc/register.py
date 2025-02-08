@@ -15,13 +15,6 @@ Index = str
 Context = dict[str, float]
 Register = dict[Index, Context]
 
-SEQ_TEMPLATE = {
-    "description": "Beschreibung:",
-    "message": "Beschreibung:",
-    "name": "Gast:",
-    "role": "Rolle:",
-}
-
 
 def batched_dataframe(dataframe: pl.DataFrame, batch_size: int = 32) -> list[pl.DataFrame]:
     size = dataframe.shape[0]
@@ -40,37 +33,55 @@ def batched_dataframe(dataframe: pl.DataFrame, batch_size: int = 32) -> list[pl.
 
 
 class TalkshowRegister:
-    def __init__(
-        self,
-        talkshow: str,
-        topics: list[str],
-        hypothesis: str,
-        index_cols: list[str],
-        sequence_cols: list[str],
-    ):
-        self.talkshow = talkshow
+    def __init__(self, topics: list[str]):
         self.topics = topics
-        self.hypothesis = hypothesis
-        self.index_cols = index_cols
-        self.sequence_cols = sequence_cols
         self.register = None
+        self.config = {
+            "markuslanz": {
+                "index_cols": ["episode_name", "name"],
+                "sequence_cols": ["message", "name", "role"],
+            },
+            "maybritillner": {
+                "index_cols": ["episode_name", "name"],
+                "sequence_cols": ["description", "name", "role"],
+            },
+            "carenmiosga": {
+                "index_cols": ["episode_name", "name"],
+                "sequence_cols": ["message", "name", "role"],
+            },
+            "maischberger": {
+                "index_cols": ["episode_name", "name"],
+                "sequence_cols": ["description", "name"],
+            },
+        }
+        self.seq_template = {
+            "description": "Beschreibung:",
+            "message": "Beschreibung:",
+            "name": "Gast:",
+            "role": "Rolle:",
+        }
 
     def __get_index(self, row: dict) -> str:
-        return "+".join([row[col] for col in self.index_cols])
+        return "+".join([row[col] for col in self.config[row["talkshow"]]["index_cols"]])
 
     def __get_sequence(self, row: dict) -> str:
-        return "; ".join([f"{SEQ_TEMPLATE[col]} {row[col]}" for col in self.sequence_cols])
+        return "; ".join(
+            [
+                f"{self.seq_template[col]} {row[col]}"
+                for col in self.config[row["talkshow"]]["sequence_cols"]
+            ]
+        )
 
-    def __compute_register(self, dataframe: pl.DataFrame, batch_size: int) -> Register:
-        batches = batched_dataframe(dataframe, batch_size)
+    def __compute_register(self, dataframe: pl.DataFrame) -> Register:
         classifier = text.get_classifier_pipeline()
-        progress_bar = tqdm(total=len(batches))
+        progress_bar = tqdm(total=len(dataframe))
         indices, results = [], []
-        for batch in batches:
-            batch_indexes = [self.__get_index(row) for row in batch.rows(named=True)]
-            batch_sequences = [self.__get_sequence(row) for row in batch.rows(named=True)]
-            result_list = text.run_pipeline(batch_sequences, classifier)
-            indices.extend(batch_indexes)
+        for row in dataframe.rows(named=True):
+            batch_index = self.__get_index(row)
+            batch_sequence = self.__get_sequence(row)
+            result_list = text.run_pipeline(batch_sequence, classifier)
+
+            indices.append(batch_index)
             results.extend(result_list)
             progress_bar.update(1)
         return {index: results[i] for i, index in enumerate(indices)}
@@ -95,18 +106,18 @@ class TalkshowRegister:
             return None
         return self.register.keys()
 
-    def create(self, dataframe: pl.DataFrame, batch_size: int) -> Register:
-        self.register = self.__compute_register(dataframe, batch_size)
+    def create(self, dataframe: pl.DataFrame) -> Register:
+        self.register = self.__compute_register(dataframe)
         return self.register
 
-    def update(self, dataframe: pl.DataFrame, batch_size: int) -> Register:
+    def update(self, dataframe: pl.DataFrame) -> Register:
         assert self.register, "No register computed yet."
         dataframe = self.__compare(dataframe)
         if dataframe.is_empty():
             print("No new entries found in dataframe.")
             return self.register
         print(f"Updating {dataframe.shape[0]} guest rows ...")
-        register = self.__compute_register(dataframe, batch_size)
+        register = self.__compute_register(dataframe)
         self.__update(register)
         return self.register
 
