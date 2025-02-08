@@ -4,17 +4,14 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import re
-import json
+from dataclasses import dataclass, asdict
 from datetime import datetime
+from typing import Any, Optional
 
 from itemloaders.processors import MapCompose
 from psycopg2 import sql
 from psycopg2.sql import Composed
 from scrapy import Item, Field
-
-
-def fix_length_string(l: str) -> int:
-    return int(l.strip(" min"))
 
 
 def field_exists(l: str) -> bool:
@@ -119,7 +116,7 @@ class IllnerEpisodeItem(Item):
     g_table = sql.Identifier("illnerguests")
     name = Field(output_processor=MapCompose(str.strip))
     date = Field(output_processor=MapCompose(str.strip))
-    length = Field(output_processor=MapCompose(str.strip, fix_length_string))
+    length = Field()
     description = Field(output_processor=MapCompose(str.strip))
     factcheck = Field()
     guests = Field()
@@ -169,7 +166,7 @@ class LanzEpisodeItem(Item):
     g_table = sql.Identifier("lanzguests")
     name = Field(output_processor=MapCompose(str.strip))
     date = Field(output_processor=MapCompose(str.strip))
-    length = Field(output_processor=MapCompose(str.strip, fix_length_string))
+    length = Field()
     description = Field(output_processor=MapCompose(str.strip))
     guests = Field()
 
@@ -208,7 +205,28 @@ class LanzEpisodeItem(Item):
             guests,
         )
 
-    @classmethod
-    def from_jsonl_entry(cls, line: str) -> "LanzEpisodeItem":
-        fields = json.loads(line)
-        return LanzEpisodeItem(**fields)
+
+@dataclass
+class Guest:
+    name: str
+    role: Optional[str] = None
+    message: Optional[str] = None
+
+
+@dataclass
+class Episode:
+    episode_name: str
+    date: datetime.date
+    description: str
+    talkshow: str
+    guests: list[Guest]
+    factcheck: Optional[bool] = None
+    length: Optional[int] = None
+
+    def as_flat_dict(self) -> list[dict[str, Any]]:
+        lines = []
+        for guest in self.guests:
+            episode = asdict(self)
+            episode.pop("guests")
+            lines.append({**episode, **asdict(guest)})
+        return lines
