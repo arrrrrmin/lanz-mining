@@ -40,6 +40,11 @@ SPIDER_PARAMS = {
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_lanz_episode,
+        "register": {
+            "index_cols": ["lanzepisode_name", "name"],
+            "sequence_cols": ["message", "name", "role"],
+            "hypothesis": "Die Person äußert sich zu {}.",
+        },
     },
     "maybritillner": {
         "start_url": "https://www.zdf.de/politik/maybrit-illner",
@@ -49,6 +54,11 @@ SPIDER_PARAMS = {
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_illner_episode,
+        "register": {
+            "index_cols": ["illnerepisode_name", "name"],
+            "sequence_cols": ["description", "name", "role"],
+            "hypothesis": "Die Person äußert sich zu {}.",
+        },
     },
     "carenmiosga": {
         "start_url": "https://www.daserste.de/information/talk/caren-miosga/",
@@ -58,6 +68,11 @@ SPIDER_PARAMS = {
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_miosga_episode,
+        "register": {
+            "index_cols": ["miosgaepisode_name", "name"],
+            "sequence_cols": ["message", "name", "role"],
+            "hypothesis": "Die Person äußert sich zu {}.",
+        },
     },
     "maischberger": {
         "start_url": "https://www.daserste.de/information/talk/maischberger/",

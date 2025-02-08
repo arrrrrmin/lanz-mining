@@ -8,7 +8,6 @@ import requests
 from pathlib import Path
 from urllib.request import Request
 
-from icecream import ic
 from scrapy.http import TextResponse
 
 from lanz_mining.miner.items import Episode
@@ -94,32 +93,18 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
                 episode_files = [episode_files[0]]
             episode_items = [html_file.to_item().as_flat_dict() for html_file in episode_files]
             result_list.extend(*episode_items)
-        ic(result_list)
 
-    schema = {
-        "episode_name": pl.String,
-        "date": pl.Date,
-        "description": pl.String,
-        "factcheck": pl.Boolean,
-        "length": pl.UInt16,
-        "name": pl.String,
-        "role": pl.String,
-        "message": pl.String,
-    }
+    schema = Episode.get_schema()
     return pl.DataFrame(data=result_list, orient="col", schema=schema, strict=False)
 
 
 def main():
     html_dir = Path("outputs/html/")
-    # load_single_html(Path("outputs/html/markuslanz/markus-lanz-vom-6-februar-2025-100/2025-02-06=index.html"))
     dataframe = load_htmls(html_dir, True)
     dataframe.write_csv("dataframe.csv")
-    # item = EpisodeItem(
-    #     episode_name="Name123",
-    #     date="12.1.2025 ",
-    #     guests=[{"name": "Bernd Meister", "role": "Handwerkersmeister", "text": ""}],
-    # )
-    # ic(item.flatten())
+    # for debugging:
+    # load_single_html(Path("outputs/html/markuslanz/markus-lanz-vom-6-februar-2025-100/2025-02-06=index.html"))
+    pass
 
 
 if __name__ == "__main__":

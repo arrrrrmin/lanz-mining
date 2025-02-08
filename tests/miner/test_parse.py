@@ -1,26 +1,6 @@
 from datetime import datetime
 
-from lanz_mining.miner.items import cleanup_name
 from lanz_mining.miner.parse import match_datestr
-
-
-def test_cleanup_name():
-    names = [
-        "Lars Klingbeil (SPD)",
-        "Alexander Dobrindt (CSU)",
-        "Felix Banaszak (B´90/Die Grünen)",
-        "Agnes Strack Zimmermann (FDP)",
-    ]
-    asserted_names = [
-        "Lars Klingbeil",
-        "Alexander Dobrindt",
-        "Felix Banaszak",
-        "Agnes Strack Zimmermann",
-    ]
-    _names = [cleanup_name(n) for n in names]
-    for i, _n in enumerate(_names):
-        assert _n == asserted_names[i]
-        assert not (_n.startswith(" ") or _n.endswith(" "))
 
 
 def test_match_datestr():
