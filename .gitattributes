@@ -1,2 +1,2 @@
 tests/html/* linguist-vendored
-notebooks/* linguist-vendored
+notebooks/*/* linguist-vendored
