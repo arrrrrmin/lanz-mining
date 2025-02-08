@@ -185,6 +185,11 @@ def parse_illner_episode(response: Response, debug: bool) -> Episode:
             # guests appear in both parts, which would cause trouble with p_keys in psql.
             continue
         r = roles[i] if i <= len(roles) else None  # Just in case
+        if "(" in n:
+            r_appendix = re.match(r"\((.+)\)|,\W(.+)", n)
+            if r_appendix is not None:
+                r += " ".join(r_appendix.groups()).strip()
+            n = re.sub(r"\((.+)\)|,\W(.+)", "", n).strip()
         guest = Guest(n.strip(), r.strip())
         guests.append(guest)
 
