@@ -63,7 +63,7 @@ COOKIES_ENABLED = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "lanz_mining.miner.pipelines.DatabasePipeline": 100,
+   # "lanz_mining.miner.pipelines.DatabasePipeline": 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

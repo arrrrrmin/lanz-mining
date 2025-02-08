@@ -7,13 +7,15 @@ from urllib.parse import urlparse
 import scrapy
 from scrapy.http import Response
 
+from lanz_mining.miner import parse
+
 
 def find_zdf_mediathek_episodes(response: Response) -> list[str]:
     return response.xpath("//h3/a/@href").getall()
 
 
 def find_ard_episodes(response: Response) -> list[str]:
-    return response.xpath('//a/@href').getall()
+    return response.xpath("//a/@href").getall()
 
 
 def follow_default_cb(
@@ -37,6 +39,7 @@ SPIDER_PARAMS = {
         "excludes": ["presse-podcast-lanz-und-precht"],
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
+        "parse_fn": parse.parse_lanz_episode,
     },
     "maybritillner": {
         "start_url": "https://www.zdf.de/politik/maybrit-illner",
@@ -45,6 +48,7 @@ SPIDER_PARAMS = {
         "excludes": None,
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
+        "parse_fn": parse.parse_illner_episode,
     },
     "carenmiosga": {
         "start_url": "https://www.daserste.de/information/talk/caren-miosga/",
@@ -53,6 +57,7 @@ SPIDER_PARAMS = {
         "excludes": ["/videos/web-only", "index.html"],
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
+        "parse_fn": parse.parse_miosga_episode,
     },
     "maischberger": {
         "start_url": "https://www.daserste.de/information/talk/maischberger/",
@@ -61,6 +66,7 @@ SPIDER_PARAMS = {
         "excludes": ["-sendungen-filter", "index.html"],
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
+        "parse_fn": parse.parse_maisch_episode,
     },
 }
 OUTPUT_DIR = Path("outputs/html")

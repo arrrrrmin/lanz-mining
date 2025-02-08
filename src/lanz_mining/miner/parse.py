@@ -5,14 +5,24 @@ from typing import Optional
 from icecream import ic
 
 from scrapy.http import Response
-from scrapy.loader import ItemLoader
 
-from lanz_mining.miner.items import (
-    LanzEpisodeItem,
-    IllnerEpisodeItem,
-    MiosgaEpisodeItem,
-    MaischEpisodeItem,
-)
+from lanz_mining.miner.items import Guest, Episode
+
+
+def fix_length_string(s: str) -> int:
+    return int(s.strip(" min"))
+
+
+def uniform_date_col(s: str) -> Optional[datetime.date]:
+    d, m, y = s.split(".")
+    date = None
+    if any([_ is None for _ in (d, m, y)]):
+        return date
+    if len(y) == 2:
+        date = datetime.datetime.strptime(s, "%d.%m.%y").date()
+    elif len(y) == 4:
+        date = datetime.datetime.strptime(s, "%d.%m.%Y").date()
+    return date
 
 
 def match_datestr(l: str, ny_digits: int = 2, no_fallback: bool = False) -> Optional[str]:
@@ -30,7 +40,7 @@ def match_datestr(l: str, ny_digits: int = 2, no_fallback: bool = False) -> Opti
     return datetime.datetime(d.year, d.month, d.day).strftime("%d.%m.%Y")
 
 
-def parse_maisch_episode(response: Response, debug: bool) -> MaischEpisodeItem:
+def parse_maisch_episode(response: Response, debug: bool) -> Episode:
     def match_guests(ls: list[str]) -> list[str]:
         ls = list(map(lambda _: _.replace("\xa0", ""), ls))
         guest_names = []
@@ -44,34 +54,39 @@ def parse_maisch_episode(response: Response, debug: bool) -> MaischEpisodeItem:
                 guest_names.extend(names)
         return list(set(guest_names))
 
-    name = response.xpath("/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/h1/text()").get()
-    # Check uniquness of 'name'
-    date = match_datestr(name, 4, True)
-    if date is None:
-        date_text = response.xpath('//*[@id="content"]/div/div[3]/div[1]/div/div[3]/p/text()').get()
-        date = match_datestr(date_text, 2, True)
-        name = f"{name} vom {date}"
-
-    description = response.xpath(
-        "/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p[1]/text()"
+    talkshow = "maischberger"
+    episode_name = response.xpath(
+        "/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/h1/text()"
     ).get()
+    # Check uniquness of 'name'
+    date = match_datestr(episode_name, 4, True)
+    if date is None:
+        date_text = (
+            response.xpath('//*[@id="content"]/div/div[3]/div[1]/div/div[3]/p/text()').get().strip()
+        )
+        date = match_datestr(date_text, 2, True)
+        episode_name = f"{episode_name} vom {date}"
+
+    date = uniform_date_col(date)
+    length = 75
+    description = (
+        response.xpath("/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p[1]/text()")
+        .get()
+        .strip()
+    )
     guest_sections = response.xpath(
         '//div/div/div/div/div[@class="mediaCon mediaTop small"]/div/div/span/text()'
     ).getall()[1:]
     guests = match_guests(guest_sections)
-    guests = list(map(lambda n: {"name": n}, guests))
-    loader = ItemLoader(item=MaischEpisodeItem(), response=response)
-    loader.add_value("name", name)
-    loader.add_value("date", date)
-    loader.add_value("description", description)
-    loader.add_value("guests", guests)
-    item = loader.load_item()
+    guests = list(map(lambda name: Guest(name), guests))
+
+    episode = Episode(episode_name, date, description, talkshow, guests=guests, length=length)
     if debug:
-        ic(item)
-    return item
+        ic(episode)
+    return episode
 
 
-def parse_miosga_episode(response: Response, debug: bool) -> MiosgaEpisodeItem:
+def parse_miosga_episode(response: Response, debug: bool) -> Episode:
     def drop_nbsps(l: str) -> str:
         return l.replace("\xa0", " ")
 
@@ -84,95 +99,101 @@ def parse_miosga_episode(response: Response, debug: bool) -> MiosgaEpisodeItem:
         if brackets_match is not None and len(brackets_match.group(1)) > 5:
             name_pattern = re.search(r"(.+) \(", l)
             role_pattern = re.search(r"\((.+)\)", l)
-            name = drop_nbsps(name_pattern.group(1))
-            role = drop_nbsps(role_pattern.group(1))
+            n = drop_nbsps(name_pattern.group(1))
+            r = drop_nbsps(role_pattern.group(1))
         else:
             infoline = drop_nbsps(l).split("|")[0].strip()
             info_split = infoline.split(",")
-            name = info_split[0].strip()
-            role = info_split[1].strip() if len(info_split) > 1 else None
-        return name, role
+            n = info_split[0].strip()
+            r = info_split[1].strip() if len(info_split) > 1 else None
+        return n, r
 
+    talkshow = "carenmiosga"
     container_path = '//div[@class="mod modA modParagraph"]/div/div[@class="box"]'
-    name_select = f"{container_path}/h1/text()"
-    date_select = '//div[@class="section sectionC"]/div/div/div[@class="text"]/p/text()'
-    desc_select = '//div[@class="mediaCon mediaTop small"]//following-sibling::p[1]/text()'
-    factcheck_select = f'{container_path}/div/div/img[@alt="Nachgehakt"]'
-    date = match_datestr(response.xpath(date_select).get())
-    description = drop_nbsps(response.xpath(desc_select).get())
-    factcheck = response.xpath(factcheck_select).get() is not None
-    g_infos_select = '//div[@class="mediaCon mediaLeft small"]/div/div/span/text()'
-    g_texts_select = '//div[@class="mediaCon mediaLeft small"]/following-sibling::p[1]/text()'
-    g_infos = response.xpath(g_infos_select).getall()
-    g_texts = response.xpath(g_texts_select).getall()
+    episode_name = response.xpath(f"{container_path}/h1/text()").get().strip()
+    date = match_datestr(
+        response.xpath('//div[@class="section sectionC"]/div/div/div[@class="text"]/p/text()')
+        .get()
+        .strip()
+    )
+    date = uniform_date_col(date)
+    description = drop_nbsps(
+        response.xpath(
+            '//div[@class="mediaCon mediaTop small"]//following-sibling::p[1]/text()'
+        ).get()
+    )
+    length = 60
+    factcheck = response.xpath(f'{container_path}/div/div/img[@alt="Nachgehakt"]').get() is not None
+    g_infos = response.xpath(
+        '//div[@class="mediaCon mediaLeft small"]/div/div/span/text()'
+    ).getall()
+    g_texts = response.xpath(
+        '//div[@class="mediaCon mediaLeft small"]/following-sibling::p[1]/text()'
+    ).getall()
     # Fallback
     if len(g_infos) == 0:
-        g_infos_select = (
+        g_infos = response.xpath(
             '//h2/preceding-sibling::div[@class="mediaCon mediaTop small"]/div/div/span/text()'
-        )
-        g_texts_select = '//div[@class="mediaCon mediaTop small"]/following-sibling::p[1]/text()'
-        g_infos = response.xpath(g_infos_select).getall()
-        g_texts = response.xpath(g_texts_select).getall()
+        ).getall()
+        g_texts = response.xpath(
+            '//div[@class="mediaCon mediaTop small"]/following-sibling::p[1]/text()'
+        ).getall()
     guests = []
     for i, guest_info in enumerate(g_infos):
-        guest_name, guest_role = handle_guest_infoline(guest_info)
+        name, role = handle_guest_infoline(guest_info)
         # Stupid exceptions due to a stupid CMS usage:
         skip_names = ["Zur Sendung", "Caren Miosga"]
-        if any([sn in guest_name for sn in skip_names]):
+        if any([sn in name for sn in skip_names]):
             # Skip in case factcheck is same structure as guest infos ::facepalm::
             continue
-        guest_text = drop_nbsps(g_texts[i]) if len(g_texts) == len(g_infos) else None
-        guests.append({"name": guest_name, "role": guest_role, "text": guest_text})
-    loader = ItemLoader(item=MiosgaEpisodeItem(), response=response)
-    loader.add_xpath("name", name_select)
-    loader.add_value("date", date)
-    loader.add_value("description", description)
-    loader.add_value("factcheck", factcheck)
-    loader.add_value("guests", guests)
-    item = loader.load_item()
+        text = drop_nbsps(g_texts[i]) if len(g_texts) == len(g_infos) else None
+        guest = Guest(name, role, text)
+        guests.append(guest)
+    episode = Episode(
+        episode_name, date, description, talkshow, factcheck=factcheck, guests=guests, length=length
+    )
     if debug:
-        ic(item)
-    return item
+        ic(episode)
+    return episode
 
 
-def parse_illner_episode(response: Response, debug: bool) -> IllnerEpisodeItem:
+def parse_illner_episode(response: Response, debug: bool) -> Episode:
     details_div = '//div[@class="details cell medium-7 large-8"]'
     teaser_info_div = '/div[@class="other-infos"]/dl/dd[@class="teaser-info"]'
-    name_select = '//h1[@id="main-content"]/text()'
-    date_select = f"{details_div}{teaser_info_div}[2]/text()"
-    length_select = f"{details_div}{teaser_info_div}[1]/text()"
-    description_select = f'{details_div}/p[@class="item-description"]/text()'
-    factcheck_select = (
-        f'//div[@class="b-post-content"]/section[@class="b-group-contentbox"]/div/div/h3/text()'
+    episode_name = response.xpath('//h1[@id="main-content"]/text()').get().strip()
+    date = response.xpath(f"{details_div}{teaser_info_div}[2]/text()").get().strip()
+    date = uniform_date_col(date)
+    length = fix_length_string(response.xpath(f"{details_div}{teaser_info_div}[1]/text()").get())
+    description = response.xpath(f'{details_div}/p[@class="item-description"]/text()').get().strip()
+    factcheck = (
+        response.xpath(
+            f'//div[@class="b-post-content"]/section[@class="b-group-contentbox"]/div/div/h3/text()'
+        ).get()
+        is not None
     )
-
-    loader = ItemLoader(item=IllnerEpisodeItem(), response=response)
-    loader.add_xpath("name", name_select)
-    loader.add_xpath("date", date_select)
-    loader.add_xpath("length", length_select)
-    description = response.xpath(description_select).get().strip()
     extended_desc = get_illner_extended_decription(response).strip()
     description += f" {extended_desc}"
-    loader.add_value("description", description)
-    factcheck = response.xpath(factcheck_select).get()
-    loader.add_value("factcheck", factcheck is not None)
+    talkshow = "maybritillner"
     names = response.xpath('//div[@class="guest-text"]/h3/button/text()').getall()
     roles = response.xpath('//div[@class="guest-text"]/div/p/text()').getall()
-    guests: list[dict] = []
+    guests: list[Guest] = []
     for i, n in enumerate(names):
-        existing_names = list(map(lambda g: g["name"], guests))
+        existing_names = list(map(lambda g: g.name, guests))
         if n.strip() in existing_names:
             # Fixes a rare issue, where an episode is split into two parts and
             # guests appear in both parts, which would cause trouble with p_keys in psql.
             continue
         r = roles[i] if i <= len(roles) else None  # Just in case
-        guests.append({"name": n.strip(), "role": r.strip()})
+        guest = Guest(n.strip(), r.strip())
+        guests.append(guest)
 
-    loader.add_value("guests", guests)
-    item = loader.load_item()
+    episode = Episode(
+        episode_name, date, description, talkshow, factcheck=factcheck, length=length, guests=guests
+    )
+
     if debug:
-        ic(item)
-    return item
+        ic(episode)
+    return episode
 
 
 def get_illner_extended_decription(response: Response) -> str:
@@ -187,47 +208,45 @@ def get_illner_extended_decription(response: Response) -> str:
     return " ".join(extended_desc)
 
 
-def parse_lanz_episode(response: Response, debug: bool) -> LanzEpisodeItem:
+def parse_lanz_episode(response: Response, debug: bool) -> Episode:
     details_div = '//div[@class="details cell medium-7 large-8"]'
-    teaser_info_div = '/div[@class="other-infos"]/dl/dd[@class="teaser-info"]'
-    loader = ItemLoader(item=LanzEpisodeItem(), response=response)
-    loader.add_xpath("name", '//h1[@id="main-content"]/text()')
-    loader.add_xpath("date", f"{details_div}{teaser_info_div}[2]/text()")
-    loader.add_xpath("length", f"{details_div}{teaser_info_div}[1]/text()")
-    loader.add_xpath("description", f'{details_div}/p[@class="item-description"]/text()')
+    teaser_info_div = '/div/dl/dd[@class="teaser-info"]'
+
+    talkshow = "markuslanz"
+    length = response.xpath(f"{details_div}{teaser_info_div}[1]/text()").get()
+    length = fix_length_string(length)
+    episode_name = response.xpath('//h1[@id="main-content"]/text()').get().strip()
+    date = response.xpath(f"{details_div}{teaser_info_div}[2]/text()").get().strip()
+    date = uniform_date_col(date)
+    description = response.xpath(f'{details_div}/p[@class="item-description"]/text()').get().strip()
+    factcheck = False
+
     guests_div = '//div[@class="b-post-content"]/div/div'
-
-    p_texts = response.xpath(f"{guests_div}/p/text()").getall()
-    p_texts = [  # remove empty sets of random artifacts
-        pt.strip() for pt in p_texts if len(pt.strip()) > 0
-    ]
-    all_guests = response.xpath(f"{guests_div}/p/b/text()").getall()
+    all_guests = response.xpath('//div[@class="b-post-content"]/div/div/p/b/text()').getall()
     if len(all_guests) < 1:
-        all_guests = response.xpath(f"{guests_div}/p/strong/text()").getall()
-    guests = map_lanz_guests(all_guests, p_texts, response)
-    loader.add_value("guests", guests)
-    item = loader.load_item()
+        all_guests = response.xpath(
+            '//div[@class="b-post-content"]/div/div/p/strong/text()'
+        ).getall()
+    guest_messages = response.xpath(f"{guests_div}/p/text()").getall()
+    guest_messages = [
+        gm.strip() for gm in guest_messages if len(gm.strip()) > 0
+    ]  # remove empty sets of random artifacts
+    guests = map_lanz_guests(all_guests, guest_messages)
+    episode = Episode(
+        episode_name, date, description, talkshow, factcheck=factcheck, length=length, guests=guests
+    )
     if debug:
-        print(item)
-    return item
+        ic(episode)
+    return episode
 
 
-def map_lanz_guests(all_guests: str, texts: list[str], response: Response) -> list[dict]:
+def map_lanz_guests(all_guests: str, texts: list[str]) -> list[Guest]:
     guests = []
     for i, guest in enumerate(all_guests):
-        try:
-            name, role = guest.split(",")
-        except ValueError as _:
-            name = response.xpath('//h1[@id="main-content"]/text()').get()
-            print(_)
-            print(name)
-            print(guest)
-            name, role = guest, "None"
-        try:
-            text = texts[i]
-        except IndexError as _:
-            print(_)
-            text = ""
-
-        guests.append({"name": name.strip(), "role": role.strip(), "text": text})
+        values = guest.split(",")
+        name = values[0]
+        role = values[1] if len(values) > 1 else ""
+        text = texts[i] if i < len(texts) else ""
+        guest = Guest(name.strip(), role.strip(), text)
+        guests.append(guest)
     return guests
