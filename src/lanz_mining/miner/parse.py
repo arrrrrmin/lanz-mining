@@ -69,7 +69,6 @@ def parse_maisch_episode(response: Response, debug: bool) -> Episode:
 
     date = uniform_date_col(date)
     length = 75
-    # //*[@id="content"]/div/div[2]/div[1]/div/div/div/div/p
     description = (
         response.xpath("/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p/text()")
         .getall()

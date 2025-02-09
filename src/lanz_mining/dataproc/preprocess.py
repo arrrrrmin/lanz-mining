@@ -20,14 +20,21 @@ def assert_column_exists(df: pl.DataFrame, columns: list[str]) -> None:
 # *** Utility functions ***
 
 
+def normalize_name_str(name: str) -> str:
+    result_str = re.sub(",(.+)*", "", name)
+    result_str = re.sub("\((.+)", "", result_str)
+    result_str = result_str.replace(".", " ")
+    result_str = result_str.replace("-", " ")
+    result_str = result_str.replace("  ", " ")
+    return result_str
+
+
 def convert_factcheck_column(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(factcheck=(pl.col("factcheck") == "t"))
 
 
 def convert_date_column(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns(
-        pl.col("date").str.to_datetime("%Y-%m-%d").alias("date")
-    )
+    return df.with_columns(pl.col("date").str.to_datetime("%Y-%m-%d").alias("date"))
 
 
 def norm_str_columns(df: pl.DataFrame, columns: list[str]) -> pl.DataFrame:
@@ -36,21 +43,14 @@ def norm_str_columns(df: pl.DataFrame, columns: list[str]) -> pl.DataFrame:
 
     for col_name in columns:
         df = df.with_columns(
-            pl.col(col_name)
-            .map_elements(lambda x: text_cleaner(x), pl.String)
-            .alias(col_name)
+            pl.col(col_name).map_elements(lambda x: text_cleaner(x), pl.String).alias(col_name)
         )
     return df
 
 
 @requires_columns("name")
 def norm_names(df: pl.DataFrame) -> pl.DataFrame:
-    def __norm(line: str) -> str:
-        line = re.sub(r"(\(.+\))", "", line)
-        line = re.sub(r", (.+)", "", line)
-        return line.strip()
-
-    return df.with_columns(pl.col("name").map_elements(__norm, pl.String))
+    return df.with_columns(name=pl.col("name").map_elements(normalize_name_str, pl.String))
 
 
 def norm_quote_marks(text: str) -> str:
@@ -67,9 +67,7 @@ def find_party_membership(row: dict) -> Optional[str]:
     if name in mappings.PARTY_MEMBERSHIP_MAP.keys():
         membership = mappings.PARTY_MEMBERSHIP_MAP[name]
     elif name not in mappings.PARTY_MEMBERSHIP_MAP.keys():
-        compilcated_membership_map = (
-            mappings.get_complicated_party_memberships()
-        )
+        compilcated_membership_map = mappings.get_complicated_party_memberships()
         if name in compilcated_membership_map.keys():
             membership_ranges = compilcated_membership_map[name]
             for start, end, party in membership_ranges:
@@ -81,9 +79,7 @@ def find_party_membership(row: dict) -> Optional[str]:
     return membership
 
 
-def find_role_genre(
-    role: str, opt_out: str = OTHER_GENRE_NAME
-) -> Optional[str]:
+def find_role_genre(role: str, opt_out: str = OTHER_GENRE_NAME) -> Optional[str]:
     """Find the roles genre, applies the mapping or returns Other/None"""
     for genre, fn in mappings.ROLE_GENRE_MAP.items():
         if isinstance(role, str) and fn(role):
@@ -110,10 +106,7 @@ def find_pub_platform_by_role_messsage(row: dict) -> Optional[str]:
         return None
     for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
         is_platform = any(
-            [
-                (indicator in _role or indicator in _message)
-                for indicator in indicators
-            ]
+            [(indicator in _role or indicator in _message) for indicator in indicators]
         )
         if is_platform:
             return pub_name
@@ -141,9 +134,7 @@ def fix_date_col_by_title(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         date=pl.col("lanzepisode_name").map_elements(
             lambda lanzepisode_name: datetime.strptime(
-                lanzepisode_name.strip("Markus Lanz vom")
-                .strip()
-                .replace(".", ""),
+                lanzepisode_name.strip("Markus Lanz vom").strip().replace(".", ""),
                 "%d %B %Y",
             ),
             return_dtype=pl.Datetime,
@@ -155,15 +146,9 @@ def fix_date_col_by_title(df: pl.DataFrame) -> pl.DataFrame:
 def norm_abbreviated_names(df: pl.DataFrame) -> pl.DataFrame:
     # Normalizes ambiguous names
     def map_task(name) -> str:
-        return (
-            mappings.MANUAL_NAME_MAP[name]
-            if name in mappings.MANUAL_NAME_MAP.keys()
-            else name
-        )
+        return mappings.MANUAL_NAME_MAP[name] if name in mappings.MANUAL_NAME_MAP.keys() else name
 
-    return df.with_columns(
-        name=pl.col("name").map_elements(lambda n: map_task(n), pl.String)
-    )
+    return df.with_columns(name=pl.col("name").map_elements(lambda n: map_task(n), pl.String))
 
 
 @requires_columns(["name", "date"])
@@ -192,9 +177,7 @@ def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
 def apply_pub_platform(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.struct("role", "genre", "message")
-        .map_elements(
-            find_pub_platform_by_role_messsage, return_dtype=pl.String
-        )
+        .map_elements(find_pub_platform_by_role_messsage, return_dtype=pl.String)
         .alias("pub_platform")
     )
 
@@ -212,8 +195,6 @@ def default_preprocessing(df: pl.DataFrame) -> pl.DataFrame:
     # This could be more elegant?
     return apply_pub_platform(
         apply_genre_affiliation(
-            apply_policial_membership(
-                norm_abbreviated_names(fix_date_col_by_title(df))
-            )
+            apply_policial_membership(norm_abbreviated_names(fix_date_col_by_title(df)))
         )
     )
