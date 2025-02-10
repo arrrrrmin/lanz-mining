@@ -11,6 +11,7 @@ import polars as pl
 from lanz_mining.dataproc import preprocess
 from lanz_mining.dataproc.register import TalkshowRegister
 from lanz_mining.dataproc.utils import requires_columns
+from lanz_mining.miner.items import Episode
 
 
 def check_valid_register(register: TalkshowRegister) -> bool:
