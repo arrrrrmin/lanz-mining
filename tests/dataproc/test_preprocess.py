@@ -35,16 +35,7 @@ def test_normalize_name_str():
     ]
     for name in names:
         res = normalize_name_str(name)
-        print(res)
         assert all([c not in res for c in ",-("])
-
-
-def test_fix_date_col(dataframe: pl.DataFrame):
-    pass  # Todo
-
-
-def test_fix_guest_names(dataframe: pl.DataFrame):
-    pass  # Todo
 
 
 def test_apply_policial_membership(dataframe: pl.DataFrame):
@@ -67,13 +58,37 @@ def test_apply_policial_membership(dataframe: pl.DataFrame):
 
 
 def test_apply_genre_affiliation(dataframe: pl.DataFrame):
-    _df = preprocess.apply_group_affiliation(dataframe)
-    assert "genre" in _df.columns
-    genre_counts = _df["genre"].value_counts()["genre"]
-    all_genres = list(roles.GROUP_MAPS.keys()) + [roles.Group.OptOut]
-    assert all([genre in all_genres for genre in genre_counts.unique()])
+    _df = preprocess.apply_policial_membership(dataframe)
+    _df = preprocess.apply_group_affiliation(_df)
+    assert "group" in _df.columns
+    group_counts = _df["group"].value_counts()["group"].drop_nulls()
+    all_groups = roles.Group.properties()
+    assert all([group in all_groups for group in group_counts.unique()])
     # Todo more tests
 
 
 def test_apply_media_institute(dataframe: pl.DataFrame):
     pass  # Todo
+
+
+def test_known_groups_by_names(dataframe: pl.DataFrame):
+    dataframe = preprocess.apply_policial_membership(dataframe)
+    dataframe = preprocess.apply_group_affiliation(dataframe)
+    name2group = preprocess.known_groups_by_names(dataframe)
+    assert all([value is not None for value in name2group.values()])
+
+
+def test_apply_nearest_group(dataframe: pl.DataFrame):
+    dataframe = preprocess.apply_policial_membership(dataframe)
+    dataframe = preprocess.apply_group_affiliation(dataframe)
+    name2group = preprocess.known_groups_by_names(dataframe)
+    dataframe = preprocess.apply_nearest_group(dataframe)
+    all_groups = roles.Group.properties()
+
+    for name, group in name2group.items():
+        groups = dataframe.filter(pl.col("name").eq(name))["group"].to_numpy()
+        for g in groups:
+            if groups[0] is None:
+                assert len(groups) == 1
+            else:
+                assert g in all_groups
