@@ -2,10 +2,8 @@ import datetime
 from argparse import Namespace, ArgumentParser
 from dataclasses import dataclass
 from urllib.parse import urljoin
-from typing import Any, Optional
 
 import polars as pl
-import requests
 from pathlib import Path
 from urllib.request import Request
 
