@@ -1,25 +1,6 @@
 # Roles mapping aims to resolve the diverse number of arbitary roles applied to people.
 # Goal is to find aggreagtions that describe the data properly, without getting to detailed.
-from lanz_mining.dataproc.mappings.types import as_rpattern
-
-
-class Group:
-    Activism = "Aktivismus"
-    History = "Geschichte"
-    Social = "Soziales"
-    Education = "Bildung"
-    Health = "Gesundheit"
-    Domestic = "Inneres"
-    Military = "Militär"
-    Law = "Rechtliches"
-    Science = "Wissenschaft"
-    Literatur = "Literatur"
-    Culture = "Kultur"
-    International = "Internationales"
-    Economy = "Ökonomie"
-    Journalist = "Journalismus"
-    Politics = "Politik"
-    OptOut = "Sonstiges"
+from lanz_mining.dataproc.mappings.types import as_rpattern, Group
 
 
 group_activism_kws = [
@@ -162,7 +143,6 @@ group_journalist_kws = [
     "politik-expert",
     "rheinische post",
 ]
-# group_politician_kws = [""]
 
 
 GROUP_MAPS: dict[str, str] = {

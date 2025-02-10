@@ -160,6 +160,7 @@ PARTY_MEMBERSHIP_MAP = {
     "Beatrix von Storch": Party.AFD,
     "Matthias Miersch": Party.SPD,
     "Malu Dreyer": Party.SPD,
+    "Renate Künast": Party.B90G,
 }
 
 
