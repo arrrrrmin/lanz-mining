@@ -1,6 +1,6 @@
 # Roles mapping aims to resolve the diverse number of arbitary roles applied to people.
 # Goal is to find aggreagtions that describe the data properly, without getting to detailed.
-from typing import Callable
+from lanz_mining.dataproc.mappings.types import as_rpattern
 
 
 class Group:
@@ -163,11 +163,6 @@ group_journalist_kws = [
     "rheinische post",
 ]
 # group_politician_kws = [""]
-
-
-def as_rpattern(kws: list[str]) -> str:
-    pattern = r"|".join(f"({kw})" for kw in kws)
-    return pattern
 
 
 GROUP_MAPS: dict[str, str] = {
