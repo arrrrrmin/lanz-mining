@@ -2,7 +2,7 @@ import datetime
 
 import polars as pl
 
-from lanz_mining.dataproc.mappings import roles
+from lanz_mining.dataproc.mappings import roles, media
 from lanz_mining.dataproc.mappings.types import Party
 from lanz_mining.dataproc import preprocess
 from lanz_mining.dataproc.preprocess import normalize_name_str
@@ -68,23 +68,31 @@ def test_apply_genre_affiliation(dataframe: pl.DataFrame):
 
 
 def test_apply_media_institute(dataframe: pl.DataFrame):
-    pass  # Todo
-
-
-def test_known_groups_by_names(dataframe: pl.DataFrame):
     dataframe = preprocess.apply_policial_membership(dataframe)
     dataframe = preprocess.apply_group_affiliation(dataframe)
-    name2group = preprocess.known_groups_by_names(dataframe)
+    dataframe = preprocess.apply_media_institute(dataframe)
+    with pl.Config(tbl_rows=-1, tbl_cols=5, fmt_str_lengths=80):
+        dataframe = dataframe.filter(pl.col("group").eq("Journalismus"))
+        print(dataframe["name", "media", "group"])
+        print(dataframe["media"].null_count())
+
+
+def test_known_keys_by_names(dataframe: pl.DataFrame):
+    dataframe = preprocess.apply_policial_membership(dataframe)
+    dataframe = preprocess.apply_group_affiliation(dataframe)
+    name2group = preprocess.known_keys_by_names(dataframe, "group")
     assert all([value is not None for value in name2group.values()])
+    dataframe = preprocess.apply_media_institute(dataframe)
+    name2media = preprocess.known_keys_by_names(dataframe, "media")
+    assert all([value is not None for value in name2media.values()])
 
 
-def test_apply_nearest_group(dataframe: pl.DataFrame):
+def test_apply_nearest_entries(dataframe: pl.DataFrame):
     dataframe = preprocess.apply_policial_membership(dataframe)
     dataframe = preprocess.apply_group_affiliation(dataframe)
-    name2group = preprocess.known_groups_by_names(dataframe)
-    dataframe = preprocess.apply_nearest_group(dataframe)
+    name2group = preprocess.known_keys_by_names(dataframe, "group")
+    dataframe = preprocess.apply_nearest_entries(dataframe, "group")
     all_groups = roles.Group.properties()
-
     for name, group in name2group.items():
         groups = dataframe.filter(pl.col("name").eq(name))["group"].to_numpy()
         for g in groups:
@@ -92,3 +100,19 @@ def test_apply_nearest_group(dataframe: pl.DataFrame):
                 assert len(groups) == 1
             else:
                 assert g in all_groups
+
+
+def test_apply_nearest_media(dataframe: pl.DataFrame):
+    dataframe = preprocess.apply_policial_membership(dataframe)
+    dataframe = preprocess.apply_group_affiliation(dataframe)
+    dataframe = preprocess.apply_media_institute(dataframe)
+    name2group = preprocess.known_keys_by_names(dataframe, "media")
+    dataframe = preprocess.apply_nearest_entries(dataframe, "media")
+    all_media = media.MEDIA_MAPS.keys()
+    for name, media_name in name2group.items():
+        media_arr = dataframe.filter(pl.col("name").eq(name))["media"].to_numpy()
+        for g in media_arr:
+            if media_arr[0] is None:
+                assert len(media_arr) == 1
+            else:
+                assert g in all_media

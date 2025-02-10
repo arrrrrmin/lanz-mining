@@ -103,15 +103,15 @@ def apply_media_institute(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def known_groups_by_names(dataframe: pl.DataFrame) -> dict[str, Optional[str]]:
+def known_keys_by_names(dataframe: pl.DataFrame, fill_up_key: str) -> dict[str, Optional[str]]:
     name2main = {}
-    for name, group in dataframe.group_by("name"):
+    for name, data_group in dataframe.group_by("name"):
         name: str = name[0]
         values = (
-            group["group"]
+            data_group[fill_up_key]
             .value_counts()
             .sort("count", descending=True)
-            .drop_nulls()["group"]
+            .drop_nulls()[fill_up_key]
             .to_numpy()
         )
         # Implicite None only for names without any group assignment at all
@@ -120,18 +120,18 @@ def known_groups_by_names(dataframe: pl.DataFrame) -> dict[str, Optional[str]]:
     return name2main
 
 
-@requires_columns(["name", "group"])
-def apply_nearest_group(df: pl.DataFrame) -> pl.DataFrame:
+@requires_columns(["name"])
+def apply_nearest_entries(df: pl.DataFrame, fill_up_key: str) -> pl.DataFrame:
 
-    def map_fn(row: dict, lookup: dict[str, str]) -> Optional[str]:
-        group = row["group"]
-        if not group and row["name"] in lookup.keys():
-            group = lookup[row["name"]]
-        return group
+    def map_fn(row: dict, lookup: dict[str, str], lookup_key: str) -> Optional[str]:
+        value = row[lookup_key]
+        if not value and row["name"] in lookup.keys():
+            value = lookup[row["name"]]
+        return value
 
-    name2group = known_groups_by_names(df)
+    name2group = known_keys_by_names(df, fill_up_key)
     return df.with_columns(
-        pl.struct("name", "group")
-        .map_elements(lambda row: map_fn(row, name2group), pl.String)
-        .alias("group")
+        pl.struct("name", fill_up_key)
+        .map_elements(lambda row: map_fn(row, name2group, fill_up_key), pl.String)
+        .alias(fill_up_key)
     )
