@@ -36,7 +36,7 @@ class Episode:
         return lines
 
     @staticmethod
-    def get_schema() -> dict:
+    def get_polars_schema() -> dict:
         return {
             "episode_name": pl.String,
             "date": pl.Date,

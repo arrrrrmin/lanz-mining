@@ -28,6 +28,9 @@ helpers = "pytest tests/dataproc/test_helpers.py -s -p no:warnings"
 process = "python -m src.lanz_mining.process --file exports/guests.csv --write"
 explore = "python -m src.lanz_mining.plots.explore --file exports/guests.csv"
 
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning"]
+
 [tool.pdm]
 distribution = true
 

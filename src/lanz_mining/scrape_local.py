@@ -1,32 +1,34 @@
 import datetime
+from argparse import Namespace, ArgumentParser
 from dataclasses import dataclass
 from urllib.parse import urljoin
-from typing import Any, Optional
 
 import polars as pl
-import requests
 from pathlib import Path
 from urllib.request import Request
 
 from scrapy.http import TextResponse
 
+from lanz_mining.dataproc import preprocess
 from lanz_mining.miner.items import Episode
 from lanz_mining.miner.spiders.raw_spider import SPIDER_PARAMS
 
 
-def fetch_wikidata(guest_name: str) -> Optional[dict[str, Any]]:
-    url = "https://www.wikidata.org/w/api.php"
-    params = {
-        "action": "wbsearchentities",
-        "format": "json",
-        "search": guest_name,
-        "language": "de",
-    }
-    try:
-        return requests.get(url, params=params).json()
-    except BaseException as e:
-        print(e)
-        return None
+def call_for_args() -> Namespace:
+    arg_parser = ArgumentParser("Scrape information from local html files.")
+    arg_parser.add_argument(
+        "--input-dir",
+        type=Path,
+        help="Path to html files",
+        required=True,
+        default=Path("outputs/html/"),
+    )
+    arg_parser.add_argument(
+        "--output-file", type=Path, help="Where to write the output csv?", required=True
+    )
+
+    args = arg_parser.parse_args()
+    return args
 
 
 @dataclass
@@ -94,17 +96,17 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
             episode_items = [html_file.to_item().as_flat_dict() for html_file in episode_files]
             result_list.extend(*episode_items)
 
-    schema = Episode.get_schema()
+    schema = Episode.get_polars_schema()
     return pl.DataFrame(data=result_list, orient="col", schema=schema, strict=False)
 
 
 def main():
-    html_dir = Path("outputs/html/")
-    dataframe = load_htmls(html_dir, True)
-    dataframe.write_csv("dataframe.csv")
+    arguments = call_for_args()
     # for debugging:
-    # load_single_html(Path("outputs/html/markuslanz/markus-lanz-vom-6-februar-2025-100/2025-02-06=index.html"))
-    pass
+    # load_single_html(Path("outputs/html/<talkshow>/<episode>/<file>.html"))
+    dataframe = load_htmls(arguments.input_dir, True)
+    dataframe = preprocess.norm_names(dataframe)
+    dataframe.write_csv(arguments.output_file)
 
 
 if __name__ == "__main__":

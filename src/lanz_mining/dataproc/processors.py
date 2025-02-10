@@ -8,6 +8,7 @@ from typing import Callable, Union, Any
 
 import polars as pl
 
+from lanz_mining.dataproc import preprocess
 from lanz_mining.dataproc.register import TalkshowRegister
 from lanz_mining.dataproc.utils import requires_columns
 from lanz_mining.miner.items import Episode
@@ -19,12 +20,13 @@ def check_valid_register(register: TalkshowRegister) -> bool:
 
 class CSVProcessor:
     def __init__(self, file: Path, register: TalkshowRegister):
-        self.dataframe = pl.read_csv(file, separator=",", schema=Episode.get_schema())
+        self.dataframe = pl.read_csv(file, separator=",", schema=Episode.get_polars_schema())
         assert check_valid_register(register), "Please create a register before using it."
         self.register = register
         self.__add_index()
         self.processing_fns = []
-        # Register index is applies regardless of the inherited processor
+
+        self.add_processing_fn(preprocess.norm_names)
         self.add_processing_fn(self.register.apply_register_index_col)
         self.add_processing_fn(self.__apply_context)
         self.process()
@@ -39,7 +41,7 @@ class CSVProcessor:
             context_row = {
                 "register_index": row["register_index"],
                 **{
-                    k: 1 if v >= 0.2 else 0
+                    k: 1 if v >= 0.2 else 0  # threshold zero-shot inferenced probs
                     for k, v in self.register.register[row["register_index"]].items()
                 },
             }

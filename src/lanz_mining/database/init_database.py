@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from pathlib import Path
 
 import psycopg2
 from dotenv import load_dotenv
@@ -80,10 +79,6 @@ CREATE TABLE IF NOT EXISTS maischguests (
     CONSTRAINT maischepisode_name PRIMARY KEY (maischepisode_name, name)
 )
 """
-
-
-def load_history_data(jsonl_file: Path) -> list[LanzEpisodeItem]:
-    return [LanzEpisodeItem.from_jsonl_entry(line) for line in jsonl_file.open("r").readlines()]
 
 
 def init_connection() -> (any, any):

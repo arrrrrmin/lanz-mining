@@ -1,61 +1,29 @@
-import locale
 import re
 from datetime import datetime
 from typing import Optional
 
 import polars as pl
 
-from lanz_mining.database import mappings
-from lanz_mining.database.mappings import OTHER_GENRE_NAME
-from lanz_mining.dataproc.utils import requires_columns, requires_keys
+from lanz_mining.dataproc.mappings import politics, media, roles, types
+from lanz_mining.dataproc.utils import requires_columns
 
 
-# *** Assertation functions ***
+KNOWN_POLITICIANS = politics.get_known_politicians()
 
 
-def assert_column_exists(df: pl.DataFrame, columns: list[str]) -> None:
-    assert all([col in df.columns for col in columns])
-
-
-# *** Utility functions ***
-
-
-def convert_factcheck_column(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns(factcheck=(pl.col("factcheck") == "t"))
-
-
-def convert_date_column(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns(
-        pl.col("date").str.to_datetime("%Y-%m-%d").alias("date")
-    )
-
-
-def norm_str_columns(df: pl.DataFrame, columns: list[str]) -> pl.DataFrame:
-    def text_cleaner(text: str) -> str:
-        return re.sub(r"„(.+)“", r'"\g<1>"', text)
-
-    for col_name in columns:
-        df = df.with_columns(
-            pl.col(col_name)
-            .map_elements(lambda x: text_cleaner(x), pl.String)
-            .alias(col_name)
-        )
-    return df
+def normalize_name_str(name: str) -> str:
+    """Makes strings of name column more uniform."""
+    result_str = re.sub(",(.+)*", "", name)
+    result_str = re.sub("\((.+)", "", result_str)
+    result_str = result_str.replace(".", " ")
+    result_str = result_str.replace("-", " ")
+    result_str = result_str.replace("  ", " ")
+    return result_str.strip()
 
 
 @requires_columns("name")
 def norm_names(df: pl.DataFrame) -> pl.DataFrame:
-    def __norm(line: str) -> str:
-        line = re.sub(r"(\(.+\))", "", line)
-        line = re.sub(r", (.+)", "", line)
-        return line.strip()
-
-    return df.with_columns(pl.col("name").map_elements(__norm, pl.String))
-
-
-def norm_quote_marks(text: str) -> str:
-    return_text = re.sub(r"„(.+)“", r'"\g<1>"', text)
-    return return_text
+    return df.with_columns(name=pl.col("name").map_elements(normalize_name_str, pl.String))
 
 
 def find_party_membership(row: dict) -> Optional[str]:
@@ -63,157 +31,107 @@ def find_party_membership(row: dict) -> Optional[str]:
     For complicated cases party membership depends on the date."""
     name = row["name"]
     d = row["date"]
+
     membership = None
-    if name in mappings.PARTY_MEMBERSHIP_MAP.keys():
-        membership = mappings.PARTY_MEMBERSHIP_MAP[name]
-    elif name not in mappings.PARTY_MEMBERSHIP_MAP.keys():
-        compilcated_membership_map = (
-            mappings.get_complicated_party_memberships()
-        )
+    if name not in KNOWN_POLITICIANS:
+        return membership
+    if name in politics.PARTY_MEMBERSHIP_MAP.keys():
+        membership = politics.PARTY_MEMBERSHIP_MAP[name]
+    else:
+        compilcated_membership_map = politics.get_complicated_party_memberships()
         if name in compilcated_membership_map.keys():
             membership_ranges = compilcated_membership_map[name]
             for start, end, party in membership_ranges:
-                start = datetime.strptime(start, "%Y-%m-%d")
-                end = datetime.strptime(end, "%Y-%m-%d")
+                start = datetime.strptime(start, "%Y-%m-%d").date()
+                end = datetime.strptime(end, "%Y-%m-%d").date()
                 if start <= d < end:
                     membership = party
                     break
+
     return membership
-
-
-def find_role_genre(
-    role: str, opt_out: str = OTHER_GENRE_NAME
-) -> Optional[str]:
-    """Find the roles genre, applies the mapping or returns Other/None"""
-    for genre, fn in mappings.ROLE_GENRE_MAP.items():
-        if isinstance(role, str) and fn(role):
-            return genre
-    return opt_out
-
-
-@requires_keys(["role", "party"])
-def find_genre_by_role_party(row: dict) -> Optional[str]:
-    """Tries to find a genre by looking at party and role columns."""
-    role, party = row["role"], row["party"]
-    if party:
-        return "Politik"
-    return find_role_genre(role)  # defaults to mappings.OTHER_GENRE_NAME
-
-
-@requires_keys(["role", "message", "genre"])
-def find_pub_platform_by_role_messsage(row: dict) -> Optional[str]:
-    """Looks for the role and message to find a news paper affiliation"""
-    _role = row["role"].lower()
-    _message = row["message"].lower()
-    _genre = row["genre"]
-    if _genre != "Journalismus":
-        return None
-    for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
-        is_platform = any(
-            [
-                (indicator in _role or indicator in _message)
-                for indicator in indicators
-            ]
-        )
-        if is_platform:
-            return pub_name
-    return None
-
-
-@requires_keys(["role", "genre"])
-def find_pub_platform_by_role(row: dict) -> Optional[str]:
-    _role, _genre = row["role"].lower(), row["genre"]
-    if _genre != "Journalismus":
-        return None
-    for pub_name, indicators in mappings.PUB_PLATFORM_MAP.items():
-        is_platform = any([(ind in _role) for ind in indicators])
-        if is_platform:
-            return pub_name
-    return None
-
-
-# *** Pre-processing functions ***
-
-
-@requires_columns("lanzepisode_name")
-def fix_date_col_by_title(df: pl.DataFrame) -> pl.DataFrame:
-    locale.setlocale(locale.LC_ALL, "de_DE")
-    return df.with_columns(
-        date=pl.col("lanzepisode_name").map_elements(
-            lambda lanzepisode_name: datetime.strptime(
-                lanzepisode_name.strip("Markus Lanz vom")
-                .strip()
-                .replace(".", ""),
-                "%d %B %Y",
-            ),
-            return_dtype=pl.Datetime,
-        ),
-    )
-
-
-@requires_columns("name")
-def norm_abbreviated_names(df: pl.DataFrame) -> pl.DataFrame:
-    # Normalizes ambiguous names
-    def map_task(name) -> str:
-        return (
-            mappings.MANUAL_NAME_MAP[name]
-            if name in mappings.MANUAL_NAME_MAP.keys()
-            else name
-        )
-
-    return df.with_columns(
-        name=pl.col("name").map_elements(lambda n: map_task(n), pl.String)
-    )
 
 
 @requires_columns(["name", "date"])
 def apply_policial_membership(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
-        pl.struct(pl.all())
+        pl.struct("name", "date")
         .map_elements(find_party_membership, return_dtype=pl.String)
         .alias("party")
     )
 
 
-@requires_columns("role")
-def apply_genre_affiliation(df: pl.DataFrame) -> pl.DataFrame:
+@requires_columns(["role", "party"])
+def apply_group_affiliation(df: pl.DataFrame) -> pl.DataFrame:
+    def map_fn(row: dict) -> Optional[str]:
+        role, party = row["role"], row["party"]
+        if party:
+            return types.Group.Politics
+        if not role:
+            return None
+        for group_name, kw_pattern in roles.GROUP_MAPS.items():
+            match = re.search(kw_pattern, role.lower())
+            if match is not None:
+                return group_name
+        return types.Group.OptOut
+
     return df.with_columns(
-        genre=pl.col("role").map_elements(
-            lambda r: find_role_genre(
-                r,
-                OTHER_GENRE_NAME,
-            ),
-            pl.String,
-        )
+        pl.struct("role", "party").map_elements(lambda row: map_fn(row), pl.String).alias("group")
     )
 
 
-@requires_columns(["role", "genre", "message"])
-def apply_pub_platform(df: pl.DataFrame) -> pl.DataFrame:
+@requires_columns(["role", "message", "group"])
+def apply_media_institute(df: pl.DataFrame) -> pl.DataFrame:
+    def map_fn(row: dict) -> Optional[str]:
+        """Looks for the role and message to find a news paper affiliation"""
+        role = row["role"] if row["role"] is not None else ""
+        message = row["message"] if row["message"] is not None else ""
+        group = row["group"]
+
+        if group != types.Group.Journalist:
+            return None
+        for media_name, kw_pattern in media.MEDIA_MAPS.items():
+            role_match = re.search(kw_pattern, role.lower())
+            message_match = re.search(kw_pattern, message.lower())
+            if role_match is not None or message_match is not None:
+                return media_name
+        return None
+
     return df.with_columns(
-        pl.struct("role", "genre", "message")
-        .map_elements(
-            find_pub_platform_by_role_messsage, return_dtype=pl.String
-        )
-        .alias("pub_platform")
+        pl.struct("role", "message", "group")
+        .map_elements(map_fn, return_dtype=pl.String)
+        .alias("media")
     )
 
 
-def apply_main_genre(df: pl.DataFrame) -> pl.DataFrame:
-    assert_column_exists(df, ["name"])
+def known_keys_by_names(dataframe: pl.DataFrame, fill_up_key: str) -> dict[str, Optional[str]]:
     name2main = {}
-    for name, group in df.group_by("name"):
-        values = group["genre"].value_counts().sort("count", descending=True)
-        name2main[name[0]] = values["genre"][0]
-    return df.with_columns(main_genre=pl.col("name").replace_strict(name2main))
-
-
-def default_preprocessing(df: pl.DataFrame) -> pl.DataFrame:
-    # This could be more elegant?
-    return apply_pub_platform(
-        apply_genre_affiliation(
-            apply_policial_membership(
-                norm_abbreviated_names(fix_date_col_by_title(df))
-            )
+    for name, data_group in dataframe.group_by("name"):
+        name: str = name[0]
+        values = (
+            data_group[fill_up_key]
+            .value_counts()
+            .sort("count", descending=True)
+            .drop_nulls()[fill_up_key]
+            .to_numpy()
         )
+        # Implicite None only for names without any group assignment at all
+        if len(values) > 0:
+            name2main[name] = values[0]
+    return name2main
+
+
+@requires_columns(["name"])
+def apply_nearest_entries(df: pl.DataFrame, fill_up_key: str) -> pl.DataFrame:
+
+    def map_fn(row: dict, lookup: dict[str, str], lookup_key: str) -> Optional[str]:
+        value = row[lookup_key]
+        if not value and row["name"] in lookup.keys():
+            value = lookup[row["name"]]
+        return value
+
+    name2group = known_keys_by_names(df, fill_up_key)
+    return df.with_columns(
+        pl.struct("name", fill_up_key)
+        .map_elements(lambda row: map_fn(row, name2group, fill_up_key), pl.String)
+        .alias(fill_up_key)
     )
