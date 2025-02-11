@@ -7,8 +7,6 @@
 import json
 from pathlib import Path
 
-from psycopg2.extras import execute_values
-
 from lanz_mining.database.init_database import init_connection
 
 
