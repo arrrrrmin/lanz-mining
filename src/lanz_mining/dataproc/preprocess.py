@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 from datetime import datetime
 from typing import Optional
 
@@ -89,15 +90,23 @@ def apply_media_institute(df: pl.DataFrame) -> pl.DataFrame:
 
         if group != types.Group.Journalist:
             return None
+        found_media = []
         for media_name, kw_pattern in media.MEDIA_MAPS.items():
+            # Announced roles should be taken for media befound is's found in texts
             role_match = re.search(kw_pattern, role.lower())
+            if role_match is not None:
+                # Role matches are valued higher (append two times, for later counting)
+                found_media.extend([media_name, media_name])
             message_match = re.search(kw_pattern, message.lower())
-            if role_match is not None or message_match is not None:
-                return media_name
-        return None
+            if message_match is not None:
+                found_media.append(media_name)
+        # Majority vote for most often found media institute (slow but precise)
+        media_counts: list[tuple[str, int]] = Counter(found_media).most_common(3)
+        result_media = media_counts[0][0] if media_counts else None
+        return result_media
 
     return df.with_columns(
-        pl.struct("role", "message", "group")
+        pl.struct("name", "role", "message", "group")
         .map_elements(map_fn, return_dtype=pl.String)
         .alias("media")
     )

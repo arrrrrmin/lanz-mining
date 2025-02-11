@@ -4,7 +4,7 @@ from lanz_mining.dataproc.mappings.types import as_rpattern
 MEDIA_MAPS: dict[str, str] = {
     "Süddeutsche Zeitung": as_rpattern([' "sz"', "süddeutsche zeitung", " sz ", " sz-"]),
     "Rheinische Post": as_rpattern(["rheinische post", "rheinischen post"]),
-    "Spiegel": as_rpattern(["spiegel"]),
+    "Spiegel": as_rpattern(["\(spiegel\)", '\"spiegel\"', "spiegel-"]),
     "FAZ": as_rpattern(['"faz"', "frankfurter allgemeinen", " faz\-", " faz "]),
     "Bild": as_rpattern(['"bild"']),
     "TAZ": as_rpattern(['"taz"', "taz\-"]),
@@ -15,7 +15,7 @@ MEDIA_MAPS: dict[str, str] = {
             "redaktionsnetzwerk deutschland",
         ]
     ),
-    "Zeit": as_rpattern(['"zeit"', "\(zeit\)", "zeit online", "zeit\“", '"die zeit"']),
+    "Zeit": as_rpattern(['\"zeit\"', "\(zeit\)", "zeit online", "zeit\“", '"die zeit"']),
     "Tagesspiegel": as_rpattern(['"tagesspiegel"']),
     "Stern": as_rpattern(['"stern"']),
     "Handelsblatt": as_rpattern(["handelsblatt"]),
@@ -23,9 +23,9 @@ MEDIA_MAPS: dict[str, str] = {
     "Deutschlandradio": as_rpattern(["deutschlandradio"]),
     "Deutschlandfunk": as_rpattern(["deutschlandfunk"]),
     "Wirtschafts Woche": as_rpattern(["wirtschaftswoche", '"wirtschafts woche"']),
-    "Table.Media": as_rpattern(["table\.media", "table media"]),
-    "ZDF": as_rpattern(["zdf", '"heute journal"']),
-    "ARD": as_rpattern(["ard\-"]),
+    "Table.Media": as_rpattern(["table\.media", "table media", "table.briefings", "table briefings"]),
+    "ARD": as_rpattern(["ard\-", " ard", "\(ard\)"]),
+    "ZDF": as_rpattern([" zdf", '"heute journal"', "\(zdf\)"]),
     "RTL": as_rpattern(['"rtl"', "rtl\-", " rtl "]),
     "FOCUS": as_rpattern(['"focus"']),
     "T-Online": as_rpattern(["t\-online"]),
@@ -36,6 +36,7 @@ MEDIA_MAPS: dict[str, str] = {
     "Washington Post": as_rpattern(["washington post"]),
     "FUNKE Mediengruppe": as_rpattern(["funke mediengruppe"]),
     "Jüdischen Allgemeinen": as_rpattern(["jüdischen allgemeinen"]),
-    "Welt": as_rpattern(['"welt"', "der welt", "welt\-"]),
     "Correctiv": as_rpattern(['"correctiv"']),
+    "Welt": as_rpattern(['\"welt\"', r"\(welt\)", "welt\-"]),
+    "Zenith": as_rpattern(['\"zenith\"'])
 }
