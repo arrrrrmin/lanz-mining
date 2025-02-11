@@ -11,7 +11,17 @@ from lanz_mining.miner import parse
 
 
 def find_zdf_mediathek_episodes(response: Response) -> list[str]:
-    return response.xpath("//h3/a/@href").getall()
+    # Latest episode for lanz and illner
+    urls = response.xpath("//article/div/div/div/div[2]/div/h3/a/@href").getall()
+    # Past episode urls for lanz
+    urls.extend(response.xpath("//article/div[1]/div[2]/div/div/div/h3/a/@href").getall())
+    # Past episode urls for illner
+    urls.extend(
+        response.xpath(
+            "//article/div/div/div[1]/div/article[1]/div[1]/div[2]/div/div/div/h3/a/@href"
+        ).getall()
+    )
+    return urls
 
 
 def find_ard_episodes(response: Response) -> list[str]:
@@ -92,10 +102,18 @@ class RecentRawSpider(scrapy.Spider):
     allowed_slugs: list[str]
     allowed_domains: list[str]
 
-    def __init__(self, talkshow: str, start_url: Optional[str] = None, *args, **kwargs):
+    def __init__(
+        self,
+        talkshow: str,
+        start_url: Optional[str] = None,
+        latest_only: bool = False,
+        *args,
+        **kwargs,
+    ):
         super(RecentRawSpider, self).__init__(*args, **kwargs)
         self.talkshow = talkshow
         self.start_url = SPIDER_PARAMS[talkshow]["start_url"]
+        self.latest_only = latest_only
         if start_url:
             self.start_url = start_url
         self.allowed_slugs = SPIDER_PARAMS[talkshow]["allowed_slugs"]
@@ -117,14 +135,17 @@ class RecentRawSpider(scrapy.Spider):
     def parse(self, response: Response, **kwargs: Any):
         episode_urls = self.recent_episodes(response)
         episode_urls = list(
-            set(filter(lambda url: all(slug in url for slug in self.allowed_slugs), episode_urls))
+            filter(lambda url: all(slug in url for slug in self.allowed_slugs), episode_urls)
         )
+        episode_urls = list(dict.fromkeys(episode_urls))
         if self.excludes:
             episode_urls = list(
-                set(filter(lambda url: all(ex not in url for ex in self.excludes), episode_urls))
+                filter(lambda url: all(ex not in url for ex in self.excludes), episode_urls)
             )
+        if self.latest_only:
+            episode_urls = [episode_urls[0]]
         for i, episode_url in enumerate(episode_urls):
-            self.log(f"episode_urls {i} - {episode_url}", logging.INFO)
+            self.log(f"episode_urls ({i}) - {episode_url}", logging.INFO)
         cb_kwargs = {"output_path": self.output_path, "log_cb": self.log}
         yield from response.follow_all(episode_urls, callback=self.follow_cb, cb_kwargs=cb_kwargs)
 

@@ -9,7 +9,7 @@ from scrapy.http import TextResponse
 from scrapy.settings import Settings
 from scrapy.utils.project import get_project_settings
 
-from lanz_mining.main import enforce_local_settings
+import lanz_mining.miner.settings as local_settings
 from lanz_mining.miner.spiders.raw_spider import RecentRawSpider, SPIDER_PARAMS, SimpleRawSpider
 
 
@@ -26,8 +26,24 @@ def call_for_args() -> Namespace:
     arg_parser.add_argument(
         "--file", type=Path, help="Html file of search results (zdf).", required=False
     )
+    arg_parser.add_argument("--latest-only", action="store_true")
     args = arg_parser.parse_args()
     return args
+
+
+def enforce_local_settings(settings: Settings) -> Settings:
+    """Apply local settings from `lanz_mining.miner.settings.py`."""
+    settings["LOG_LEVEL"] = local_settings.LOG_LEVEL
+    settings["ROBOTSTXT_OBEY"] = local_settings.ROBOTSTXT_OBEY
+    settings["DOWNLOAD_DELAY"] = local_settings.DOWNLOAD_DELAY
+    settings["COOKIES_ENABLED"] = local_settings.COOKIES_ENABLED
+    settings["ITEM_PIPELINES"] = local_settings.ITEM_PIPELINES
+    settings["AUTOTHROTTLE_ENABLED"] = local_settings.AUTOTHROTTLE_ENABLED
+    settings["AUTOTHROTTLE_START_DELAY"] = local_settings.AUTOTHROTTLE_START_DELAY
+    settings["AUTOTHROTTLE_MAX_DELAY"] = local_settings.AUTOTHROTTLE_MAX_DELAY
+    settings["AUTOTHROTTLE_TARGET_CONCURRENCY"] = local_settings.AUTOTHROTTLE_TARGET_CONCURRENCY
+    settings["TWISTED_REACTOR"] = local_settings.TWISTED_REACTOR
+    return settings
 
 
 def find_urls_from_file(file: Path, params: dict[str, Any]) -> list[str]:
@@ -74,8 +90,8 @@ def main(args: Namespace):
             spider_args = {"talkshow": args.talkshow, "start_urls": episode_urls}
     else:
         # Periodic crawling for all formats
+        spider_args = {"talkshow": args.talkshow, "latest_only": args.latest_only}
         spider_cls = RecentRawSpider
-        spider_args = {"talkshow": args.talkshow}
 
     process = CrawlerProcess(settings)
     process.crawl(spider_cls, **spider_args)

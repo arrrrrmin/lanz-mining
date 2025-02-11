@@ -50,6 +50,11 @@ class HtmlFile:
     content: str
     date: datetime.date
 
+    def __repr__(self) -> str:
+        return (
+            f"{self.talkshow} - {self.url} ({self.date})\n{self.episode_name}, {len(self.content)}"
+        )
+
     @property
     def parse_fn(self):
         return SPIDER_PARAMS[self.talkshow]["parse_fn"]
@@ -72,7 +77,7 @@ class HtmlFile:
 
     @classmethod
     def from_path(cls, path: Path):
-        """Loads a HtmlFile object from a filepath"""
+        """Loads a HtmlFile object from a filepath."""
         episode_name = path.parents[0].name
         date = cls.date_from_filename(path.name)
         talkshow = path.parents[1].name
@@ -99,6 +104,8 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
             episode_files: list[HtmlFile] = [
                 HtmlFile.from_path(file) for file in episode.glob("*.html")
             ]
+            if len(episode_files) == 0:
+                continue
             episode_files = sorted(episode_files, key=lambda html_file: html_file.date)
             if latest_only:
                 episode_files = [episode_files[0]]
@@ -111,12 +118,14 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
 
 def main(args: Namespace):
     # Measure time required for computation
-    start = time.time()
+    load_start = time.time()
     # for debugging:
     # load_single_html(Path("outputs/html/<talkshow>/<episode>/<file>.html"))
     dataframe = load_htmls(args.input_dir, True)
     dataframe = norm_names(dataframe)
+    load_time = round(time.time() - load_start, 2)
 
+    update_start = time.time()
     # Update or create `register` to index row-wise zsi-results
     # Create index is build from `episode_name` and `date`
     if Path(args.register).exists():
@@ -128,13 +137,20 @@ def main(args: Namespace):
         register.create(dataframe)
         register.save(args.register)
 
+    update_time = round(time.time() - update_start, 2)
+    process = time.time()
+
     # Post processing
     csv_processor = CSVProcessor(dataframe, register)
     csv_processor.dataframe.write_csv(arguments.output_file)
     print(csv_processor.dataframe.shape)
 
-    run_time = round(time.time() - start, 2)
-    print(f"Run time: {run_time}")
+    process_time = round(time.time() - process, 2)
+    print(f"Load time: {load_time}")
+    print(f"Update time: {update_time}")
+    print(f"Process time: {process_time}")
+    print("----------------------")
+    print(f"Total run time: {load_time + update_time + process_time}")
 
 
 if __name__ == "__main__":
