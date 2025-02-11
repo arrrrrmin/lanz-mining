@@ -4,8 +4,8 @@ import polars as pl
 
 from lanz_mining.dataproc.mappings import roles, media
 from lanz_mining.dataproc.mappings.types import Party
-from lanz_mining.dataproc import preprocess
-from lanz_mining.dataproc.preprocess import normalize_name_str
+from lanz_mining.dataproc import post
+from lanz_mining.dataproc.post import normalize_name_str
 
 
 def test_normalize_name_str():

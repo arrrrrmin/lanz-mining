@@ -1,4 +1,5 @@
 import datetime
+import time
 from argparse import Namespace, ArgumentParser
 from dataclasses import dataclass
 from urllib.parse import urljoin
@@ -9,7 +10,9 @@ from urllib.request import Request
 
 from scrapy.http import TextResponse
 
-from lanz_mining.dataproc import preprocess
+from lanz_mining.dataproc import text
+from lanz_mining.dataproc.processors import CSVProcessor, norm_names
+from lanz_mining.dataproc.register import TalkshowRegister
 from lanz_mining.miner.items import Episode
 from lanz_mining.miner.spiders.raw_spider import SPIDER_PARAMS
 
@@ -25,6 +28,12 @@ def call_for_args() -> Namespace:
     )
     arg_parser.add_argument(
         "--output-file", type=Path, help="Where to write the output csv?", required=True
+    )
+    arg_parser.add_argument(
+        "--register",
+        type=Path,
+        help="Load a register from this file, pass new file to create fresh register",
+        required=True,
     )
 
     args = arg_parser.parse_args()
@@ -100,14 +109,34 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
     return pl.DataFrame(data=result_list, orient="col", schema=schema, strict=False)
 
 
-def main():
-    arguments = call_for_args()
+def main(args: Namespace):
+    # Measure time required for computation
+    start = time.time()
     # for debugging:
     # load_single_html(Path("outputs/html/<talkshow>/<episode>/<file>.html"))
-    dataframe = load_htmls(arguments.input_dir, True)
-    dataframe = preprocess.norm_names(dataframe)
-    dataframe.write_csv(arguments.output_file)
+    dataframe = load_htmls(args.input_dir, True)
+    dataframe = norm_names(dataframe)
+
+    # Update or create `register` to index row-wise zsi-results
+    # Create index is build from `episode_name` and `date`
+    if Path(args.register).exists():
+        register = TalkshowRegister.load(args.register)
+        register.update(dataframe)
+        register.save(args.register)
+    else:
+        register = TalkshowRegister(text.TOPICS)
+        register.create(dataframe)
+        register.save(args.register)
+
+    # Post processing
+    csv_processor = CSVProcessor(dataframe, register)
+    csv_processor.dataframe.write_csv(arguments.output_file)
+    print(csv_processor.dataframe.shape)
+
+    run_time = round(time.time() - start, 2)
+    print(f"Run time: {run_time}")
 
 
 if __name__ == "__main__":
-    main()
+    arguments = call_for_args()
+    main(arguments)
