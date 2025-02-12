@@ -12,7 +12,7 @@ license = {text = "MIT"}
 dependencies = [
     "scrapy>=2.11.0",
     "tqdm>=4.66.1",
-    "polars>=1.17.1",
+    "polars-lts-cpu>=1.22.0",
 ]
 
 [project.optional-dependencies]
