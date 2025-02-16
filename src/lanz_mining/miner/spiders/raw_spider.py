@@ -93,6 +93,15 @@ SPIDER_PARAMS = {
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_maisch_episode,
     },
+    "hartaberfair": {
+        "start_url": "https://www1.wdr.de/daserste/hartaberfair/sendungen/",
+        "allowed_domains": ["www1.wdr.de"],
+        "allowed_slugs": ["daserste/hartaberfair/sendungen/"],
+        "excludes": ["index"],
+        "recent_episodes": find_ard_episodes,
+        "follow_cb": follow_default_cb,
+        "parse_fn": None,
+    },
 }
 OUTPUT_DIR = Path("outputs/html")
 
