@@ -161,6 +161,14 @@ PARTY_MEMBERSHIP_MAP = {
     "Matthias Miersch": Party.SPD,
     "Malu Dreyer": Party.SPD,
     "Renate Künast": Party.B90G,
+    "Cansel Kiziltepe": Party.SPD,
+    "Armin Schuster": Party.CDU,
+    "Dorothee Bär": Party.CDU,
+    "Christian Leye": Party.BSW,
+    "Lamya Kaddor": Party.B90G,
+    "Julia Klöckner": Party.CDU,
+    "Katarina Barley": Party.SPD,
+    "Ines Schwerdtner": Party.LINKE,
 }
 
 
