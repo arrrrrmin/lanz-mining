@@ -11,6 +11,8 @@ group_activism_kws = [
     "nawalny",
     "boris-nemzow",
     "kreml-kritiker",
+    "wwf",
+    "letzte generation",
 ]
 group_history_kws = ["historiker", "zeitzeuge", "zeitzeugin", "shoah"]
 group_social_kws = [
@@ -22,6 +24,8 @@ group_social_kws = [
     "sprecherin der arche",
     "gewerkschaft",
     "sozialverband",
+    "tafel deutschland",
+    "ethikrat",
 ]
 group_education_kws = [
     "bildung",
@@ -60,6 +64,7 @@ group_domestic_kws = [
     "migrationswissenschaft",
     "mirgationsforscher",
     "integration",
+    "flüchtlingsrat",
 ]
 group_military_kws = [
     "militär",
@@ -93,9 +98,10 @@ group_science_kws = [
     "islamwissenschaft",
     "extremismusforscher",
     "institut",
+    "hertie-stiftung",
 ]
 group_literatur_kws = ["autor", "schriftsteller", "publizist"]
-group_culture_kws = ["schauspieler", "musiker", "regisseur", "produzent"]
+group_culture_kws = ["schauspieler", "musiker", "regisseur", "produzent", "sänger"]
 group_international_kws = [
     "afrika",
     "asien",
@@ -128,11 +134,13 @@ group_economy_kws = [
     "industrie",
     "autoexperte",
     "aufsichtsratsvorsitzender .+ ag",
+    "investor",
 ]
 group_journalist_kws = [
     "reporter",
     "journalist",
     "korrespondent",
+    "kolumnist",
     "redakteur",
     "redaktion",
     "zdf",
@@ -142,6 +150,7 @@ group_journalist_kws = [
     "herausgeber",
     "politik-expert",
     "rheinische post",
+    "chefredakteur",
 ]
 
 

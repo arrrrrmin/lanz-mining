@@ -144,6 +144,11 @@ def main(args: Namespace):
     csv_processor = CSVProcessor(dataframe, register)
     csv_processor.dataframe.write_csv(arguments.output_file)
     print(csv_processor.dataframe.shape)
+    with pl.Config(tbl_rows=-1, fmt_str_lengths=100):
+        df = csv_processor.dataframe.filter(pl.col("name").str.contains("Brantner"))
+        dataframe_sonstiges = csv_processor.dataframe.filter(pl.col("group").eq("Sonstiges"))
+        print(dataframe_sonstiges["name", "role", "group", "party", "media"])
+        print(df["name", "role", "group", "party", "media"])
 
     process_time = round(time.time() - process, 2)
     print(f"Load time: {load_time}")

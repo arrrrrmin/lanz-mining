@@ -11,6 +11,7 @@ from typing import Callable, Union, Any, Optional
 import polars as pl
 
 from lanz_mining.dataproc.mappings import media, types, roles, politics
+from lanz_mining.dataproc.mappings.names import NAMES_MAP
 from lanz_mining.dataproc.register import TalkshowRegister
 from lanz_mining.dataproc.utils import requires_columns
 from lanz_mining.miner.items import Episode
@@ -25,8 +26,11 @@ def normalize_name_str(name: str) -> str:
     result_str = re.sub("\((.+)", "", result_str)
     result_str = result_str.replace(".", " ")
     result_str = result_str.replace("-", " ")
-    result_str = result_str.replace("  ", " ")
-    return result_str.strip()
+    result_str = result_str.replace("  ", " ").strip()
+    if result_str in NAMES_MAP.keys():
+        result_str = NAMES_MAP[result_str]
+
+    return result_str
 
 
 @requires_columns("name")
@@ -73,6 +77,7 @@ def apply_policial_membership(df: pl.DataFrame) -> pl.DataFrame:
 @requires_columns(["role", "party"])
 def apply_group_affiliation(df: pl.DataFrame) -> pl.DataFrame:
     """Applies group membership, based on `role` and `party` columns"""
+
     def map_fn(row: dict) -> Optional[str]:
         role, party = row["role"], row["party"]
         if party:
