@@ -74,6 +74,7 @@ group_military_kws = [
     "agent",
     "leutnat",
     "kommandierende",
+    "berufssoldat",
 ]
 group_law_kws = [
     "jurist",

@@ -40,6 +40,74 @@ def match_datestr(l: str, ny_digits: int = 2, no_fallback: bool = False) -> Opti
     return datetime.datetime(d.year, d.month, d.day).strftime("%d.%m.%Y")
 
 
+def parse_haf_episode(response: Response, debug: bool) -> Episode:
+
+    def default_text_cleaner(text: str) -> str:
+        text = re.sub(r"[\xa0\n]", "", text)
+        return re.sub(r"\|", " ", text).strip()
+
+    episode_name = response.xpath(
+        '//*[@id="content"]/div/div[3]/div/div/div/div[1]/div/a/@title'
+    ).get()
+    description = response.xpath(
+        '//*[@id="content"]/div/div[3]/div/div/div/div/div/a/p/text()'
+    ).get()
+    date = response.xpath('//*[@id="content"]/div/div[3]/div/h2/text()').get()
+    length = 75
+    # Switch to alternative layout parser
+    if len(description.strip()) < 10 or "Sendung vom" not in date:
+        description = response.xpath(
+            '//*[@id="content"]/div/div[3]/div/div/div/div[1]/div/a/p[2]/text()'
+        ).get()
+        date = response.xpath(
+            '//*[@id="content"]/div/div[3]/div/div/div/div[1]/div/a/p[1]/span[3]/text()'
+        ).get()
+        date = datetime.datetime.strptime(date, "%d.%m.%Y").date()
+        length = response.xpath(
+            '//*[@id="content"]/div/div[3]/div/div/div/div[1]/div/a/p[1]/span[5]/text()'
+        ).get()
+        if len(length.split(":")) == 3:
+            length = 75
+        else:
+            length = int(length.split(":")[0])
+    else:
+        date = re.sub("Sendung vom", "", date).strip()
+        date = datetime.datetime.strptime(date, "%d.%m.%Y").date()
+
+    description = default_text_cleaner(description)
+
+    factcheck_urls = response.xpath("//*/a/@href").getall()
+    factcheck_urls = list(
+        filter(
+            lambda url: ("/daserste/hartaberfair/faktencheck/faktencheck-" in url), factcheck_urls
+        )
+    )
+    factcheck = len(factcheck_urls) > 0
+    guests_containers = response.xpath(
+        '//*[@id="content"]/div/div[4]/div/div/div[2]/div[1]/div/div/a'
+    )
+    guests = []
+    for gc in guests_containers:
+        role = ""
+        name = gc.xpath("@title").get()
+        if ":" in name:
+            name = re.sub(r"(.+):", "", name)
+        role += default_text_cleaner(gc.xpath("p/text()").get())
+        if "," in name:
+            name_split = name.split(",")
+            role += f", {default_text_cleaner(name_split[1])}"
+            name = default_text_cleaner(name_split[0])
+        guests.append(Guest(name=name, role=role))
+    talkshow = "hartaberfair"
+
+    episode = Episode(
+        episode_name, date, description, talkshow, guests, factcheck=factcheck, length=length
+    )
+    if debug:
+        ic(episode)
+    return episode
+
+
 def parse_maisch_episode(response: Response, debug: bool) -> Episode:
     def match_guests(ls: list[str]) -> list[str]:
         ls = list(map(lambda _: _.replace("\xa0", ""), ls))
@@ -69,10 +137,9 @@ def parse_maisch_episode(response: Response, debug: bool) -> Episode:
 
     date = uniform_date_col(date)
     length = 75
-    description = (
-        response.xpath("/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p/text()")
-        .getall()
-    )
+    description = response.xpath(
+        "/html/body/div[3]/div/div[2]/div[1]/div/div/div/div/p/text()"
+    ).getall()
     description = " ".join([d.strip().replace("\xa0", " ") for d in description[:-1]])
     guest_sections = response.xpath(
         '//div/div/div/div/div[@class="mediaCon mediaTop small"]/div/div/span/text()'

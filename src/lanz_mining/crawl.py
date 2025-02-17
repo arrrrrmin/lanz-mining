@@ -69,7 +69,6 @@ def start_from_txt(file: Path, talkshow: str, settings: Settings) -> None:
     start_urls = [line.strip() for line in file.open("r").readlines()]
     process = CrawlerProcess(settings)
     for url in start_urls:
-        ic(url)
         spider_args = {"talkshow": talkshow, "start_url": url}
         spider_cls = RecentRawSpider
         process.crawl(spider_cls, **spider_args)
