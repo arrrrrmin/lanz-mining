@@ -100,7 +100,7 @@ SPIDER_PARAMS = {
         "excludes": ["index"],
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
-        "parse_fn": None,
+        "parse_fn": parse.parse_haf_episode,
     },
 }
 OUTPUT_DIR = Path("outputs/html")
