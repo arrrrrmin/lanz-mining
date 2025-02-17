@@ -53,6 +53,10 @@ class TalkshowRegister:
                 "index_cols": ["episode_name", "name"],
                 "sequence_cols": ["description", "name"],
             },
+            "hartaberfair": {
+                "index_cols": ["episode_name", "name"],
+                "sequence_cols": ["description", "name", "role"],
+            },
         }
         self.seq_template = {
             "description": "Beschreibung:",
@@ -87,6 +91,7 @@ class TalkshowRegister:
         return {index: results[i] for i, index in enumerate(indices)}
 
     def __compare(self, dataframe: pl.DataFrame) -> pl.DataFrame:
+        print(dataframe["talkshow"].unique())
         dataframe = dataframe.with_columns(
             pl.struct(pl.all()).map_elements(self.__get_index, pl.String).alias("register_index")
         )

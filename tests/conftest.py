@@ -40,3 +40,11 @@ def maisch_example() -> TextResponse:
     url = "https://www.zdf.de/mocked-maisch-example.html"
     response = TextResponse(url=url, request=Request(url=url), body=file_content)
     return response
+
+
+@pytest.fixture
+def hartaberfair_example() -> TextResponse:
+    file_content = open("tests/html/hartaberfair-example.html", "rb").read()
+    url = "https://www1.wdr.de/daserste/mocked-hartaberfair-example.html"
+    response = TextResponse(url=url, request=Request(url=url), body=file_content)
+    return response

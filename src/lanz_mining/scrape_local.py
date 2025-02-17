@@ -119,8 +119,7 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
 def main(args: Namespace):
     # Measure time required for computation
     load_start = time.time()
-    # for debugging:
-    # load_single_html(Path("outputs/html/<talkshow>/<episode>/<file>.html"))
+    # Debugging: load_single_html(Path("outputs/html/<talkshow>/<episode>/<file>.html"))
     dataframe = load_htmls(args.input_dir, True)
     dataframe = norm_names(dataframe)
     load_time = round(time.time() - load_start, 2)
