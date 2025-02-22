@@ -13,6 +13,7 @@ group_activism_kws = [
     "kreml-kritiker",
     "wwf",
     "letzte generation",
+    "oppositionelle"
 ]
 group_history_kws = ["historiker", "zeitzeuge", "zeitzeugin", "shoah"]
 group_social_kws = [
@@ -120,6 +121,7 @@ group_international_kws = [
     "diplomat",
     "islam-expert",
     "kiew",
+    "united states",
 ]
 group_economy_kws = [
     "wirtschaft",

@@ -228,9 +228,16 @@ def parse_illner_episode(response: Response, debug: bool) -> Episode:
     details_div = '//div[@class="details cell medium-7 large-8"]'
     teaser_info_div = '/div[@class="other-infos"]/dl/dd[@class="teaser-info"]'
     episode_name = response.xpath('//h1[@id="main-content"]/text()').get().strip()
-    date = response.xpath(f"{details_div}{teaser_info_div}[2]/text()").get().strip()
-    date = uniform_date_col(date)
-    length = fix_length_string(response.xpath(f"{details_div}{teaser_info_div}[1]/text()").get())
+    # date = response.xpath(f"{details_div}{teaser_info_div}[2]/text()").get()
+    date = response.xpath(
+        "//article/article/div/div/div[2]/div/div[1]/div/dl[1]/dd[2]/text()"
+    ).get()
+    # Rare cases where date is announced elsewhere
+    assert date is not None, f"Fatal error tying to parse {response.url}"
+    date = uniform_date_col(date.strip())
+
+    length = response.xpath(f"{details_div}{teaser_info_div}[1]/text()").get()
+    length = fix_length_string(length) if "min" in length else 60
     description = response.xpath(f'{details_div}/p[@class="item-description"]/text()').get().strip()
     factcheck = (
         response.xpath(

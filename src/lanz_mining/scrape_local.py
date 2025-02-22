@@ -8,6 +8,7 @@ import polars as pl
 from pathlib import Path
 from urllib.request import Request
 
+from icecream import ic
 from scrapy.http import TextResponse
 
 from lanz_mining.dataproc import text
@@ -82,7 +83,9 @@ class HtmlFile:
         date = cls.date_from_filename(path.name)
         talkshow = path.parents[1].name
         start_url = SPIDER_PARAMS[talkshow]["start_url"]
-        url = urljoin(start_url, f"{episode_name}.html")
+        # url = urljoin(start_url, f"{episode_name}.html")
+        # Mocked url
+        url = urljoin(start_url, f"__{str(path)}")
         content = path.open("rb").read().decode("utf-8")
         return cls(talkshow, url, episode_name, content, date)
 
@@ -101,9 +104,11 @@ def load_htmls(html_dir: Path, latest_only: bool) -> pl.DataFrame:
     result_list = []
     for directory in html_dir.glob("./*/"):
         for episode in directory.glob("./*/"):
-            episode_files: list[HtmlFile] = [
-                HtmlFile.from_path(file) for file in episode.glob("*.html")
-            ]
+            # Get the correct file first
+            episode_files: list[HtmlFile] = []
+            for file in [list(sorted(episode.glob("*.html"), reverse=True))[0]]:
+                ic(file)
+                episode_files.append(HtmlFile.from_path(file))
             if len(episode_files) == 0:
                 continue
             episode_files = sorted(episode_files, key=lambda html_file: html_file.date)
