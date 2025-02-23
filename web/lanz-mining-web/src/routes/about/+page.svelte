@@ -1,0 +1,41 @@
+<script>
+    import HeaderNav from "../../components/HeaderNav.svelte";
+    import Quote from "../../components/Quote.svelte";
+</script>
+
+<HeaderNav />
+<main>
+    <h2 class="max-w-2xl mx-auto py-4 text-l font-bold">Über Open Sprechschau</h2>
+    <p>
+        Mein Name ist <code>arrrrrmin</code> und ich bin
+        <a href="https://www.ccc.de" target="_blank">CCC</a>-affiner Data
+        Scientist aus Tübingen. Ich arbeite jede Tag mit verschiedenen Daten und
+        will einen Beitrag gegen den Rechtsruck leisten. Seit den Enthüllungen
+        von Correctiv, müssen wir alle versuchen einen Beitrag im Rahmen unserer
+        Möglichkeiten zu leisten. Dieses Projekt ist in meiner Freizeit
+        entstanden. Ein Freund fragte:
+        <Quote>
+            Dieser Robin Alexander ist aber ständig bei Lanz?! Ist das so? Gibt
+            es da eigentlich keine Auskunft?
+        </Quote>
+        Also hab ich für meinen Kumpel diese Informationen maschinell erfragt und
+        diese Projekt gebaut. Während dem Projekt fand sich eine Forderung:
+        <strong> Öffentliches Geld, öffentliche Daten</strong>.
+    </p>
+    <p>
+        Wenn ihr die Daten selbst gut brauchen könnt, im privaten oder
+        wissenschaftlichen Kontext, meld dich gerne bei mir auf
+        <a href="https://chaos.social/@arrrrrmin"><span>Mastodon</span></a>,
+        <a href="https://bsky.app/profile/arrrrrmin.bsky.social"
+            ><span>Bluesky</span></a
+        >
+        oder per Mail: <span>info [AT] dotarmin [DOT] info</span>
+    </p>
+</main>
+
+<style lang="postcss">
+    @reference "tailwindcss/theme";
+    span {
+        @apply: underline;
+    }
+</style>
