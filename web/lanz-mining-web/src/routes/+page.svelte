@@ -114,28 +114,6 @@
         Gegenpol bei Illner eingeladen. Etwas sehr unausgewogen gibt das ZDF bei
         Frau Illner 42% des politischen Raums in ihrer Sendung an die Union.
     </p>
-    <!--
-    <p>
-        Sollte die Umfragenstärke der Parteien auch für Talkformate (außerhalb
-        einer Bundestagswahl) gelten, wird das diese Formate dramatisch
-        verändern. Die Anzahl an Faktenchecks müsste dringend steigen. Markus
-        Lanz als sendestärkstes Format hat in 2024 keinen einzigen Faktencheck
-        geliefert.
-        <br />
-        ARD und ZDF müssen sich dringend Gedanken über den Auftrag ihrer Talkformate
-        machen. Wie sie diesen verstehen, wird entscheidend sein, ob sie in 5 Jahren
-        noch relevant sind. Die AfD-Teilhabe am öffentlichen Diskurs ihrer Umfragenstärke
-        anzugleichen, würde eine ganz neue Informationsblase in die Talkshows tragen.
-        Wähler*innen der AFD sind oft schon in einer völlig anderen Informationssphären.
-        Um gegen alternative Fakten dieser Informationssphäre anzukommen, bedarf
-        es besserer Faktencheckformate. Es ist noch nicht einmal zu einer Bundestagswahl
-        möglich, einen Faktencheck in unter einer Stunde nach Ausstrahlung nachzuliefern.
-        Das Publikum ist bei einem Tag nach Ausstrahlung (z.B.
-        <i>ARD-Wahlarena</i> am 17.2.2025) kaum noch zu erreichen. Sollten 20% der
-        politischen Meinungen in den öffentlich Rechtlichen von der AfD kommen, werden
-        diese Formate eine einzige Faktencheck-Schlacht, die sie verlieren werden.
-    </p>
-    -->
     <h2>Wer spricht denn da?</h2>
     <p>
         Mit den Daten aus dem Projekt können wir uns ansehen, wer in den
