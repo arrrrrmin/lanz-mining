@@ -21,15 +21,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd web/lanz-mining-web
-          npm install
+          cd web/lanz-mining-web && npm install
 
       - name: build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
         run: |
-          cd web/lanz-mining-web
-          npm run build
+          cd web/lanz-mining-web && npm run build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
