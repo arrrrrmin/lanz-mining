@@ -1,14 +1,20 @@
+<script>
+    import { base } from "$app/paths";
+</script>
+
 <header>
     <nav
         class="mx-auto grid xs:grid-cols-1 sm:flex justify-between items-baseline max-w-7xl py-4"
         aria-label="Global"
     >
         <div class="py-2">
-            <h1><a href="/">Lanz Mining</a></h1>
+            <h1><a href="{base}/">Lanz Mining</a></h1>
         </div>
         <div class="flex gap-x-4">
-            <a aria-current="false" href="/datenauskunfte/">Datenauskünfte</a>
-            <a aria-current="false" href="/about/">Über</a>
+            <a aria-current="false" href="{base}/datenauskunfte/"
+                >Datenauskünfte</a
+            >
+            <a aria-current="false" href="{base}/about/">Über</a>
             <div class="flex gap-x-2 items-center">
                 <a
                     href="https://github.com/arrrrrmin/lanz-mining"

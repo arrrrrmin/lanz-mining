@@ -1,4 +1,5 @@
 <script>
+    import { base } from "$app/paths";
     import HeaderNav from "../components/HeaderNav.svelte";
     import ReadingExample from "../components/ReadingExample.svelte";
     // import Quote from "../components/Quote.svelte";
@@ -29,8 +30,8 @@
         Aktuell (Februar 2025) haben wir keine Daten. Nichts. Wenn wir eine
         Antwort auf die Frage: "Brauchen wir diese Talkshows wirklich?"
         gesellschaftlich informiert diskutieren wollen, brauchen wir
-        Bürger*innen die nötigen Daten. Im übrigen kann die Betonung
-        auf 'diese' oder 'Talkshows' liegen.
+        Bürger*innen die nötigen Daten. Im übrigen kann die Betonung auf 'diese'
+        oder 'Talkshows' liegen.
     </p>
     <h3>Welche Daten?</h3>
     <p>
@@ -40,7 +41,7 @@
         (Sendungsbeschreibungen, Name, Informationen oder Aussagen von Talkenden
         oder Sendungslängen) veröffentlicht und die kann man speichern. Für
         technische Details oder wo genau die Daten herkommen, gibt es
-        <a href="/datenauskunfte">Datenauskünfte</a>.
+        <a href="{base}/datenauskunfte">Datenauskünfte</a>.
     </p>
     <h3>Hinweise zu den Grafiken</h3>
     <p>
