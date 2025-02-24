@@ -1,5 +1,6 @@
 <script>
     import { base } from "$app/paths";
+    import Meta from "../components/Meta.svelte";
     import HeaderNav from "../components/HeaderNav.svelte";
     import ReadingExample from "../components/ReadingExample.svelte";
     // import Quote from "../components/Quote.svelte";
@@ -11,6 +12,22 @@
     import GroupsDiverging from "../components/visual/GroupsDiverging.svelte";
     import MediaShare from "../components/visual/MediaShare.svelte";
     import TalkDurations from "../components/visual/TalkDurations.svelte";
+
+    let meta = {
+        image: {
+            url: "https://arrrrrmin.github.io/lanz-mining/web-app-manifest-512x512.png",
+            width: 512,
+            height: 512,
+            alt: "Rectangle of different sizes, symbolizing the market share of main german talkshow formats analysed by the project.",
+        },
+    };
+    let openGraph = {
+        type: "website",
+        title: "Lanz Mining, öffentlich rechtliche Talkshow Daten",
+        description:
+            "Daten der ÖR-Talkshows, Markus Lanz, Maischberger, Maybrit Illner, Caren Miosga und Hart aber fair. Ein Projekt zum transparenten Umgang mit Informationen des öffentlich Rechtlichen Rundfunks.",
+        url: "https://arrrrrmin.github.io/lanz-mining/",
+    };
     // Get data from +page.server.js
     let { data } = $props();
     let formatOrder = $state({});
@@ -18,6 +35,15 @@
     let afdPercentage = $state(0); // Value is filled by PartyDistribution component
 </script>
 
+<Meta
+    title="Lanz Mining, öffentlich rechtliche Talkshow Daten"
+    description="Daten der ÖR-Talkshows, Markus Lanz, Maischberger, Maybrit Illner, Caren Miosga und Hart aber fair. Ein Projekt zum transparenten Umgang mit Informationen des öffentlich Rechtlichen Rundfunks."
+    image={meta.image}
+    url="https://arrrrrmin.github.io/lanz-mining/"
+    siteUrl="https://arrrrrmin.github.io/lanz-mining/"
+    {openGraph}
+    twitter="true"
+/>
 <HeaderNav />
 <main>
     <h2>

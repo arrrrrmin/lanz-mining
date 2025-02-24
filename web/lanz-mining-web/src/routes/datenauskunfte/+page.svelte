@@ -1,13 +1,39 @@
 <script>
     import HeaderNav from "../../components/HeaderNav.svelte";
+    import Meta from "../../components/Meta.svelte";
+
+    let meta = {
+        image: {
+            url: "https://arrrrrmin.github.io/lanz-mining/web-app-manifest-512x512.png",
+            width: 512,
+            height: 512,
+            alt: "Rectangle of different sizes, symbolizing the market share of main german talkshow formats analysed by the project.",
+        },
+    };
+    let openGraph = {
+        type: "website",
+        title: "Lanz Mining, Datenauskünfte",
+        description:
+            "Daten der ÖR-Talkshows, Markus Lanz, Maischberger, Maybrit Illner, Caren Miosga und Hart aber fair. Die Datenauskünfte zeigen dir welche Daten vorhanden und wo die so her kommen.",
+        url: "https://arrrrrmin.github.io/lanz-mining/datenauskunfte",
+    };
 </script>
 
+<Meta
+    title="Lanz Mining, Datenauskünfte"
+    description="Daten der ÖR-Talkshows, Markus Lanz, Maischberger, Maybrit Illner, Caren Miosga und Hart aber fair. Die Datenauskünfte zeigen dir welche Daten vorhanden und wo die so her kommen."
+    image={meta.image}
+    url="https://arrrrrmin.github.io/lanz-mining/datenauskunfte"
+    siteUrl="https://arrrrrmin.github.io/lanz-mining/"
+    {openGraph}
+    twitter="true"
+/>
 <HeaderNav />
 <main>
     <h1>Datenauskünfte</h1>
     <p>
-        Lanz Mining beschäftigt sich damit Daten zu den geladenen Personen
-        der Talkshows (Talkende) aufzuzeichnen und in Visualisierungen
+        Lanz Mining beschäftigt sich damit Daten zu den geladenen Personen der
+        Talkshows (Talkende) aufzuzeichnen und in Visualisierungen
         bereitzustellen. Vorläufig ist der Zeitraum von Februar 2024 bis Februar
         2025 verfügbar. Jede Sendung besteht aus mehreren Informationshäufchen
         und orientiert sich an den Talkenden. Je nach Format sind
@@ -19,7 +45,7 @@
         >. Diese Daten haben nur die Redaktionen von ZDF und ARD selbst. Dieses
         Projekt ist privat entstanden und die Resourcen sind begrenzt, also
         wurde auch darauf verzichtet die Sendungen selbst herunterzuladen und zu
-        analysieren. Da würde es vermutlich auch rechtliche Probleme geben. Lanz 
+        analysieren. Da würde es vermutlich auch rechtliche Probleme geben. Lanz
         Mining <strong>gespeichert also keine Videodaten der Sendungen</strong>.
     </p>
     <h2>Open Source</h2>
@@ -35,7 +61,7 @@
     <h2>Übersicht</h2>
     <p>
         Die folgende Tabelle zeigt welche Informationen auf den Webseiten der
-        Talkshowformate verfügbar ist, welche nicht und welche für Lanz Mining 
+        Talkshowformate verfügbar ist, welche nicht und welche für Lanz Mining
         genutzt werden.
     </p>
     <table class="table-auto">
