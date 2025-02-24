@@ -4,7 +4,7 @@
         aria-label="Global"
     >
         <div class="py-2">
-            <h1><a href="/">Open Sprechschau</a></h1>
+            <h1><a href="/">Lanz Mining</a></h1>
         </div>
         <div class="flex gap-x-4">
             <a aria-current="false" href="/datenauskunfte/">Datenauskünfte</a>

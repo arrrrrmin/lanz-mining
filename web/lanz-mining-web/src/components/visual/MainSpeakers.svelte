@@ -50,7 +50,6 @@
         }));
 
         numGuests = _data.length;
-        console.log(numGuests);
         _data = _data.slice(0, 20);
 
         return _data;

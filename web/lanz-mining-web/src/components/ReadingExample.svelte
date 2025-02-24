@@ -12,6 +12,6 @@
         @apply underline;
     }
     p {
-        @apply mx-auto py-4 text-sm text-gray-500;
+        @apply max-w-5xl mx-auto py-4 text-sm text-gray-500 leading-5;
     }
 </style>

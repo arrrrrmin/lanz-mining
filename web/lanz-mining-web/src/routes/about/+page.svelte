@@ -5,7 +5,7 @@
 
 <HeaderNav />
 <main>
-    <h2 class="max-w-2xl mx-auto py-4 text-l font-bold">Über Open Sprechschau</h2>
+    <h2 class="max-w-2xl mx-auto py-4 text-l font-bold">Über Lanz Mining</h2>
     <p>
         Mein Name ist <code>arrrrrmin</code> und ich bin
         <a href="https://www.ccc.de" target="_blank">CCC</a>-affiner Data
@@ -19,12 +19,11 @@
             es da eigentlich keine Auskunft?
         </Quote>
         Also hab ich für meinen Kumpel diese Informationen maschinell erfragt und
-        diese Projekt gebaut. Während dem Projekt fand sich eine Forderung:
+        diese Projekt gebaut. Während dem Projekt fand sich schnell eine Forderung:
         <strong> Öffentliches Geld, öffentliche Daten</strong>.
     </p>
     <p>
-        Wenn ihr die Daten selbst gut brauchen könnt, im privaten oder
-        wissenschaftlichen Kontext, meld dich gerne bei mir auf
+        Wenn ihr die Daten selbst gut brauchen könnt, meld dich gerne bei mir auf
         <a href="https://chaos.social/@arrrrrmin"><span>Mastodon</span></a>,
         <a href="https://bsky.app/profile/arrrrrmin.bsky.social"
             ><span>Bluesky</span></a
@@ -35,7 +34,4 @@
 
 <style lang="postcss">
     @reference "tailwindcss/theme";
-    span {
-        @apply: underline;
-    }
 </style>

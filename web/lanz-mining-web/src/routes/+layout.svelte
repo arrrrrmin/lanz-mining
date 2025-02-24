@@ -3,7 +3,9 @@
   import "../app.css";
 </script>
 
-{@render children()}
+<section class="px-8 mx-auto sm:max-w-2xl md:max-w-5xl">
+  {@render children()}
+</section>
 
 <style lang="postcss">
   @reference "tailwindcss/theme";

@@ -1,11 +1,12 @@
 import { error } from '@sveltejs/kit';
 import * as d3 from "d3";
 
+export const prerender = true;
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
 	const dateParser = d3.timeParse("%Y-%m-%d")
-	const data = await d3.csv("http://localhost:5173/data-processed-update.csv").then((d) => d.map((D) => {
+	const data = await d3.csv("https://raw.githubusercontent.com/arrrrrmin/lanz-mining/refs/heads/svelte-web/web/lanz-mining-web/static/data-processed-update.csv").then((d) => d.map((D) => {
 		return {
 			index: parseInt(D.index),
 			episode_name: D.episode_name,

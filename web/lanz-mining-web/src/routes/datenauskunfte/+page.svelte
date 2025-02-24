@@ -6,8 +6,8 @@
 <main>
     <h1>Datenauskünfte</h1>
     <p>
-        Open Sprechschau beschäftigt sich damit Daten zu den geladenen Personen der
-        Talkshows (Talkende) aufzuzeichnen und in Visualisierungen
+        Lanz Mining beschäftigt sich damit Daten zu den geladenen Personen
+        der Talkshows (Talkende) aufzuzeichnen und in Visualisierungen
         bereitzustellen. Vorläufig ist der Zeitraum von Februar 2024 bis Februar
         2025 verfügbar. Jede Sendung besteht aus mehreren Informationshäufchen
         und orientiert sich an den Talkenden. Je nach Format sind
@@ -19,13 +19,12 @@
         >. Diese Daten haben nur die Redaktionen von ZDF und ARD selbst. Dieses
         Projekt ist privat entstanden und die Resourcen sind begrenzt, also
         wurde auch darauf verzichtet die Sendungen selbst herunterzuladen und zu
-        analysieren. Da würde es vermutlich auch rechtliche Probleme geben. Open
-        Sprechschau hat also
-        <strong>keine Videodaten der Sendungen gespeichert</strong>.
+        analysieren. Da würde es vermutlich auch rechtliche Probleme geben. Lanz 
+        Mining <strong>gespeichert also keine Videodaten der Sendungen</strong>.
     </p>
     <h2>Open Source</h2>
     <p>
-        Open Sprechschau ist vollständig open source und auf <a
+        Lanz Mining ist vollständig open source und auf <a
             href="https://github.com/arrrrrmin/lanz-mining"
             target="_blank">Github</a
         >
@@ -36,7 +35,7 @@
     <h2>Übersicht</h2>
     <p>
         Die folgende Tabelle zeigt welche Informationen auf den Webseiten der
-        Talkshowformate verfügbar ist, welche nicht und welche für Open Sprechschau
+        Talkshowformate verfügbar ist, welche nicht und welche für Lanz Mining 
         genutzt werden.
     </p>
     <table class="table-auto">
@@ -219,8 +218,5 @@
     }
     td {
         @apply whitespace-nowrap py-2 pl-2 pr-3 text-center text-base text-gray-900 sm:pl-0;
-    }
-    ol {
-        @apply max-w-2xl mx-auto py-8 pl-6 list-disc;
     }
 </style>
