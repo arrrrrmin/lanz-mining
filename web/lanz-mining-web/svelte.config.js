@@ -10,7 +10,7 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '404.html',
+			fallback: undefined,
 			precompress: false,
 			strict: true
 		}),
