@@ -19,9 +19,11 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
-        run: |
-          cd web/lanz-mining-web && npm install
+      # - name: Install dependencies
+      #   run: |
+      #     cd web/lanz-mining-web && npm install
+      - name: Install Node.js dependencies
+        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
 
       - name: build
         env:
