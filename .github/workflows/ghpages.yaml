@@ -25,13 +25,14 @@ jobs:
       - name: build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
-        run: | 
+        run: |
+          cd web/lanz-mining-web
           npm run build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'build/'  # `pages` option in `adapter-static` in svelte.config.js
+          path: './web/lanz-mining-web/build/'  # `pages` option in `adapter-static` in svelte.config.js
 
   deploy:
     needs: build_site
