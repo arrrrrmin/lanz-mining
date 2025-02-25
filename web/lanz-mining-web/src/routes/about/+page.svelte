@@ -56,7 +56,7 @@
         <a href="https://bsky.app/profile/arrrrrmin.bsky.social"
             ><span>Bluesky</span></a
         >
-        oder per Mail: <span>info [AT] dotarmin [DOT] info</span>
+        oder per Mail: <span>hello [AT] arrrrrmin [DOT] dev</span>
     </p>
 </main>
 
