@@ -93,7 +93,7 @@
         var x = d3.scaleLinear().range([0, width]).domain([0, 100]);
 
         const svg1 = d3
-            .select("#talkshow-freq-compare")
+            .select("#talkshow-freq-compare-1")
             .append("svg")
             .attr("viewBox", [0, 0, width, height])
             .attr("style", `max-width: ${width}px; overflow: visible;`);
@@ -104,7 +104,7 @@
             .append("text")
             .attr("id", "freq-compare-title-text")
             .attr("x", width / 2)
-            .attr("y", 20)
+            .attr("y", 30)
             .attr("font-size", 24)
             .attr("font-weight", 600)
             .attr("text-anchor", "middle")
@@ -114,7 +114,7 @@
             .append("g")
             .attr("id", "freq-compare-labels-rect1");
 
-        const gx = svg1
+        const gx1 = svg1
             .append("g")
             .attr("id", "freq-compare-axis-g")
             .attr("transform", `translate(0,70)`)
@@ -131,10 +131,26 @@
         const helper1 = svg1.append("g").attr("id", "freq-compare-helper1");
 
         const svg2 = d3
-            .select("#talkshow-freq-compare")
+            .select("#talkshow-freq-compare-2")
             .append("svg")
             .attr("viewBox", [0, 0, width, height])
             .attr("style", `max-width: ${width}px; overflow: visible;`);
+
+        
+        const gx2 = svg2
+            .append("g")
+            .attr("id", "freq-compare-axis-g")
+            .attr("transform", `translate(0,70)`)
+            .call(d3.axisTop(x).tickFormat((d) => `${d}%`))
+            .call((g) => g.select(".domain").remove())
+            .call((g) =>
+                g
+                    .selectAll(".tick text")
+                    .attr("font-size", 16)
+                    .attr("x", 4)
+                    .attr("text-anchor", "middle"),
+            );
+
 
         const title2 = svg2
             .append("g")
@@ -142,7 +158,7 @@
             .append("text")
             .attr("id", "freq-compare-title-text")
             .attr("x", width / 2)
-            .attr("y", 40)
+            .attr("y", 30)
             .attr("font-size", 24)
             .attr("font-weight", 600)
             .attr("text-anchor", "middle")
@@ -187,13 +203,10 @@
         };
 
         const contextColors = {
-            light: "#737373",
+            light: "#A3A3A3",
             dark: "#171717",
         };
-        const defineColor = (grpId) => {
-            var color = grpId > 3 ? contextColors.dark : contextColors.light;
-            return color;
-        };
+        
 
         const update = () => {
             var rects1 = svg1
@@ -306,6 +319,7 @@
     });
 </script>
 
-<div id="talkshow-freq-compare" class="pt-8"></div>
+<div id="talkshow-freq-compare-1" class="pt-8"></div>
+<div id="talkshow-freq-compare-2" class="pt-8"></div>
 
 <style></style>
