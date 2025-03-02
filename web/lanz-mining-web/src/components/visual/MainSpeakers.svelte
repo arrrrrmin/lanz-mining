@@ -21,7 +21,7 @@
 
     const transformData = (originalData) => {
         let _data = originalData.filter((d) => d.date >= start);
-
+        
         _data = d3
             .groups(_data, (d) => d.name)
             .map((d) => ({
@@ -50,6 +50,7 @@
         }));
 
         numGuests = _data.length;
+
         _data = _data.slice(0, 20);
 
         return _data;

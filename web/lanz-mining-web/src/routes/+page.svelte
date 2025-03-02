@@ -12,6 +12,7 @@
     import GroupsDiverging from "../components/visual/GroupsDiverging.svelte";
     import MediaShare from "../components/visual/MediaShare.svelte";
     import TalkDurations from "../components/visual/TalkDurations.svelte";
+    import FrequencyCompare from "../components/visual/FrequencyCompare.svelte";
 
     let meta = {
         image: {
@@ -32,6 +33,7 @@
     let { data } = $props();
     let formatOrder = $state({});
     let numGuests = $state(0); // Value is filled by MainSpeaker component
+    let appearsTotal = $state(0); // Value is filled by FrequencyCompare component
     let afdPercentage = $state(0); // Value is filled by PartyDistribution component
 </script>
 
@@ -94,10 +96,9 @@
         zwischen 1,2 und 1,5 Tage reine Sendungslänge an Talkshows aufgezeichnet
         und ausgestrahlt werden. Zum Vergleich wären das in einem Monat 3,5 bis
         4,3 erste Staffeln von Squid Game. Die erste Staffel von Squid Game
-        kommt auf 494 Minuten. <br/>
-        Im Sommer wird weniger geredet, hier wird Urlaub
-        vom Sprechformat gemacht, während der Herbst die Talk-Hochsession zu
-        sein scheint.
+        kommt auf 494 Minuten. <br />
+        Im Sommer wird weniger geredet, hier wird Urlaub vom Sprechformat gemacht,
+        während der Herbst die Talk-Hochsession zu sein scheint.
     </p>
     <TalkDurations {...{ data: data, formatOrder: formatOrder }} />
     <ReadingExample
@@ -169,6 +170,41 @@
         Partei an. Jens Spahn ist also der Top Talkshow-Experte aus der CDU und
         trat sechs mal bei Lanz und drei mal bei Maybrit Illner auf.
     </ReadingExample>
+    <p>
+        Da es wie erwähnt schwierig ist alle Talkenden wie oben abzubilden,
+        versuchen wir mal einen Überblick zu gewinnen. Dafür kann man alle in
+        den Shows Auftretenden nach der Anzahl ihrer Auftritte (über alle
+        Talkshows) gruppieren. Mit diesen Gruppen können wir jetzt sehen wieviel
+        Prozent der Talkenden wie häufig auftreten. Um das ganze zu vereinfachen
+        nehmen wir in der ersten Grafik alle Talkenden zusammen die ein, zwei
+        oder drei Mal zwischen Februar 2024 und Februar 2025 auftraten. Danach
+        alle die vier Mal oder häufiger die Gelegenheit hatten in deutschen
+        Talkshows zu sprechen.
+    </p>
+    <FrequencyCompare {data} bind:appearsTotal />
+    <ReadingExample>
+        Jede Grafik zeigt die gleichen Daten, aber unterschiedlich Perspektiven.
+        Jedes Rechteck beschreibt eine Gruppe von Talkenden, anhand der Frequenz
+        wie oft sie auftraten. (Oben) ist das erste (helle) Rechteck an, das 59%
+        aller Talkenden ein mal in einer Talkshow waren. (Unten) zeigt das erste
+        Rechteck, das 12% der Auftritte von Talkenden absolviert wurde, die
+        insgesamt vier mal eingeladen waren.
+    </ReadingExample>
+    <p>
+        Zuerst lässt sich zeigen, das 60% der Talkenden nur ein einziges Mal
+        auftreten konnten oder durften. Nimmt man alle Talkenden zusammen, die
+        drei Mal oder seltener auftraten, sind das 82% aller Personen die über
+        ein Jahr auftraten, aber nur 49% der Auftritte. Die andere Seite der
+        Medallie sind alle die vier mal oder häufiger auftraten. Das sind, wie
+        man in der obern Grafik sehen kann nur 18% aller Talkender. Diese 18%
+        nehmen aber 51% alle Auftritte ein. Damit lässt sich nummerisch zeigen,
+        das es eine Minderheit ist, die sehr häufig ihre Meinung in die
+        Öffentlichkeit tragen darf, während andere das entweder nicht wollen
+        oder dürfen. In absoluten Zahlen sind es in einem Jahr gerade ein mal
+        106 Personen, die diese 18% in allen 5 großen Talkshows ausmachen und 51%
+        der insgesamt {appearsTotal} Auftritte in deutschen Talkshows aus.
+
+    </p>
     <h2>Politiker*innen und Öffentlichkeitsarbeit</h2>
     <!--Besserer TItel-->
     <p>
