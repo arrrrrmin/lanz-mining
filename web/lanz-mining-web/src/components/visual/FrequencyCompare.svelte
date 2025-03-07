@@ -3,7 +3,6 @@
     import { onMount } from "svelte";
     import * as utils from "./utils.js";
     import * as d3 from "d3";
-    import { replaceState } from "$app/navigation";
 
     let { data: data, appearsTotal = $bindable(appearsTotal) } = $props();
 
@@ -66,7 +65,6 @@
         dataBinned.bins = pairwiseCumsum(dataBinned.bins, "percGuests");
 
         appearsTotal = dataBinned.allAppears;
-        console.log(dataBinned);
 
         return dataBinned;
     };

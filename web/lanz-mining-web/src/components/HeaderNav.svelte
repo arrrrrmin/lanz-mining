@@ -11,6 +11,9 @@
             <h1><a href="{base}/">Lanz Mining</a></h1>
         </div>
         <div class="flex gap-x-4">
+            <a aria-current="false" href="{base}/faktenchecks/"
+                >Faktenchecks</a
+            >
             <a aria-current="false" href="{base}/datenauskunfte/"
                 >Datenauskünfte</a
             >

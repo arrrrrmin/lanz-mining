@@ -171,39 +171,38 @@
         trat sechs mal bei Lanz und drei mal bei Maybrit Illner auf.
     </ReadingExample>
     <p>
-        Da es wie erwähnt schwierig ist alle Talkenden wie oben abzubilden,
-        versuchen wir mal einen Überblick zu gewinnen. Dafür kann man alle in
-        den Shows Auftretenden nach der Anzahl ihrer Auftritte (über alle
-        Talkshows) gruppieren. Mit diesen Gruppen können wir jetzt sehen wieviel
-        Prozent der Talkenden wie häufig auftreten. Um das ganze zu vereinfachen
-        nehmen wir in der ersten Grafik alle Talkenden zusammen die ein, zwei
+        Wie erwähnt, ist es schwierig alle Talkenden wie oben abzubilden.
+        Also versuchen wir einen Überblick zu gewinnen. Dafür kann man alle Eingeladenen 
+        nach der Anzahl ihrer Auftritte (über alle
+        Talkshows) gruppieren. Mit diesen Gruppen können wir jetzt sehen, wieviel
+        Prozent der Talkenden wie häufig auftreten. Um das ganze zu vereinfachen,
+        nehmen wir in der ersten Grafik alle Talkenden zusammen, die ein, zwei
         oder drei Mal zwischen Februar 2024 und Februar 2025 auftraten. Danach
-        alle die vier Mal oder häufiger die Gelegenheit hatten in deutschen
+        alle, die vier Mal oder häufiger die Gelegenheit hatten, in deutschen
         Talkshows zu sprechen.
     </p>
     <FrequencyCompare {data} bind:appearsTotal />
     <ReadingExample>
-        Jede Grafik zeigt die gleichen Daten, aber unterschiedlich Perspektiven.
-        Jedes Rechteck beschreibt eine Gruppe von Talkenden, anhand der Frequenz
-        wie oft sie auftraten. (Oben) ist das erste (helle) Rechteck an, das 59%
-        aller Talkenden ein mal in einer Talkshow waren. (Unten) zeigt das erste
-        Rechteck, das 12% der Auftritte von Talkenden absolviert wurde, die
+        Jede Grafik zeigt die gleichen Daten, aber unterschiedliche Perspektiven.
+        Jedes Rechteck beschreibt eine Gruppe von Talkenden anhand der Frequenz, also
+        wie oft sie auftraten. Oben gibt das erste (helle) Rechteck an, das 59%
+        aller Talkenden ein mal in einer Talkshow waren. Unten zeigt das erste
+        Rechteck, dass 12% der Auftritte von Talkenden absolviert wurden, die
         insgesamt vier mal eingeladen waren.
     </ReadingExample>
     <p>
-        Zuerst lässt sich zeigen, das 60% der Talkenden nur ein einziges Mal
+        Zuerst lässt sich zeigen, dass 60% der Talkenden nur ein einziges Mal
         auftreten konnten oder durften. Nimmt man alle Talkenden zusammen, die
-        drei Mal oder seltener auftraten, sind das 82% aller Personen die über
-        ein Jahr auftraten, aber nur 49% der Auftritte. Die andere Seite der
-        Medallie sind alle die vier mal oder häufiger auftraten. Das sind, wie
-        man in der obern Grafik sehen kann nur 18% aller Talkender. Diese 18%
+        drei Mal oder seltener auftraten, sind das 82% aller Personen, die über
+        ein Jahr auftraten, aber nur 49% der Auftritte ausmachen. Die andere Seite der
+        Medallie sind alle, die vier mal oder häufiger auftraten. Das sind, wie
+        man in der oberen Grafik sehen kann, nur 18% aller Talkenden. Diese 18%
         nehmen aber 51% alle Auftritte ein. Damit lässt sich nummerisch zeigen,
-        das es eine Minderheit ist, die sehr häufig ihre Meinung in die
+        dass es eine Minderheit ist, die sehr häufig ihre Meinung in die
         Öffentlichkeit tragen darf, während andere das entweder nicht wollen
-        oder dürfen. In absoluten Zahlen sind es in einem Jahr gerade ein mal
+        oder dürfen. In absoluten Zahlen sind es in einem Jahr gerade einmal
         106 Personen, die diese 18% in allen 5 großen Talkshows ausmachen und 51%
-        der insgesamt {appearsTotal} Auftritte in deutschen Talkshows aus.
-
+        der insgesamt {appearsTotal} Auftritte in deutschen Talkshows belegen.
     </p>
     <h2>Politiker*innen und Öffentlichkeitsarbeit</h2>
     <!--Besserer TItel-->
