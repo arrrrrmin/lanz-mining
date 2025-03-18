@@ -119,4 +119,6 @@
                 : {}),
         })}
     {/if}
+    <!-- Plausible.io installation -->
+    <script defer data-domain="arrrrrmin.github.io/lanz-mining" src="https://plausible.io/js/script.js"></script>
 </svelte:head>
