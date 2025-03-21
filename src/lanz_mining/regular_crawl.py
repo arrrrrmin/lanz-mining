@@ -7,6 +7,7 @@ from urllib.request import Request
 import numpy as np
 from scrapy.http import TextResponse
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
@@ -58,9 +59,13 @@ class Spider:
         self.follow_cb = SPIDER_PARAMS[talkshow]["follow_cb"]
         self.parse_fn = SPIDER_PARAMS[talkshow]["parse_fn"]
         self.latest_only = latest_only
+        # Following capability is not supported somehow
+        _ = DesiredCapabilities.FIREFOX.pop("moz:debuggerAddress")
         options = webdriver.FirefoxOptions()
         options.add_argument("-headless")
-        self.driver = webdriver.Firefox(service=Service(), options=options)
+        self.driver = webdriver.Firefox(
+            service=Service(), options=options,
+        )
         self.output_dir = OUTPUT_DIR
 
     @property
