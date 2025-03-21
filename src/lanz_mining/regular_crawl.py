@@ -40,14 +40,11 @@ def recent_zdf_episodes(response: TextResponse) -> list[str]:
 
 
 def recent_carenmiosga_episodes(response: TextResponse, latest_only: bool = False):
-    urls = response.xpath("//a/@href").getall()
     if latest_only:
-        urls = response.xpath(
+        return response.xpath(
             '//*[@id="content"]/div/div[2]/div/div/div/div/div/div/div[2]/h4/a/@href'
         ).getall()
-    else:
-        return recent_default_episodes(response)
-    return urls
+    return recent_default_episodes(response)
 
 
 class Spider:
@@ -94,7 +91,8 @@ class Spider:
 
         urls = np.unique(urls)
         urls = list(filter(lambda u: any([slug in u for slug in self.allowed_slugs]), urls))
-        urls = list(filter(lambda u: not any([ex in u for ex in self.excludes]), urls))
+        if self.excludes:
+            urls = list(filter(lambda u: not any([ex in u for ex in self.excludes]), urls))
         if self.talkshow == "maischberger":
             urls = sorted(urls, reverse=True)
         if self.latest_only:
