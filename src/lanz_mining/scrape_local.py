@@ -146,8 +146,12 @@ def main(args: Namespace):
 
     # Post processing
     csv_processor = CSVProcessor(dataframe, register)
+    csv_processor.dataframe = csv_processor.dataframe.select(pl.all().exclude(text.TOPICS + ["register_index"]))
+    ic(csv_processor.dataframe.columns)
     csv_processor.dataframe.write_csv(arguments.output_file)
     print(csv_processor.dataframe.shape)
+
+    # Some test prints
     with pl.Config(tbl_rows=-1, fmt_str_lengths=100):
         df = csv_processor.dataframe.filter(pl.col("name").str.contains("Brantner"))
         dataframe_sonstiges = csv_processor.dataframe.filter(pl.col("group").eq("Sonstiges"))
