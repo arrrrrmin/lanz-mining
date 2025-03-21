@@ -12,15 +12,8 @@ from lanz_mining.miner import parse
 
 def find_zdf_mediathek_episodes(response: Response) -> list[str]:
     # Latest episode for lanz and illner
-    urls = response.xpath("//article/div/div/div/div[2]/div/h3/a/@href").getall()
-    # Past episode urls for lanz
-    urls.extend(response.xpath("//article/div[1]/div[2]/div/div/div/h3/a/@href").getall())
-    # Past episode urls for illner
-    urls.extend(
-        response.xpath(
-            "//article/div/div/div[1]/div/article[1]/div[1]/div[2]/div/div/div/h3/a/@href"
-        ).getall()
-    )
+    # urls = response.xpath("//article/div/div/div/div[2]/div/h3/a/@href").getall()
+    urls = response.xpath('//*[@id="EPISODES"]/ol/li/div/div[2]/h3/a/@href').getall()
     return urls
 
 
@@ -43,9 +36,9 @@ def follow_default_cb(
 
 SPIDER_PARAMS = {
     "markuslanz": {
-        "start_url": "https://www.zdf.de/gesellschaft/markus-lanz",
+        "start_url": "https://www.zdf.de/talk/markus-lanz-114",
         "allowed_domains": ["www.zdf.de"],
-        "allowed_slugs": ["/gesellschaft/markus-lanz/markus-lanz-vom"],
+        "allowed_slugs": ["/video/talk/markus-lanz-114/"],
         "excludes": ["presse-podcast-lanz-und-precht"],
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
@@ -57,9 +50,9 @@ SPIDER_PARAMS = {
         },
     },
     "maybritillner": {
-        "start_url": "https://www.zdf.de/politik/maybrit-illner",
+        "start_url": "https://www.zdf.de/talk/maybrit-illner-128",
         "allowed_domains": ["www.zdf.de"],
-        "allowed_slugs": ["/politik/maybrit-illner/"],
+        "allowed_slugs": ["/video/talk/maybrit-illner-128/"],
         "excludes": None,
         "recent_episodes": find_zdf_mediathek_episodes,
         "follow_cb": follow_default_cb,
@@ -88,7 +81,7 @@ SPIDER_PARAMS = {
         "start_url": "https://www.daserste.de/information/talk/maischberger/",
         "allowed_domains": ["www.daserste.de"],
         "allowed_slugs": ["/information/talk/maischberger/sendung/"],
-        "excludes": ["-sendungen-filter", "index.html"],
+        "excludes": ["-sendungen-filter", "index"],
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_maisch_episode,
@@ -153,6 +146,8 @@ class RecentRawSpider(scrapy.Spider):
             )
         if self.latest_only:
             episode_urls = [episode_urls[0]]
+            print(episode_urls)
+            input()
         for i, episode_url in enumerate(episode_urls):
             self.log(f"episode_urls ({i}) - {episode_url}", logging.INFO)
         cb_kwargs = {"output_path": self.output_path, "log_cb": self.log}
