@@ -186,18 +186,18 @@ class CSVProcessor:
     def __init__(
         self,
         file_or_df: Union[Path, pl.DataFrame],
-        register: TalkshowRegister,
+        # register: TalkshowRegister,
     ):
         assert check_df_file_params(file_or_df), "Please pass either file or dataframe"
-        assert check_valid_register(register), "Please create a register before using it."
+        # assert check_valid_register(register), "Please create a register before using it."
         self.dataframe = init_dataframe(file_or_df)
-        self.register = register
+        # self.register = register
         self.__add_index()
         self.processing_fns = []
 
         self.add_processing_fn(norm_names)
-        self.add_processing_fn(self.register.apply_register_index_col)
-        self.add_processing_fn(self.__apply_context)
+        # self.add_processing_fn(self.register.apply_register_index_col)
+        # self.add_processing_fn(self.__apply_context)
         self.add_processing_fn(apply_policial_membership)
         self.add_processing_fn(apply_group_affiliation)
         self.add_processing_fn(apply_media_institute)
@@ -209,6 +209,7 @@ class CSVProcessor:
         Might not be needed anymore?"""
         self.dataframe = self.dataframe.with_row_index("index")
 
+    @DeprecationWarning
     @requires_columns("register_index")
     def __apply_context(self, *_: tuple[Any, ...]) -> pl.DataFrame:
         """Applies zsi context values, known by the reigster."""

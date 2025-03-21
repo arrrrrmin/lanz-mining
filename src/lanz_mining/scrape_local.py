@@ -13,7 +13,6 @@ from scrapy.http import TextResponse
 
 from lanz_mining.dataproc import text
 from lanz_mining.dataproc.processors import CSVProcessor, norm_names
-from lanz_mining.dataproc.register import TalkshowRegister
 from lanz_mining.miner.items import Episode
 from lanz_mining.miner.spiders.raw_spider import SPIDER_PARAMS
 
@@ -30,12 +29,12 @@ def call_for_args() -> Namespace:
     arg_parser.add_argument(
         "--output-file", type=Path, help="Where to write the output csv?", required=True
     )
-    arg_parser.add_argument(
-        "--register",
-        type=Path,
-        help="Load a register from this file, pass new file to create fresh register",
-        required=True,
-    )
+    # arg_parser.add_argument(
+    #     "--register",
+    #     type=Path,
+    #     help="Load a register from this file, pass new file to create fresh register",
+    #     required=True,
+    # )
 
     args = arg_parser.parse_args()
     return args
@@ -132,21 +131,23 @@ def main(args: Namespace):
     update_start = time.time()
     # Update or create `register` to index row-wise zsi-results
     # Create index is build from `episode_name` and `date`
-    if Path(args.register).exists():
-        register = TalkshowRegister.load(args.register)
-        register.update(dataframe)
-        register.save(args.register)
-    else:
-        register = TalkshowRegister(text.TOPICS)
-        register.create(dataframe)
-        register.save(args.register)
+    # if Path(args.register).exists():
+    #     register = TalkshowRegister.load(args.register)
+    #     register.update(dataframe)
+    #     register.save(args.register)
+    # else:
+    #     register = TalkshowRegister(text.TOPICS)
+    #     register.create(dataframe)
+    #     register.save(args.register)
 
     update_time = round(time.time() - update_start, 2)
     process = time.time()
 
     # Post processing
-    csv_processor = CSVProcessor(dataframe, register)
-    csv_processor.dataframe = csv_processor.dataframe.select(pl.all().exclude(text.TOPICS + ["register_index"]))
+    csv_processor = CSVProcessor(dataframe)
+    csv_processor.dataframe = csv_processor.dataframe.select(
+        pl.all().exclude(text.TOPICS + ["register_index"])
+    )
     ic(csv_processor.dataframe.columns)
     csv_processor.dataframe.write_csv(arguments.output_file)
     print(csv_processor.dataframe.shape)

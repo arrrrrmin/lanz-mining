@@ -13,7 +13,8 @@ dependencies = [
     "scrapy>=2.11.0",
     "tqdm>=4.66.1",
     "polars-lts-cpu>=1.22.0",
-    "scrapy-selenium>=0.0.7",
+    "selenium>=4.29.0",
+    "webdriver-manager>=4.0.2",
 ]
 
 [project.optional-dependencies]
@@ -22,10 +23,6 @@ dev = [
     "icecream>=2.1.3",
     "matplotlib>=3.8.2",
     "jupyter>=1.1.1",
-]
-inference = [
-    "transformers>=4.48.3",
-    "torch>=2.6.0",
 ]
 [tool.black]
 line-length = 100
