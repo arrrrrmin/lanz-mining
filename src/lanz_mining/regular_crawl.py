@@ -61,9 +61,9 @@ class Spider:
         self.follow_cb = SPIDER_PARAMS[talkshow]["follow_cb"]
         self.parse_fn = SPIDER_PARAMS[talkshow]["parse_fn"]
         self.latest_only = latest_only
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless=new")
-        self.driver = webdriver.Chrome(service=Service(), options=options)
+        options = webdriver.FirefoxOptions()
+        options.add_argument("-headless")
+        self.driver = webdriver.Firefox(service=Service(), options=options)
         self.output_dir = OUTPUT_DIR
 
     @property
