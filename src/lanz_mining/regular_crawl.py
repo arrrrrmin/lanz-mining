@@ -64,7 +64,8 @@ class Spider:
         options = webdriver.FirefoxOptions()
         options.add_argument("-headless")
         self.driver = webdriver.Firefox(
-            service=Service(), options=options,
+            service=Service(),
+            options=options,
         )
         self.output_dir = OUTPUT_DIR
 
@@ -94,7 +95,6 @@ class Spider:
         else:
             urls = recent_default_episodes(response)
 
-        urls = np.unique(urls)
         urls = list(filter(lambda u: any([slug in u for slug in self.allowed_slugs]), urls))
         if self.excludes:
             urls = list(filter(lambda u: not any([ex in u for ex in self.excludes]), urls))

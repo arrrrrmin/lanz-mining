@@ -81,7 +81,7 @@ SPIDER_PARAMS = {
         "start_url": "https://www.daserste.de/information/talk/maischberger/",
         "allowed_domains": ["www.daserste.de"],
         "allowed_slugs": ["/information/talk/maischberger/sendung/"],
-        "excludes": ["-sendungen-filter", "index"],
+        "excludes": ["-sendungen-filter", "index", "#goToContent"],
         "recent_episodes": find_ard_episodes,
         "follow_cb": follow_default_cb,
         "parse_fn": parse.parse_maisch_episode,
