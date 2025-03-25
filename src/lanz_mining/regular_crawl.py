@@ -4,7 +4,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request
 
-import numpy as np
 from scrapy.http import TextResponse
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -78,8 +77,10 @@ class Spider:
     def run(self) -> None:
         self.driver.get(self.start_url)
         if self.talkshow in ["markuslanz", "maybritillner"]:
-            WebDriverWait(self.driver, 10).until(
-                expected_conditions.presence_of_all_elements_located((By.CSS_SELECTOR, "#EPISODES"))
+            WebDriverWait(self.driver, 2).until(
+                expected_conditions.presence_of_all_elements_located(
+                    (By.CSS_SELECTOR, "#EPISODES"),
+                )
             )
 
         response = TextResponse(
@@ -107,7 +108,7 @@ class Spider:
             query_url = "https://" + self.allowed_domains[0] + url
             self.driver.get(query_url)
             if self.talkshow in ["markuslanz", "maybritillner"]:
-                WebDriverWait(self.driver, 10).until(
+                WebDriverWait(self.driver, 2).until(
                     expected_conditions.presence_of_all_elements_located(
                         (By.XPATH, '//*[@id="radix-«Rl7netql5ebdnb»-content-details"]/div/div[1]')
                     )
@@ -125,6 +126,7 @@ class Spider:
                     raise ValueError(f"Required element in episode {url} is {element}")
 
             self.save_episode(url)
+        self.driver.quit()
 
     def save_episode(self, url: str) -> None:
         file = urlparse(url).path.split("/")[-1]
