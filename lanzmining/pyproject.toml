@@ -1,0 +1,20 @@
+[project]
+name = "lanzmining"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "arrrrrmin", email = "43553423+arrrrrmin@users.noreply.github.com"},
+]
+dependencies = ["mrkdwn-analysis>=0.1.6", "polars>=1.30.0", "python-frontmatter>=1.1.0", "pydantic>=2.11.4", "numpy>=2.2.6"]
+requires-python = "==3.12.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]

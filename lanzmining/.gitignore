@@ -1,0 +1,14 @@
+.py[cod]
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.pdm-python
+
+pdm.lock
+
+.idea/
+
+*.egg-info
+vault.json
+output.csv
