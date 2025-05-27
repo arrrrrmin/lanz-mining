@@ -1,0 +1,34 @@
+{
+    "schemaVersion": "0.1.0",
+    "name": "Markus Lanz Episode",
+    "behavior": "create",
+    "noteContentFormat": "episode_name: {{\"The content that starts with Markus Lanz vom\"}}\n\nepisode_date: {{\"The content that starts with Markus Lanz vom please only copy the date string\"}}\n\ndescription: {{description}}\n\n```\n{{\"Please find name, role and description of each guest (usually up to 5 people) who appeared in this programme and create a json with keys name, role and description\"}}\n```\n\n# Content \n\n{{content}}",
+    "properties": [
+        {
+            "name": "title",
+            "value": "{{title}}",
+            "type": "text"
+        },
+        {
+            "name": "description",
+            "value": "{{description}}",
+            "type": "text"
+        },
+        {
+            "name": "source",
+            "value": "{{url}}",
+            "type": "text"
+        },
+        {
+            "name": "length",
+            "value": "",
+            "type": "number"
+        }
+    ],
+    "triggers": [
+        "https://www.zdf.de/video/talk/markus-lanz-"
+    ],
+    "noteNameFormat": "{{title}}",
+    "path": "Lanz Mining/Markus Lanz - Content Meta",
+    "context": "{{selectorHtml:main| markdown}}"
+}

@@ -1,0 +1,44 @@
+{
+    "schemaVersion": "0.1.0",
+    "name": "Maischberger Episode",
+    "behavior": "create",
+    "noteContentFormat": "```\n{{\"Please find name, role of each guest (usually up to 6 people) who appeared on this programme and create a json with keys name, role\"}}\n```",
+    "properties": [
+        {
+            "name": "episode_name",
+            "value": "{{title}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_description",
+            "value": "{{description}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_date",
+            "value": "{{\\\"The content that starts with 'maischberger am ...' please only copy the date string\\\"}}",
+            "type": "text"
+        },
+        {
+            "name": "source",
+            "value": "{{url}}",
+            "type": "text"
+        },
+        {
+            "name": "length",
+            "value": "75",
+            "type": "number"
+        },
+        {
+            "name": "factcheck",
+            "value": "",
+            "type": "checkbox"
+        }
+    ],
+    "triggers": [
+        "https://www.daserste.de/information/talk/maischberger"
+    ],
+    "noteNameFormat": "{{title}}",
+    "path": "Lanz Mining/Maischberger - Content Meta",
+    "context": "{{selectorHtml:body| markdown}}"
+}

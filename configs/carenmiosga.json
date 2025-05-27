@@ -1,0 +1,44 @@
+{
+    "schemaVersion": "0.1.0",
+    "name": "Caren Miosga Episode",
+    "behavior": "create",
+    "noteContentFormat": "```json\n{{\"Please find name, role and description of each guest (usually up to 5 people) who appeared on this programme and copy the values to a json with the keys name, role, description\"}}\n```",
+    "properties": [
+        {
+            "name": "episode_name",
+            "value": "{{selector:h1 | first}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_description",
+            "value": "{{selector:p.text.small | first}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_date",
+            "value": "{{\\\"Please find the date when this program was broadcasted, copy the date string like '%d.%m.%Y'.\\\"}}",
+            "type": "text"
+        },
+        {
+            "name": "source",
+            "value": "{{url}}",
+            "type": "text"
+        },
+        {
+            "name": "length",
+            "value": "60",
+            "type": "number"
+        },
+        {
+            "name": "factcheck",
+            "value": "",
+            "type": "checkbox"
+        }
+    ],
+    "triggers": [
+        "https://www.daserste.de/information/talk/caren-miosga/sendung"
+    ],
+    "noteNameFormat": "{{selector:h1 | first}}",
+    "path": "Lanz Mining/Caren Miosga - Content Meta",
+    "context": "{{selectorHtml:div#content }}"
+}

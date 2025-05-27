@@ -1,0 +1,44 @@
+{
+    "schemaVersion": "0.1.0",
+    "name": "Hart Aber Fair Episode",
+    "behavior": "create",
+    "noteContentFormat": "```json\n{{\"Please find name and role of each guest (usually up to 8 people) who appeared on this programme and create a json with the keys name, role\"}}\n```",
+    "properties": [
+        {
+            "name": "episode_name",
+            "value": "{{selector:h2.conHeadline | first}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_description",
+            "value": "{{selector:p.teasertext | first}}",
+            "type": "text"
+        },
+        {
+            "name": "episode_date",
+            "value": "{{selector:span.mediaDate | first}}",
+            "type": "text"
+        },
+        {
+            "name": "source",
+            "value": "{{url}}",
+            "type": "text"
+        },
+        {
+            "name": "length",
+            "value": "",
+            "type": "number"
+        },
+        {
+            "name": "factcheck",
+            "value": "true",
+            "type": "checkbox"
+        }
+    ],
+    "triggers": [
+        "https://www1.wdr.de/daserste/hartaberfair/sendungen"
+    ],
+    "noteNameFormat": "{{selector:h1.conHeadline | first}}",
+    "path": "Lanz Mining/HartAberFair - Content Meta",
+    "context": "{{selectorHtml:body | remove_html:(\"script\")}}"
+}
