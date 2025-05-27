@@ -17,9 +17,16 @@
         }
     };
 
+    const normalizeGenre = (inputData) => {
+        return ["Politik", "Journalismus"].contains(inputData.group)
+            ? inputData.group
+            : "Rest";
+    };
+
     const transformData = (originalData) => {
         let _data = originalData.filter((d) => d.date >= start);
         _data = _data.filter((d) => d.group.length > 0);
+        //_data = _data.map(d => ({...d, group: normalizeGenre}))
 
         const tSizesArr = d3
             .groups(_data, (d) => d.talkshow)
@@ -124,7 +131,9 @@
             right: getStartEnd(d.right),
         }));
 
-        return _data;
+        console.log(_data);
+
+        return _data.slice(2);
     };
 
     let _data = transformData(data.data);
@@ -141,11 +150,12 @@
 
     onMount(() => {
         const width = 1200;
-        const height = 1000;
+        const height = 900;
         const gapSize = 5;
         const margins = { bottom: 40 };
         const animDelay = 75;
         const headRoom = 65;
+        const minPerc = 0.5
 
         var x = d3
             .scaleLinear()
@@ -160,11 +170,11 @@
 
         var svg = utils.createSvg(id, width, height, "visible");
 
-        const getValueLabel = (d) => {
+        const getValueLabel = (d, minPercentage = minPerc) => {
             var result = Number.parseFloat(
                 Math.abs(d.percentage) * 100,
             ).toFixed(1);
-            if (result < 1.6) {
+            if (result < minPercentage) {
                 result = "";
             }
             return result;
