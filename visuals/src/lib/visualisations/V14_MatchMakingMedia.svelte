@@ -66,7 +66,6 @@
     };
 
     const matrix = transformData(_data);
-    console.log(matrix);
 
     onMount(() => {
         const width = 1200;

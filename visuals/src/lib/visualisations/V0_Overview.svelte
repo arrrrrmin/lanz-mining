@@ -11,7 +11,7 @@
         return date;
     };
 
-    let { data, id } = $props();
+    let { data, id, dataInfo = $bindable(dataInfo) } = $props();
     let _data = utils.uniformStart(data.data);
 
     let startDate = d3.min(_data.map((d) => d.date));
@@ -35,13 +35,21 @@
     let uniqueGuests = new Array(...new Set(_data.map((d) => d.name)));
     let uniqueRoles = new Array(...new Set(_data.map((d) => d.role)));
 
-    // Log some basic information for the dataset
-    console.log("Time range:", `${timeRangeStart} - ${timeRangeEnd}`);
-    console.log("Time range in days:", timeRangeDays);
-    console.log("Days with a show:", uniqueTalkDates.length);
-    console.log("Episodes:", uniqueEpisodes.length);
-    console.log("Guests:", uniqueGuests.length);
-    console.log("Roles", uniqueRoles.length, "/", "Appearences", data.data.length);
+    // Fill data object to use it on the main page
+    dataInfo = {
+        timeRange: {
+            start: timeRangeStart,
+            end: timeRangeEnd,
+            daysTotal: timeRangeDays,
+            daysTalked: uniqueTalkDates.length,
+        },
+        episodes: uniqueEpisodes.length,
+        guests: uniqueGuests.length,
+        roles: uniqueRoles.length,
+        appearances: data.data.length,
+    };
+
+    $inspect(dataInfo);
 
     onMount(() => {
         const width = 1600;

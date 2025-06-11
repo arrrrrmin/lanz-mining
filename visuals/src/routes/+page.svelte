@@ -18,8 +18,11 @@
     import V16_PartyDistFormat from "$lib/visualisations/V16_PartyDistFormat.svelte";
 
     let { data } = $props();
+    let dataInfo = $state({});
     let formatOrder = $state({});
     let groupOrder = $state({});
+
+    $inspect(dataInfo);
 </script>
 
 <div>
@@ -59,7 +62,7 @@
                 </dd>
             </div>
         </dl>
-        <div class="pt-10 pb-12">
+        <div class="pt-10 pb-8">
             <p class="py-2">
                 This page provides visualisations build for this keynote in the
                 web, so interactions are still useable and people can explore
@@ -73,12 +76,50 @@
             </p>
             <p><b>Hope you enjoy the keynote</b></p>
         </div>
+        {#if Object.keys(dataInfo).length > 0}
+            <dl class="pb-6">
+                <h3 class="pt-8 pb-4 text-2xl font-bold">
+                    Data sheet
+                </h3>
+                <div class="flex gap-2">
+                    <dt>Time range:</dt>
+                    <dd>
+                        {dataInfo.timeRange.start} - {dataInfo.timeRange.end},
+                        with {dataInfo.timeRange.daysTalked} shows days.
+                    </dd>
+                </div>
+                <div class="flex gap-2">
+                    <dt>Episodes:</dt>
+                    <dd>
+                        {dataInfo.episodes}
+                    </dd>
+                </div>
+                <div class="flex gap-2">
+                    <dt>Guests:</dt>
+                    <dd>
+                        {dataInfo.guests}
+                    </dd>
+                </div>
+                <div class="flex gap-2">
+                    <dt>Roles:</dt>
+                    <dd>
+                        {dataInfo.roles}
+                    </dd>
+                </div>
+                <div class="flex gap-2">
+                    <dt>Total talkshow seats:</dt>
+                    <dd>
+                        {dataInfo.appearances}
+                    </dd>
+                </div>
+            </dl>
+        {/if}
     </div>
 
     <h3 id="v0-overview" class="pt-8 pb-4 text-2xl font-bold">
         View over 1+ year
     </h3>
-    <V0_Overview {data} id={"v0-overview"} />
+    <V0_Overview {data} id={"v0-overview"} bind:dataInfo />
     <div class="py-8"></div>
 
     <h3 id="episodes-total" class="pt-8 pb-4 text-2xl font-bold">

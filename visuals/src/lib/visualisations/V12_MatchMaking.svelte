@@ -19,7 +19,6 @@
         const numPoliticalAppears = d3.sum(
             data.map((d) => d.children.filter((D) => D.party).length),
         );
-        console.log(numEpisodesWithPol);
         let partyEpisodes = data
             .filter(
                 (d) => d.children.filter((D) => D.party === party).length > 0,
