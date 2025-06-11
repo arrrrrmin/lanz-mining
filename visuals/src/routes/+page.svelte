@@ -216,7 +216,7 @@
     <h3 id="party-invite-dist-format" class="pt-8 pb-4 text-2xl font-bold">
         Party invitation overview
     </h3>
-    <V16_PartyDistFormat {data} id={"party-invite-dist-format"} />
+    <V16_PartyDistFormat {data} id={"party-invite-dist-format"} {formatOrder} />
 
     <div class="max-w-2xl m-auto py-16">
         <div>

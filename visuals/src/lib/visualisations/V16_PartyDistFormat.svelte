@@ -39,7 +39,10 @@
             _data = _data.filter((d) => d.date < end);
         }
         _data = _data.filter((d) => d.group == "Politik");
-        _data = _data.map((d) => ({ ...d, party: utils.normalizeParties(d.party) }));
+        _data = _data.map((d) => ({
+            ...d,
+            party: utils.normalizeParties(d.party),
+        }));
         _data = d3
             .rollups(
                 _data,
@@ -61,11 +64,13 @@
 
         // Sort before cumsum!
         _data = _data.sort((a, b) => b.count - a.count);
-        _data = _data.map((d) => ({
-            talkshow: d.talkshow,
-            count: d.count,
-            parties: d.parties.sort((a, b) => b.count - a.count),
-        }));
+        _data = _data
+            .map((d) => ({
+                talkshow: d.talkshow,
+                count: d.count,
+                parties: d.parties.sort((a, b) => b.count - a.count),
+            }))
+            .sort((a, b) => formatOrder[a.talkshow] - formatOrder[b.talkshow]);
 
         _data = _data.map((d) => ({
             ...d,
@@ -152,10 +157,10 @@
                 .data((d) => d.parties)
                 .join("text")
                 .attr("id", "party-dist-values-text")
-                .attr("y", (d) => y(d.talkshow) + gapSize * 4)
+                .attr("y", (d) => y(d.talkshow) + 20)
                 .transition()
                 .delay((_, i) => i * animDelay)
-                .attr("x", (d) => x(d.start) + gapSize / 2)
+                .attr("x", (d) => x(d.start) + 1)
                 .attr("fill", "white")
                 .attr("text-anchor", "start")
                 .text((d) => percentageLabel(d));

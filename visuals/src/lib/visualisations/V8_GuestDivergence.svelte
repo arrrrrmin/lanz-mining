@@ -126,7 +126,7 @@
             right: getStartEnd(d.right),
         }));
 
-        // return _data;
+        //return _data;
         return _data.slice(2);
     };
 
@@ -149,7 +149,7 @@
         const margins = { bottom: 40 };
         const animDelay = 75;
         const headRoom = 65;
-        const minPerc = _data.length == 16 ? 1.7: 0.25; // 0.25; // 0.5;
+        const minPerc = _data.length == 15 ? 1.7: 0.25; // 0.25; // 0.5;
 
         var x = d3
             .scaleLinear()
