@@ -140,7 +140,7 @@
             .call((g) => g.select(".domain").remove())
             .call((g) =>
                 utils
-                    .setText(g.selectAll(".tick text"), 18, 600, "middel")
+                    .setText(g.selectAll(".tick text"), 22, 600, "middel")
                     .attr("x", 4),
             )
             .call((g) =>
@@ -280,7 +280,7 @@
                     `${100 - Math.round(lt.percGuests_end)}% der Talkenden absolvieren ${Math.round(100 - filteredData2[0].percAppears_start)}% der Auftritte`,
                 );
 
-            utils.setText(helper2.selectAll("text"), 20, 600, "end");
+            utils.setText(helper2.selectAll("text"), 24, 600, "end");
 
             var labelsRect1 = labelsRect1g
                 .selectAll("text")
@@ -300,14 +300,16 @@
                 .attr("x", (d) => x(d.percAppears_start) + gapSize / 2)
                 .attr("y", (d) => y(0) + gapSize * 2.5)
                 .attr("text-anchor", "start")
-                .text((d) => d.freq);
+                .text((d) => d.percAppears > 1.5 ? d.freq : "");
+
+            utils.setText(labelsRect2, 20, 600, "start");
         };
 
         update();
     });
 </script>
 
-<div id="talkshow-freq-compare-1" class="pt-8"></div>
-<div id="talkshow-freq-compare-2" class="pt-8"></div>
+<div id="talkshow-freq-compare-1"></div>
+<div id="talkshow-freq-compare-2" class="pb-8"></div>
 
 <style></style>

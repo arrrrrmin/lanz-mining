@@ -114,7 +114,13 @@
             .attr("y", (d) => barvals.gap + barvals.height - 10)
             .attr("x", (d) => x(d.start) + gapSize)
             .attr("fill", "white")
-            .text((d) => (d.percentage <= 1.5 ? "" : d.party == "Parteilos" ? "-": d.party));
+            .text((d) =>
+                d.percentage <= 1.5
+                    ? ""
+                    : d.party == "Parteilos"
+                      ? "-"
+                      : d.party,
+            );
 
         utils.setText(barlabels1, 18, 600, "start");
 
@@ -169,7 +175,13 @@
             .attr("y", (d) => barvals.gap + barvals.height - 10)
             .attr("x", (d) => x(d.start) + gapSize)
             .attr("fill", "white")
-            .text((d) => (d.percentage <= 1.5 ? "" : d.party == "Parteilos" ? "-": d.party));
+            .text((d) =>
+                d.percentage <= 1.5
+                    ? ""
+                    : d.party == "Parteilos"
+                      ? "-"
+                      : d.party,
+            );
 
         utils.setText(barlabels2, 20, 600, "start");
     });

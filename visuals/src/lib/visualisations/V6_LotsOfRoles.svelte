@@ -22,18 +22,12 @@
             )
             .map((d) => ({ name: d[0], children: d[1] })),
     };
-    // console.log(
-    //     mappings.children
-    //         .map((d) => d.name)
-    //         .sort()
-    //         .join(", "),
-    // );
 
     onMount(() => {
         const width = 900;
         const height = width;
-        const cx = width * 0.5; // ...
-        const cy = height * 0.5; // ...
+        const cx = width * 0.5;
+        const cy = height * 0.5;
         const radius = Math.min(width, height) / 2 - 100;
 
         const tree = d3
@@ -107,4 +101,4 @@
     });
 </script>
 
-<div {id}></div>
+<div {id} class="py-8"></div>

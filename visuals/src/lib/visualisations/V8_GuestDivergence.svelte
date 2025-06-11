@@ -3,7 +3,6 @@
     import * as utils from "./utils.js";
     import * as d3 from "d3";
 
-    // Get props
     let { data, id } = $props();
 
     // Fair data start for all talkshows
@@ -17,16 +16,12 @@
         }
     };
 
-    const normalizeGenre = (inputData) => {
-        return ["Politik", "Journalismus"].contains(inputData.group)
-            ? inputData.group
-            : "Rest";
-    };
-
     const transformData = (originalData) => {
         let _data = originalData.filter((d) => d.date >= start);
+        if (start === utils.dateContext.btw) {
+            _data = _data.filter((d) => d.date <= new Date(2025, 1, 23));
+        }
         _data = _data.filter((d) => d.group.length > 0);
-        //_data = _data.map(d => ({...d, group: normalizeGenre}))
 
         const tSizesArr = d3
             .groups(_data, (d) => d.talkshow)
@@ -131,8 +126,7 @@
             right: getStartEnd(d.right),
         }));
 
-        console.log(_data);
-
+        // return _data;
         return _data.slice(2);
     };
 
@@ -149,13 +143,13 @@
     let outerBound = d3.max([xMin, xMax], (d) => Math.abs(d));
 
     onMount(() => {
-        const width = 1200;
-        const height = 900;
+        const width = 1400;
+        const height = 950;
         const gapSize = 5;
         const margins = { bottom: 40 };
         const animDelay = 75;
         const headRoom = 65;
-        const minPerc = 0.5
+        const minPerc = _data.length == 16 ? 1.7: 0.25; // 0.25; // 0.5;
 
         var x = d3
             .scaleLinear()
@@ -242,7 +236,7 @@
             .call((g) => g.select(".domain").remove())
             .call((g) =>
                 utils
-                    .setText(g.selectAll(".tick text"), 18, 500, "middle")
+                    .setText(g.selectAll(".tick text"), 20, 500, "middle")
                     .attr("x", 5),
             );
 
@@ -364,7 +358,7 @@
                 .attr("text-anchor", "end")
                 .text((d) => d.group);
 
-            utils.setText(nameGroups.selectAll("text"), 20, 500, "end");
+            utils.setText(nameGroups.selectAll("text"), 24, 500, "end");
 
             formats
                 .selectAll("text")

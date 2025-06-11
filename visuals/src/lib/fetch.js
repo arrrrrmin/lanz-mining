@@ -1,16 +1,14 @@
 import { error } from '@sveltejs/kit';
 import * as d3 from "d3";
 import * as utils from "$lib/visualisations/utils";
+import config from './config';
 
 
 export async function fetchLanzMining() {
     const dateParser = d3.timeParse("%Y-%m-%d");
 
-    const data = await d3.csv("http://localhost:5173/data/lanz-mining-2025-5-16.csv").then((d) => d.map((D) => {
-        // Exclude some fields we currently don't use!
+    const data = await d3.csv(`${config.dataHost}/${config.sourceFile}`).then((d) => d.map((D) => {
         return {
-            // description: D.description,
-            // message: D.message,
             index: parseInt(D.index),
             episode_name: D.episode_name,
             date: dateParser(D.date),
@@ -22,6 +20,10 @@ export async function fetchLanzMining() {
             party: D.party,
             group: D.group,
             media: D.media,
+            /** We dono't need:
+            * description: D.description,
+            * message: D.message,
+            */
         }
     }));
 

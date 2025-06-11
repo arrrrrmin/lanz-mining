@@ -78,7 +78,7 @@
         { name: "Squid Game (S1)", len: d3.sum(squidGame1) },
         { name: "Squid Game (S1)", len: d3.sum(squidGame1) },
         { name: "Squid Game (S1)", len: d3.sum(squidGame1) },
-        { name: "Squid Game (S1, 1-6)", len: d3.sum(squidGame1.splice(0, 5)) },
+        { name: "Squid Game (S1, 1-6)", len: d3.sum(squidGame1.splice(0, 6)) },
     ];
     otherData = pairwiseCumsum(otherData);
     
