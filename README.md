@@ -25,11 +25,8 @@ You can use my [configs](configs/) and customize for you'r own vault.
 To finally obtain you'r dataset you can use the [lanzmining](lanzmining/) 
 processors like so: `python src/main.py -c config/vault.json`
 
-## Vis data
+## Visualizations
 
-All visualizations for the talk are build with d3js, so I decided to wrap it in a
+All visualizations for the talk are build with [`d3js`](https://d3js.org), so I decided to wrap it in a
 svelte project. If you'r not familiar with it, all vis code is build in simple js.
 You can find it at [visuals/src/lib/visualisations](visuals/src/lib/visualisations).
-
-The data itself lives at [visuals/static/data](visuals/static/data).
-
