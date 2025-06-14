@@ -43,7 +43,6 @@
             //     partyEpisodes,
             //     (d) => d.children.filter((D) => D.group === _grp).length,
             // );
-            // console.log(party, partyEpisodes.length, _grp, n, nGuests);
             return { group: _grp, perc: n / nGuests, n: n }; //
         });
         // Check back everything sums up to one!

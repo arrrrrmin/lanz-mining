@@ -49,7 +49,6 @@
                 partyEpisodes,
                 (d) => d.children.filter((D) => D.media == _media.name).length,
             );
-            // console.log(party, partyEpisodes.length, _grp, n, nGuests);
             return { ..._media, n: n, perc: n / nEpisodes };
         });
         // Check back everything sums up to one!
