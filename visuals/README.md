@@ -1,7 +1,3 @@
-# Visuals for GPN23
+# LanzMining svelte project
 
-## Plot collection
-
-### `/src/routes/visuals/`
-Comparison of the length of content produced per month
-
+All visualisation are located at [./src/lib/visualisations].
