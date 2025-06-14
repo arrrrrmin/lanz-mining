@@ -157,4 +157,4 @@
     });
 </script>
 
-<div {id}></div>
+<div {id} class="max-w-2xl m-auto"></div>

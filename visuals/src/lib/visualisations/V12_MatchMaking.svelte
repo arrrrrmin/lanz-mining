@@ -159,4 +159,4 @@
     });
 </script>
 
-<div {id} class="pt-8"></div>
+<div {id} class="max-w-2xl m-auto"></div>

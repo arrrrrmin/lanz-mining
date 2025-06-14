@@ -69,8 +69,8 @@
 
     onMount(() => {
         const width = 1200;
-        const height = 850;
-        const margins = { left: 150, top: 150, right: 80, bottom: 80 };
+        const height = 800;
+        const margins = { left: 150, top: 150, right: 80, bottom: 10 };
 
         const x = d3
             .scaleBand()

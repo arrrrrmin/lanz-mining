@@ -63,8 +63,8 @@
 
     onMount(() => {
         const width = 1100;
-        const height = 850;
-        const margins = { left: 150, top: 150, right: 80, bottom: 80 };
+        const height = 800;
+        const margins = { left: 150, top: 150, right: 80, bottom: 10 };
 
         const x = d3
             .scaleBand()
@@ -74,7 +74,7 @@
             .scaleBand()
             .range([margins.top, height - margins.bottom])
             .domain(parties);
-        const c = d3.scaleSequential([0, 0.3], d3.interpolateRdPu);
+        const c = d3.scaleSequential([0, 30], d3.interpolateRdPu);
 
         var svg = utils.createSvg(id, width, height, "visible");
 
@@ -96,7 +96,8 @@
                     .attr("rx", 3)
                     .attr("stroke", "#000")
                     .attr("stroke-width", 2)
-                    .attr("fill", (d) => c(d.perc));
+                    .attr("fill", (d) => c(d.n));
+                //.attr("fill", (d) => c(d.perc));
             });
 
         const labelsx = svg
@@ -145,8 +146,10 @@
                     .join("text")
                     .attr("x", (d) => x(d.group) + x.bandwidth() / 2)
                     .attr("y", y.bandwidth() / 2 + 5)
-                    .attr("fill", (d) => (d.perc > 0.15 ? "white" : "black"))
-                    .text((d) => d.perc != 0.0 ? (d.perc * 100).toFixed(1) : "-");
+                    .attr("fill", (d) => (d.n >= 18 ? "white" : "black"))
+                    .text((d) => d.n);
+                // .attr("fill", (d) => (d.perc > 0.15 ? "white" : "black"))
+                // .text((d) => d.perc != 0.0 ? (d.perc * 100).toFixed(1) : "-");
 
                 utils.setText(enter.selectAll("text"), 20, 500, "middle");
             });

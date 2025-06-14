@@ -146,10 +146,9 @@
         const width = 1400;
         const height = 950;
         const gapSize = 5;
-        const margins = { bottom: 40 };
+        const margins = { top: 40, bottom: 40 };
         const animDelay = 75;
-        const headRoom = 65;
-        const minPerc = _data.length == 15 ? 1.7: 0.25; // 0.25; // 0.5;
+        const minPerc = _data.length == 15 ? 1.7 : 0.25; // 0.25; // 0.5;
 
         var x = d3
             .scaleLinear()
@@ -157,7 +156,7 @@
             .domain([-outerBound, outerBound]);
         var y = d3
             .scaleBand()
-            .range([headRoom, height])
+            .range([margins.top, height])
             .padding(0.175)
             .paddingOuter(0.02)
             .domain(allGroups);
@@ -227,7 +226,7 @@
         var gx = svg
             .append("g")
             .attr("id", "groups-diverging-axis-g")
-            .attr("transform", `translate(0,${headRoom})`)
+            .attr("transform", `translate(0,${margins.top})`)
             .call(
                 d3
                     .axisTop(x)
@@ -246,7 +245,7 @@
             .append("text")
             .attr("id", "groups-diverging-alternate-text")
             .attr("x", width)
-            .attr("y", 20)
+            .attr("y", 0)
             .attr("fill", "gray")
             .attr("text-anchor", "end")
             .text("Seit Koalitionsbruch")
