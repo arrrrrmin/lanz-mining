@@ -16,6 +16,7 @@
     import V14_MatchMakingMedia from "$lib/visualisations/V14_MatchMakingMedia.svelte";
     import V15_PartyDistOverview from "$lib/visualisations/V15_PartyDistOverview.svelte";
     import V16_PartyDistFormat from "$lib/visualisations/V16_PartyDistFormat.svelte";
+    import Head from "$lib/components/Head.svelte";
 
     let { data } = $props();
     let dataInfo = $state({});
@@ -25,16 +26,17 @@
     $inspect(dataInfo);
 </script>
 
+<Head />
 <div>
     <div class="max-w-2xl m-auto py-8">
         <h1 class="font-black text-5xl">LanzMining</h1>
         <h2 class="font-semibold text-3xl">Wer spricht denn da?</h2>
         <div class="pt-10">
             <p>
-                Ein Datenprojekt um die mediale Teilhabe in deutschen Talkshows
-                des öffentlich rechtlichen Rundfunks zu erkunden. Es werden
+                Ein Datenprojekt, um die mediale Teilhabe in deutschen Talkshows
+                des öffentlich-rechtlichen Rundfunks zu erkunden. Es werden
                 gesammelte Daten aus mehr als einem Jahr untersucht und
-                visualisiert. Der Fokus ist dabei mehr auf den Personen, als auf
+                visualisiert. Der Fokus ist dabei mehr auf den Personen als auf
                 den Themen.
             </p>
         </div>
@@ -45,19 +47,26 @@
                     <a
                         class="underline hover:text-stone-400"
                         target="_blank"
-                        href="https://chaos.social/@arrrrrmin">arrrrrmin</a
+                        href="https://chaos.social/@arrrrrmin"
+                        >@arrrrrmin@chaos.social</a
                     >
                 </dd>
             </div>
             <div class="flex gap-2">
                 <dt>Source:</dt>
                 <dd>
+                    [<a
+                        class="underline hover:text-stone-400"
+                        target="_blank"
+                        href="https://codeberg.org/arrrrrmin/lanz-mining"
+                        >codeberg</a
+                    >,
                     <a
                         class="underline hover:text-stone-400"
                         target="_blank"
-                        href="https://codeberg.org/arrrrrmin/GPN23-SprechschauMining"
-                        >codeberg/arrrrrmin/GPN23-SprechschauMining</a
-                    >
+                        href="https://github.com/arrrrrmin/lanz-mining"
+                        >github</a
+                    >]/arrrrrmin/lanz-mining
                 </dd>
             </div>
         </dl>
@@ -98,7 +107,7 @@
             </dl>
         {/if}
     </div>
-
+    <hr class="max-w-2xl m-auto" />
     <div class="max-w-2xl m-auto py-8">
         <p>
             Seit Februar 2024 werden Informationen der fünf großen Talkshow <i
