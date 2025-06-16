@@ -15,7 +15,15 @@
             authors: [config.author],
             tags: config.tags,
         },
-        images: [`${config.siteUrl}/${config.image}`],
+        images: [
+            {
+                url: `${config.siteUrl}/${config.image}`,
+                type: "png",
+                alt: config.imageAlt,
+                width: 512,
+                height: 512,
+            },
+        ],
     };
 
     /** Twitter information */
