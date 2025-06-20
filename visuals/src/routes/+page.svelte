@@ -17,6 +17,7 @@
     import V15_PartyDistOverview from "$lib/visualisations/V15_PartyDistOverview.svelte";
     import V16_PartyDistFormat from "$lib/visualisations/V16_PartyDistFormat.svelte";
     import Head from "$lib/components/Head.svelte";
+    import Requests from "$lib/components/Requests.svelte";
 
     let { data } = $props();
     let dataInfo = $state({});
@@ -71,7 +72,7 @@
             </div>
         </dl>
         {#if Object.keys(dataInfo).length > 0}
-            <dl class="pb-6">
+            <dl class="pb-2">
                 <h3 class="pt-8 pb-4 text-2xl font-bold">Datenblatt</h3>
                 <div class="flex gap-2">
                     <dt>Zeitraum:</dt>
@@ -106,6 +107,7 @@
                 </div>
             </dl>
         {/if}
+        <Requests />
     </div>
     <hr class="max-w-2xl m-auto" />
     <div class="max-w-2xl m-auto py-8">
