@@ -33,7 +33,7 @@
         return { name: "Experten", children: _data };
     };
 
-    let _data = transformData(data.data, 5);
+    let _data = transformData(data.data, 8);
 
     onMount(() => {
         const width = 1200;
