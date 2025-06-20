@@ -46,7 +46,7 @@
             return { group: _grp, perc: n / nGuests, n: n }; //
         });
         // Check back everything sums up to one!
-        // console.log(d3.sum(sequence, (d) => d.n));
+        // console.log(d3.sum(sequence, (d) => d.perc));
         return { source: party, sequence: sequence };
     };
 
@@ -73,7 +73,8 @@
             .scaleBand()
             .range([margins.top, height - margins.bottom])
             .domain(parties);
-        const c = d3.scaleSequential([0, 30], d3.interpolateRdPu);
+        //const c = d3.scaleSequential([0, 30], d3.interpolateRdPu);
+        const c = d3.scaleSequential([0, 25], d3.interpolateRdPu);
 
         var svg = utils.createSvg(id, width, height, "visible");
 
@@ -95,8 +96,8 @@
                     .attr("rx", 3)
                     .attr("stroke", "#000")
                     .attr("stroke-width", 2)
-                    .attr("fill", (d) => c(d.n));
-                //.attr("fill", (d) => c(d.perc));
+                    // .attr("fill", (d) => c(d.n));
+                    .attr("fill", (d) => c((d.perc * 100).toFixed(1)));
             });
 
         const labelsx = svg
@@ -145,10 +146,12 @@
                     .join("text")
                     .attr("x", (d) => x(d.group) + x.bandwidth() / 2)
                     .attr("y", y.bandwidth() / 2 + 5)
-                    .attr("fill", (d) => (d.n >= 18 ? "white" : "black"))
-                    .text((d) => d.n);
-                // .attr("fill", (d) => (d.perc > 0.15 ? "white" : "black"))
-                // .text((d) => d.perc != 0.0 ? (d.perc * 100).toFixed(1) : "-");
+                    // .attr("fill", (d) => (d.n >= 18 ? "white" : "black"))
+                    // .text((d) => d.n);
+                    .attr("fill", (d) => (d.perc > 0.15 ? "white" : "black"))
+                    .text((d) =>
+                        d.perc != 0.0 ? (d.perc * 100).toFixed(1) : "-",
+                    );
 
                 utils.setText(enter.selectAll("text"), 20, 500, "middle");
             });

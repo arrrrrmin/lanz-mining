@@ -42,9 +42,8 @@
             ...d,
             invites: utils.pairwiseCumsum(d.invites),
         }));
-
+        
         _data = _data.slice(0, n);
-
         return _data;
     };
 

@@ -53,7 +53,7 @@
             .attr("stroke-opacity", 0.3)
             .attr("stroke-width", 1.5)
             .selectAll()
-            .data(root.links())
+            .data(root.links().filter((d) => d.source.depth > 0))
             .join("path")
             .attr(
                 "d",
@@ -65,7 +65,7 @@
 
         svg.append("g")
             .selectAll()
-            .data(root.descendants())
+            .data(root.descendants().filter((d) => d.depth > 0))
             .join("circle")
             .attr(
                 "transform",
@@ -77,7 +77,7 @@
 
         svg.append("g")
             .selectAll()
-            .data(root.descendants())
+            .data(root.descendants().filter((d) => d.depth > 0))
             .join("text")
             .attr(
                 "transform",
@@ -89,7 +89,7 @@
             .attr("text-anchor", (d) =>
                 d.x < Math.PI === !d.children ? "start" : "end",
             )
-            .attr("font-size", (d) => (!d.children ? 12 : 14))
+            .attr("font-size", (d) => (!d.children ? 12 : 20))
             .attr("font-weight", (d) => (!d.children ? 400 : 600))
             .attr("fill", "#0c0a09")
             .text((d, i) =>
