@@ -1,7 +1,5 @@
 <script>
     import requestedFeatures from "$lib/requests";
-
-    console.log(requestedFeatures);
 </script>
 
 <dl class="pb-6">
