@@ -85,7 +85,7 @@
         const height = n * 45;
         const gapSize = 6;
         const transitSpeed = 100;
-        const margins = { top: 30 };
+        const margins = { top: 10 };
 
         var x = d3
             .scaleLinear()
@@ -237,9 +237,6 @@
 </script>
 
 <div class="grid grid-cols-1">
-    <div class="pt-8">
-        <p>Talkende {current} - {current + n}</p>
-    </div>
     <div class="pt-4 flex gap-4">
         <button
             aria-label="Up the list"
@@ -281,6 +278,7 @@
                 />
             </svg>
         </button>
+        <p>Talkende {current} - {current + n}</p>
     </div>
-    <div {id} class="pt-4 pb-12"></div>
+    <div {id} class="pt-2 pb-12"></div>
 </div>
