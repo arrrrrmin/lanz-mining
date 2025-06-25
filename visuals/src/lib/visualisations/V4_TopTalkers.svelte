@@ -6,6 +6,8 @@
     // Get props
     let { data, id, n, formatOrder } = $props();
 
+    console.log(formatOrder);
+
     // Fair data start for all talkshows
     let start = utils.dateContext.full;
 
@@ -42,7 +44,7 @@
             ...d,
             invites: utils.pairwiseCumsum(d.invites),
         }));
-        
+
         _data = _data.slice(0, n);
         return _data;
     };

@@ -43,14 +43,20 @@
         </div>
         <dl class="pt-8 text-lg">
             <div class="flex gap-2">
-                <dt>By:</dt>
+                <dt>Von:</dt>
                 <dd>
                     <a
                         class="underline hover:text-stone-400"
                         target="_blank"
                         href="https://chaos.social/@arrrrrmin"
                         >@arrrrrmin@chaos.social</a
-                    >
+                    >,
+                    <a
+                        class="underline hover:text-stone-400"
+                        target="_blank"
+                        href="https://bsky.app/profile/arrrrrmin.bsky.social"
+                        >@arrrrrmin.bsky.social</a
+                    >,
                 </dd>
             </div>
             <div class="flex gap-2">
@@ -68,6 +74,17 @@
                         href="https://github.com/arrrrrmin/lanz-mining"
                         >github</a
                     >]/arrrrrmin/lanz-mining
+                </dd>
+            </div>
+            <div class="flex gap-2">
+                <dt>Talk auf der GPN23:</dt>
+                <dd>
+                    <a
+                        class="underline hover:text-stone-400"
+                        target="_blank"
+                        href="https://media.ccc.de/v/gpn23-213-lanzmining-wer-spricht-denn-da-"
+                        >media.ccc.de</a
+                    >
                 </dd>
             </div>
         </dl>
