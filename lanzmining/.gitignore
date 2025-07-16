@@ -12,3 +12,4 @@ pdm.lock
 *.egg-info
 vault.json
 output.csv
+snapshots/*.csv
