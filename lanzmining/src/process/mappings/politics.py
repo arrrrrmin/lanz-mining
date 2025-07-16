@@ -1,9 +1,13 @@
+# Party membership mapping aims to resolve the fuzzy role "politician".
+
 from datetime import date
 
 from misc import Party
 
+
 TODAY = date.today().strftime("%Y-%m-%d")
 
+# Map of names to political party membership
 PARTY_MEMBERSHIP_MAP = {
     "Alexander Graf Lambsdorff": Party.FDP,
     "Aminata Touré": Party.B90G,
@@ -174,6 +178,7 @@ PARTY_MEMBERSHIP_MAP = {
     "Petra Köpping": Party.SPD,
     "Katharina Schulze": Party.B90G,
     "Anke Rehlinger": Party.SPD,
+    "Christian Wulff": Party.CDU,
     "Alexander Schweitzer": Party.SPD,
     "Frauke Petry": Party.NP,
     "Joschka Fischer": Party.B90G,
@@ -187,6 +192,10 @@ PARTY_MEMBERSHIP_MAP = {
     "Thomas Jung": Party.SPD,
     "Liane Bach": Party.NP,
     "Michaela Kaniber": Party.CSU,
+    "Jürgen Hardt": Party.CDU,
+    "Michael Lüders": Party.BSW,
+    "Ruprecht Polenz": Party.CDU,
+    "Gitta Connemann": Party.CDU,
 }
 
 

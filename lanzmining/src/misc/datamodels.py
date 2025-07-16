@@ -74,7 +74,9 @@ class VaultConfig(BaseModel):
     def is_directory(att: str, p: str | Path) -> Path or ValueError:
         p = Path(p) if not isinstance(p, Path) else p
         if not p.is_dir():
-            raise ValueError(f"Attribute '{att}', path '{p}' is not a dir.")
+            print(f"Some paths in passed config cause problems:")
+            print(f"Attribute '{att}', path '{p}' is not a dir.")
+            exit(1)
         return p
 
     @model_validator(mode="after")

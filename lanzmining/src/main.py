@@ -28,8 +28,24 @@ def call_for_args() -> Namespace:
         type=Path,
         help="Path to .csv file you want to write.",
         required=False,
-        default=Path("./output.csv"),
     )
+    arg_parser.add_argument(
+        "--snapshot-path",
+        dest="snapshot_path",
+        type=Path,
+        help="Path to .csv file you want to write the raw data preprocessing.",
+        required=False,
+    )
+    arg_parser.add_argument(
+        "--merge-file",
+        dest="merge_file",
+        type=Path,
+        help="Path to .csv file you want to merge with vault data. \n"
+        "Helpful when doing changes in processing.",
+        required=False,
+        default=None,
+    )
+
     args = arg_parser.parse_args()
     return args
 
@@ -43,8 +59,15 @@ if __name__ == "__main__":
     print(f"Found '{dataframe_raw["episode_name"].unique().len()}' episodes...")
     print(f"Found '{dataframe_raw.shape[0]}' guests...")
 
-    builder = CSVBuilder(dataframe_raw)
+    builder = CSVBuilder(dataframe_raw, arguments.merge_file)
 
-    builder.dataframe.write_csv(arguments.output_path)
-    print(f"File written to '{arguments.output_path}'")
-    print("Done, enjoy the data.")
+    if arguments.snapshot_path:
+        builder.snapshot(arguments.snapshot_path)
+        print(f"Snapshot of raw data written to '{arguments.snapshot_path}'")
+
+    builder.process()
+
+    if arguments.output_path:
+        builder.dataframe.write_csv(arguments.output_path)
+        print(f"File written to '{arguments.output_path}'")
+    print("Done...")

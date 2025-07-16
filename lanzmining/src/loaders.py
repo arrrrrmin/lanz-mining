@@ -22,10 +22,21 @@ def date_loader(s: str or object) -> datetime.date:
     return d
 
 
+def drop_invalid_frontmatter_chars(data: list[str]) -> list[str]:
+    # This function removes all invalid ':' characters
+    for i, string in enumerate(data):
+        string_parts = string.split(":")
+        data[i] = f"{string_parts[0]}: {string_parts[1]}" + " ".join(string_parts[2:])
+    return data
+
+
 def load_markuslanz_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
+    frontmatter_str = drop_invalid_frontmatter_chars(
+        analyzer.identify_paragraphs()["Paragraph"]
+    )
     basic_info = frontmatter.loads(
-        "---\n" + "\n".join(analyzer.identify_paragraphs()["Paragraph"]) + "\n---"
+        "---\n" + "\n".join(frontmatter_str) + "\n---"
     ).metadata
     metainfos = frontmatter.load(str(fp)).metadata
 
@@ -132,11 +143,13 @@ LOADER_MAP = {
 def load_vault_content(config: VaultConfig) -> pl.DataFrame:
     data_lines = []
     for talkshow, vault_path in config.model_dump().items():
+        print(f"Loading '{talkshow}' from '{vault_path}'...")
         if talkshow not in LOADER_MAP.keys():
             raise ValueError(
                 f"Talkshow currently not supported, choose {Talkshow.values()}"
             )
         for md_file in vault_path.glob("*.md"):
+            print(f"Loading '{talkshow}' - file '{md_file}'...")
             data_lines.extend(LOADER_MAP[talkshow](fp=md_file).as_flat_dict())
 
     return pl.DataFrame(data=data_lines, schema=Entry.get_polars_schema())

@@ -6,17 +6,18 @@ from process.mappings.utils import as_rpattern
 
 group_activism_kws = [
     "aktivist",
-    "bürgerrechtler",
     "whistleblow",
-    "völkerrechtler",
     "nawalny",
     "boris-nemzow",
     "kreml-kritiker",
     "wwf",
     "letzte generation",
     "oppositionelle",
+    "zeitzeuge",
+    "zeitzeugin",
+    "trumpist"
 ]
-group_history_kws = ["historiker", "zeitzeuge", "zeitzeugin", "shoah"]
+# group_history_kws = ["historiker", "zeitzeuge", "zeitzeugin", "shoah", "holocaustüberlebende"]
 group_social_kws = [
     "soziolog",
     "sozialwissenschaft",
@@ -26,6 +27,9 @@ group_social_kws = [
     "sprecherin der arche",
     "sozialverband",
     "tafel deutschland",
+    "a place for kids",
+    "one billion rising",
+    "jugendforscher",
 ]
 group_education_kws = [
     "bildung",
@@ -50,6 +54,10 @@ group_health_kws = [
     "radiolog",
     "suchtexpert",
     "onkologe",
+    "epidemiolog",
+    "sanitäter",
+    "medizinethikerin",
+    "hertie-stiftung",
 ]
 group_domestic_kws = [
     "sicherheitsexpert",
@@ -63,12 +71,13 @@ group_domestic_kws = [
     "kriminolog",
     "integration",
     "flüchtlingsrat",
+    "migration",
 ]
 group_military_kws = [
     "militär",
     "verteidigung",
     "bundeswehr",
-    "oberst",
+    "(oberst($| (a.d.)))",
     "agent",
     "leutnat",
     "kommandierende",
@@ -76,33 +85,43 @@ group_military_kws = [
 ]
 group_law_kws = [
     "jurist",
-    "richter",
+    "((?<!schieds)richter(?!statter))",  # ! kriegsberichterstatter, schiedsrichter
     "rechtsanwalt",
     "rechtsanwältin",
     "anwältin",
     "anwalt",
     "steuerexpert",
     "rechtsexpert",
+    "rechtswissenschaft",
+    "völkerrechtler",
+    "bürgerrechtler",
 ]
 group_science_kws = [
-    "wissenschaft",
-    "forscher",
+    "klimaforscher",
     "physiker",
     "biolog",
     "hydrologe",
-    "zukunftsforscher",
     "ökolog",
+    "meteorolog",
+    "neurowissenschaftler*",
+]
+group_humanities_kw = [
     "philosoph",
-    "theolog",
-    "politolog",
+    "politolog*",
     "politikwissenschaft",
     "islamwissenschaft",
     "extremismusforscher",
-    "institut",
-    "hertie-stiftung",
+    "generationenforscher",
+    "demokratieforscher",
+    "zukunftsforscher",
+    "theolog*",
+    "historiker",
+    "konfliktforschung",
+    "hudson institute",
 ]
 group_culture_kws = [
-    "autor",
+    "autor",  # not journalist
+    # "autor(in)*(?![^.]{0,40}journalist(in)*)"
     "schriftsteller",
     "publizist",
     "schauspieler",
@@ -110,6 +129,10 @@ group_culture_kws = [
     "regisseur",
     "produzent",
     "sänger",
+    "kulturwissenschaft",
+    "kabarettist",
+    # "moderator(in)*(?![^.]{0,40}journalist(in)*)",
+    "moderator",
 ]
 group_international_kws = [
     "afrika",
@@ -132,6 +155,9 @@ group_international_kws = [
     "europa-expert",
     "msc-stiftungsrats",
     "münchner sicherheitskonferenz",
+    "außen- und sicherheitspolitik",
+    "internationale beziehungen",
+    "transatlantische beziehungen",
 ]
 group_economy_kws = [
     "wirtschaft",
@@ -139,7 +165,9 @@ group_economy_kws = [
     "vw-vorstand",
     "intel-vorstand",
     "siemens-vorstand",
-    "vw-chef",
+    "ex.*vorstand",
+    "ex.*chef",
+    "geschäftsführer.+betriebs",
     "manager",
     "industrie",
     "unternehmer",
@@ -148,11 +176,16 @@ group_economy_kws = [
     "zentralverbandes des deutschen handwerks",
     "industrie",
     "autoexperte",
-    "aufsichtsratsvorsitzender .+ ag",
+    "aufsichtsratsvorsitzende.+ ag",
+    "geschäftsführe.+ gmbh",
     "investor",
     "vizepräsident verband deutscher maschinen- und anlagenbau",
     "trigema",
     "stahlwille",
+    "arbeitgeberverband",
+    "europäischen zentralbank",
+    "ig[\ |\-]metall",
+    "gewerkschaftsbund",
 ]
 group_journalist_kws = [
     "reporter",
@@ -172,12 +205,27 @@ group_journalist_kws = [
     "leiter des parlamentsbüros",
     "leiterin des parlamentsbüros",
     "bild-zeitung",
+    "der freitag",
+    "axel-springer",
 ]
 
+group_sports_kws = [
+    "fußball",
+    "nationalspieler",
+    "nationalspieler",
+    "schiedsrichter",
+    "weltmeister",
+    "boxer",
+    "sportschau",
+    "fanverband",
+    "europameister",
+    "skirennläufer",
+    "para-*",
+]
 
 GROUP_MAPS: dict[str, str] = {
     Group.Activism: as_rpattern(group_activism_kws),
-    Group.History: as_rpattern(group_history_kws),
+    # Group.History: as_rpattern(group_history_kws),
     Group.Social: as_rpattern(group_social_kws),
     Group.Law: as_rpattern(group_law_kws),
     Group.Education: as_rpattern(group_education_kws),
@@ -185,9 +233,11 @@ GROUP_MAPS: dict[str, str] = {
     Group.International: as_rpattern(group_international_kws),
     Group.Domestic: as_rpattern(group_domestic_kws),
     Group.Military: as_rpattern(group_military_kws),
-    Group.Culture: as_rpattern(group_culture_kws),
-    Group.Science: as_rpattern(group_science_kws),
     Group.Economy: as_rpattern(group_economy_kws),
+    Group.Humanities: as_rpattern(group_humanities_kw),
+    # Group.Science: as_rpattern(group_science_kws),
     Group.Journalist: as_rpattern(group_journalist_kws),
+    Group.Culture: as_rpattern(group_culture_kws),
+    Group.Sports: as_rpattern(group_sports_kws),
     # Group.Politician: group_politician_kws,
 }
