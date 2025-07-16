@@ -61,6 +61,13 @@ if __name__ == "__main__":
 
     builder = CSVBuilder(dataframe_raw, arguments.merge_file)
 
+    if arguments.merge_file:
+        print("Found file to merge data with")
+        print(f"Pre merge process dataframe had '{dataframe_raw.shape[0]}' entries...")
+        print(
+            f"Post merge process dataframe has '{builder.dataframe.shape[0]}' entries ..."
+        )
+
     if arguments.snapshot_path:
         builder.snapshot(arguments.snapshot_path)
         print(f"Snapshot of raw data written to '{arguments.snapshot_path}'")
