@@ -36,7 +36,7 @@
         }
     ],
     "triggers": [
-        "https://www1.wdr.de/daserste/hartaberfair/sendungen"
+        "https://www1.wdr.de/daserste/hartaberfair"
     ],
     "noteNameFormat": "{{selector:h1.conHeadline | first}}",
     "path": "Lanz Mining/HartAberFair - Content Meta",

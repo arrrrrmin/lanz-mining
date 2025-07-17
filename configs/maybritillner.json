@@ -2,38 +2,28 @@
     "schemaVersion": "0.1.0",
     "name": "Maybrit Illner Episode",
     "behavior": "create",
-    "noteContentFormat": "episode_description: {{\"Search the additional description in the pages content. Exclude format information 'maybrit illner\" mit dem Thema ...' or ''Hinweis zur Kommentarspalte: ...\"}}\n\n```\n{{\"Please find name and role of each guest (usually up to 5 people) who appeared in this programme and create a json with keys name and role\"}}\n```\n\n# Content \n\n{{content}}",
+    "noteContentFormat": "```\n{\n  \"episode_name\": \"{{title}}\",\n  \"episode_description\": \"{{selector:script | nth:45 | join | nth:0 | object:values | nth:4 | join}}\",\n  \"episode_date\": \"{{selector:script | nth:45 | join | nth:0 | object:values | nth:7 | join}}\",\n  \"length\": \"{{selector:script | nth:45 | join | nth:0 | object:values | nth:9 | join}}\"\n}\n```\n\n```\n{{\"Please find name and role of each guest (usually up to 5 people) who appeared in this programme and create a json with keys name and role\"}}\n```",
     "properties": [
-      {
-        "name": "episode_name",
-        "value": "{{title}}",
-        "type": "text"
-      },
-      {
-        "name": "episode_date",
-        "value": "{{\\\"The content that starts with 'Zu Gast am ' please only copy the date string\\\"}}",
-        "type": "text"
-      },
-      {
-        "name": "description",
-        "value": "{{description}}",
-        "type": "text"
-      },
-      {
-        "name": "source",
-        "value": "{{url}}",
-        "type": "text"
-      },
-      {
-        "name": "length",
-        "value": "65",
-        "type": "number"
-      }
+        {
+            "name": "episode_name",
+            "value": "{{title}}",
+            "type": "text"
+        },
+        {
+            "name": "description",
+            "value": "{{description}}",
+            "type": "text"
+        },
+        {
+            "name": "source",
+            "value": "{{url}}",
+            "type": "text"
+        }
     ],
     "triggers": [
-      "https://www.zdf.de/video/talk/maybrit-illner-"
+        "https://www.zdf.de/video/talk/maybrit-illner-"
     ],
     "noteNameFormat": "{{title}}",
     "path": "Lanz Mining/Maybrit Illner - Content Meta",
     "context": "{{selectorHtml:main| markdown}}"
-  }
+}
