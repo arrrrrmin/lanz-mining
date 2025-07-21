@@ -15,7 +15,8 @@ group_activism_kws = [
     "oppositionelle",
     "zeitzeuge",
     "zeitzeugin",
-    "trumpist"
+    "trumpist",
+    "changing cities",
 ]
 # group_history_kws = ["historiker", "zeitzeuge", "zeitzeugin", "shoah", "holocaustüberlebende"]
 group_social_kws = [
@@ -58,6 +59,7 @@ group_health_kws = [
     "sanitäter",
     "medizinethikerin",
     "hertie-stiftung",
+    "patientenschützer",
 ]
 group_domestic_kws = [
     "sicherheitsexpert",
@@ -82,6 +84,8 @@ group_military_kws = [
     "leutnat",
     "kommandierende",
     "berufssoldat",
+    "atomwaffen-expert",
+    "oberkommandeur",
 ]
 group_law_kws = [
     "jurist",
@@ -118,6 +122,10 @@ group_humanities_kw = [
     "historiker",
     "konfliktforschung",
     "hudson institute",
+    "fascism researcher",
+    "ethikerin",
+    "ethikratsvorsitzende",
+    "pastor"
 ]
 group_culture_kws = [
     "autor",  # not journalist
@@ -133,6 +141,7 @@ group_culture_kws = [
     "kabarettist",
     # "moderator(in)*(?![^.]{0,40}journalist(in)*)",
     "moderator",
+    "podcaster",
 ]
 group_international_kws = [
     "afrika",
@@ -184,8 +193,9 @@ group_economy_kws = [
     "stahlwille",
     "arbeitgeberverband",
     "europäischen zentralbank",
-    "ig[\ |\-]metall",
+    r"ig[\ |\-]metall",
     "gewerkschaftsbund",
+    "unternehmens-.+berater",
 ]
 group_journalist_kws = [
     "reporter",
@@ -221,6 +231,8 @@ group_sports_kws = [
     "europameister",
     "skirennläufer",
     "para-*",
+    "extrembergsteiger",
+    "bvb.+mitarbeiter"
 ]
 
 GROUP_MAPS: dict[str, str] = {

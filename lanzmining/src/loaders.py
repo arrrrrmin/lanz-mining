@@ -33,10 +33,15 @@ def drop_invalid_frontmatter_chars(data: list[str]) -> list[str]:
 
 def parse_zdf_length_data(data: str) -> int:
     length_pattern = re.compile(r"PT(\d*)H(\d*)M(\d*)")
-    grps = re.match(length_pattern, data).groups()
-    assert len(grps) == 3, f"Malformed pattern in length input? input={data}"
-    # We drop the second value, just because it's not really important
-    return int(grps[0]) * 60 + int(grps[1]) * 1
+    alt_length_pattern = re.compile(r"PT(\d*)M(\d*)")
+    grps = re.match(length_pattern, data)
+    if grps is None:
+        grps = re.match(alt_length_pattern, data).groups()
+        length = int(grps[0])
+    else:
+        grps = grps.groups()
+        length = int(grps[0]) * 60 + int(grps[1]) * 1
+    return length
 
 
 def load_markuslanz_addins(fp: Path) -> Episode:
@@ -67,7 +72,6 @@ def load_markuslanz_addins(fp: Path) -> Episode:
 
 def load_maybritillner_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
-    print(analyzer.identify_code_blocks()["Code block"][0]["content"])
     basic_info = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
     # Input looks like this: 2025-06-11T21:15:00.000000+00:00
     basic_info["episode_date"] = datetime.datetime.fromisoformat(
