@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from pathlib import Path
 
 import frontmatter
@@ -30,28 +31,40 @@ def drop_invalid_frontmatter_chars(data: list[str]) -> list[str]:
     return data
 
 
+def parse_zdf_length_data(data: str) -> int:
+    length_pattern = re.compile(r"PT(\d*)H(\d*)M(\d*)")
+    alt_length_pattern = re.compile(r"PT(\d*)M(\d*)")
+    grps = re.match(length_pattern, data)
+    if grps is None:
+        grps = re.match(alt_length_pattern, data).groups()
+        length = int(grps[0])
+    else:
+        grps = grps.groups()
+        length = int(grps[0]) * 60 + int(grps[1]) * 1
+    return length
+
+
 def load_markuslanz_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
-    frontmatter_str = drop_invalid_frontmatter_chars(
-        analyzer.identify_paragraphs()["Paragraph"]
-    )
-    basic_info = frontmatter.loads(
-        "---\n" + "\n".join(frontmatter_str) + "\n---"
-    ).metadata
-    metainfos = frontmatter.load(str(fp)).metadata
 
-    guest_data = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
+    basic_info = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
+    # Input looks like this: 2025-06-11T21:15:00.000000+00:00
+    basic_info["episode_date"] = datetime.datetime.fromisoformat(
+        basic_info["episode_date"]
+    ).date()
+    basic_info["length"] = parse_zdf_length_data(basic_info["length"])
+    guest_data = json.loads(analyzer.identify_code_blocks()["Code block"][1]["content"])
     guests = [
         Guest(name=d["name"], role=d["role"], message=d["description"])
         for d in guest_data
     ]
     episode = Episode(
-        episode_name=basic_info["episode_name"],  # noqa
-        date=date_loader(basic_info["episode_date"]),
-        description=basic_info["description"],  # noqa
+        episode_name=basic_info["episode_name"],
+        date=basic_info["episode_date"],
+        description=basic_info["description"],
         talkshow="markuslanz",
         factcheck=False,
-        length=metainfos["length"],  # noqa
+        length=basic_info["length"],
         guests=guests,
     )
     return episode
@@ -59,19 +72,21 @@ def load_markuslanz_addins(fp: Path) -> Episode:
 
 def load_maybritillner_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
-    episode_description = analyzer.identify_paragraphs()["Paragraph"][0].strip(
-        "episode_description: "
-    )
-    metainfos = frontmatter.load(str(fp)).metadata
-    guest_data = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
+    basic_info = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
+    # Input looks like this: 2025-06-11T21:15:00.000000+00:00
+    basic_info["episode_date"] = datetime.datetime.fromisoformat(
+        basic_info["episode_date"]
+    ).date()
+    basic_info["length"] = parse_zdf_length_data(basic_info["length"])
+    guest_data = json.loads(analyzer.identify_code_blocks()["Code block"][1]["content"])
     guests = [Guest(name=d["name"], role=d["role"], message="") for d in guest_data]
     episode = Episode(
-        episode_name=metainfos["episode_name"],  # noqa
-        date=date_loader(metainfos["episode_date"]),
-        description=episode_description,  # noqa
+        episode_name=basic_info["episode_name"],
+        date=basic_info["episode_date"],
+        description=basic_info["episode_description"],
         talkshow="maybritillner",
         factcheck=False,
-        length=metainfos["length"],  # noqa
+        length=basic_info["length"],
         guests=guests,
     )
     return episode

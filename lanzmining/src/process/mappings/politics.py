@@ -196,6 +196,8 @@ PARTY_MEMBERSHIP_MAP = {
     "Michael Lüders": Party.BSW,
     "Ruprecht Polenz": Party.CDU,
     "Gitta Connemann": Party.CDU,
+    "Johann Wadephul": Party.CDU,
+    "Roland Koch": Party.CDU,
 }
 
 

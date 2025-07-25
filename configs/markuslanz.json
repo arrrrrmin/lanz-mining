@@ -2,7 +2,7 @@
     "schemaVersion": "0.1.0",
     "name": "Markus Lanz Episode",
     "behavior": "create",
-    "noteContentFormat": "episode_name: {{\"The content that starts with Markus Lanz vom\"}}\n\nepisode_date: {{\"The content that starts with Markus Lanz vom please only copy the date string\"}}\n\ndescription: {{description}}\n\n```\n{{\"Please find name, role and description of each guest (usually up to 5 people) who appeared in this programme and create a json with keys name, role and description\"}}\n```\n\n# Content \n\n{{content}}",
+    "noteContentFormat": "```\n{\n  \"episode_name\": \"{{\"Find the episode title. The content that starts with 'Markus Lanz vom'\"}}\",\n  \"episode_date\": \"{{selector:script | nth:45 | join | nth:0 | object:values | nth:7 | join}}\",\n  \"description\": \"{{\"Find the episode description and json encode the string. Do not return json, just encode a string.\"}}\",\n \"length\": \"{{selector:script | nth:45 | join | nth:0 | object:values | nth:9 | join}}\"\n}\n```\n\n```\n{{\"Please find name, role and description of each guest (usually up to 5 people) who appeared in this programme and create a json with keys name, role and description\"}}\n```",
     "properties": [
         {
             "name": "title",
@@ -18,11 +18,6 @@
             "name": "source",
             "value": "{{url}}",
             "type": "text"
-        },
-        {
-            "name": "length",
-            "value": "",
-            "type": "number"
         }
     ],
     "triggers": [

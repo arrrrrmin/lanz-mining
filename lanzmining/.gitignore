@@ -13,3 +13,4 @@ pdm.lock
 vault.json
 output.csv
 snapshots/*.csv
+tests/others

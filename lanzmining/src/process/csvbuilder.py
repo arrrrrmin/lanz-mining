@@ -202,7 +202,6 @@ def check_df_file_params(file_or_df: Union[Path, pl.DataFrame]) -> bool:
 def init_dataframe(
     file_or_df: Union[Path, pl.DataFrame],
     merge_file: Optional[Path] = None,
-    return_info: bool = False,
 ) -> Union[pl.DataFrame, AssertionError]:
     """Decide if dataframe is passed or to load it from a file.
     When merge_file is passed, merge raw data with file_or_df.
