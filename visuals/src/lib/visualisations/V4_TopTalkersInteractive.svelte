@@ -5,6 +5,7 @@
 
     let { data, id } = $props();
 
+    // Fixed order for formats
     let formatOrder = {
         markuslanz: 0,
         maischberger: 1,
@@ -15,7 +16,7 @@
 
     let start = utils.dateContext.full;
     let current = $state(0);
-    let n = 20;
+    let n = 15;
     let forward = true;
 
     const transformData = (originalData, n) => {
@@ -82,10 +83,10 @@
 
         /** Ok, now we can go on with the standard stuff */
         const width = 1200;
-        const height = n * 45;
+        const height = n * 50;
         const gapSize = 6;
         const transitSpeed = 100;
-        const margins = { top: 10 };
+        const margins = { top: 40 };
 
         var x = d3
             .scaleLinear()
@@ -100,6 +101,20 @@
             .domain(_data.map((d) => d.name));
 
         const svg = utils.createSvg(id, width, height, "visible");
+
+        var gx = svg
+            .append("g")
+            .attr("id", `${id}-axis-g`)
+            .attr("transform", `translate(0,${margins.top})`)
+            .call(d3.axisTop(x).tickFormat((d) => d))
+            .call((g) => g.select(".domain").remove())
+            .call((g) =>
+                utils.setText(g.selectAll(".tick text"), 22, 600, "middle"),
+            )
+            .call((g) => {
+                g.selectAll(".tick text").first().attr("text-anchor", "start");
+                g.selectAll(".tick text").last().attr("text-anchor", "end");
+            });
 
         // Build a legend
         var legendRects = svg
@@ -131,7 +146,7 @@
         utils.setText(legendTexts, 22, 500, "end");
 
         const textAlign = (d) => {
-            return x(d.invites[0].start) + gapSize * 1.75;
+            return x(d.invites[0].start) + gapSize * 1.25;
         };
         const update = () => {
             y.domain(_data.map((d) => d.name));
@@ -155,7 +170,6 @@
                         ),
                     (exit) => exit.remove(),
                 );
-            //.call((exit) => exit.remove());
 
             /** Handle all bar sequences states */
             var barUpdate = barGroups
@@ -179,8 +193,6 @@
                         update
                             .attr("x", (d) => x(d.start))
                             .transition()
-                            //.delay((_, i) => transitSpeed)
-                            //.ease(d3.easeBackIn)
                             .attr(
                                 "fill",
                                 (d) => utils.showKeyToColour[d.talkshow],
@@ -219,7 +231,7 @@
                             .append("text")
                             .attr("id", "main-speakers-names-g-text")
                             .attr("x", textAlign)
-                            .attr("y", (d) => y.bandwidth() / 2 + 5)
+                            .attr("y", (d) => y.bandwidth() / 2 + 7)
                             .text((d) => d.name);
                         utils.setText(
                             enter.selectAll("text"),
@@ -278,7 +290,7 @@
                 />
             </svg>
         </button>
-        <p>Talkende {current} - {current + n}</p>
+        <p>Talkende {current + 1} - {current + n}</p>
     </div>
     <div {id} class="pt-2 pb-12"></div>
 </div>

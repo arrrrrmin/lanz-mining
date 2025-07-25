@@ -1,13 +1,12 @@
 import { error } from '@sveltejs/kit';
 import * as d3 from "d3";
 import * as utils from "$lib/visualisations/utils";
-import config from './config';
 
 
-export async function fetchLanzMining() {
+export async function fetchLanzMining(host, file) {
     const dateParser = d3.timeParse("%Y-%m-%d");
 
-    const data = await d3.csv(`${config.dataHost}/${config.sourceFile}`).then((d) => d.map((D) => {
+    const data = await d3.csv(`${host}/${file}`).then((d) => d.map((D) => {
         return {
             index: parseInt(D.index),
             episode_name: D.episode_name,
@@ -20,7 +19,7 @@ export async function fetchLanzMining() {
             party: D.party,
             group: D.group,
             media: D.media,
-            /** We dono't need:
+            /** We don't need:
             * description: D.description,
             * message: D.message,
             */

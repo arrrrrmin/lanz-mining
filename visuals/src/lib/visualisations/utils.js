@@ -93,3 +93,7 @@ export const normalizeParties = (partyStr) => {
 export const getId = (id, ...suffixes) => {
     return `${id}-${suffixes.join("-")}`
 }
+
+export const partyToId = (party) => {
+    return party.replaceAll(" ", "-")
+}

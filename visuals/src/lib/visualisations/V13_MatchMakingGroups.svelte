@@ -96,7 +96,6 @@
                     .attr("rx", 3)
                     .attr("stroke", "#000")
                     .attr("stroke-width", 2)
-                    // .attr("fill", (d) => c(d.n));
                     .attr("fill", (d) => c((d.perc * 100).toFixed(1)));
             });
 
@@ -148,7 +147,7 @@
                     .attr("y", y.bandwidth() / 2 + 5)
                     // .attr("fill", (d) => (d.n >= 18 ? "white" : "black"))
                     // .text((d) => d.n);
-                    .attr("fill", (d) => (d.perc > 0.15 ? "white" : "black"))
+                    .attr("fill", (d) => (d.perc > 0.14 ? "white" : "black"))
                     .text((d) =>
                         d.perc != 0.0 ? (d.perc * 100).toFixed(1) : "-",
                     );

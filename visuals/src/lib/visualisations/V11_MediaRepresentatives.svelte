@@ -90,7 +90,7 @@
             .attr("stroke", (d) =>
                 d.target.data.name in formatOrder
                     ? utils.showKeyToColour[d.target.data.name]
-                    : "#ccc",
+                    : "#79716b",
             )
             .attr(
                 "d",

@@ -150,7 +150,7 @@
                     .join("text")
                     .attr("x", (d) => x(d.name) + x.bandwidth() / 2)
                     .attr("y", y.bandwidth() / 2 + 5)
-                    .attr("fill", (d) => (d.n > 0.15 ? "white" : "black"))
+                    .attr("fill", (d) => (d.n > 10 ? "white" : "black"))
                     .text((d) => d.n > 0 ? d.n : "-"); // (d.n * 100).toFixed(1));
 
                 utils.setText(enter.selectAll("text"), 20, 500, "middle");

@@ -56,15 +56,17 @@
 
     const mostInvitedGuests = _data.map((d) => ({
         ...d,
-        winners: d.values.filter((D) =>
-            D.size > 1 ? D.size === d3.max(d.values, (e) => e.size) : false,
-        ),
+        winners: d.values
+            .filter((D) =>
+                D.size > 1 ? D.size === d3.max(d.values, (e) => e.size) : false,
+            )
+            .slice(-3),
     }));
 
     onMount(() => {
         const width = 1500;
         const height = 950;
-        const margins = { left: 210, top: 0, right: 400, bottom: 30 };
+        const margins = { left: 210, top: 0, right: 200, bottom: 30 };
 
         const x = d3
             .scaleLinear()
@@ -88,6 +90,15 @@
             .call((g) =>
                 utils.setText(g.selectAll(".tick text"), 20, 500, "middle"),
             );
+
+        var gxLabel = gx
+            .append("text")
+            .attr("y", -2)
+            .attr("x", x(100))
+            .attr("fill", "black")
+            .text("Anzahl der Auftritte");
+
+        utils.setText(gxLabel, 18, 400, "start");
 
         var rects = svg
             .append("g")
