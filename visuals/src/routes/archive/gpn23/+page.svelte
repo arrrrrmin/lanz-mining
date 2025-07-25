@@ -3,7 +3,7 @@
     import V1_EpisodesTotal from "$lib/visualisations/V1_EpisodesTotal.svelte";
     import V2_ContentPerMonth from "$lib/visualisations/V2_ContentPerMonth.svelte";
     import V3_TalkshowsVsSquidGame from "$lib/visualisations/V3_TalkshowsVsSquidGame.svelte";
-    import V4_TopTalkers from "$lib/visualisations/V4_TopTalkers.svelte";
+    // import V4_TopTalkers from "$lib/visualisations/V4_TopTalkers.svelte";
     import V4_TopTalkersInteractive from "$lib/visualisations/V4_TopTalkersInteractive.svelte";
     import V5_InviteRatio from "$lib/visualisations/V5_InviteRatio.svelte";
     import V6_LotsOfRoles from "$lib/visualisations/V6_LotsOfRoles.svelte";
@@ -17,7 +17,6 @@
     import V14_MatchMakingMedia from "$lib/visualisations/V14_MatchMakingMedia.svelte";
     import V15_PartyDistOverview from "$lib/visualisations/V15_PartyDistOverview.svelte";
     import V16_PartyDistFormat from "$lib/visualisations/V16_PartyDistFormat.svelte";
-    import V17_PartyDistOverTime from "$lib/visualisations/V17_PartyDistOverTime.svelte";
     import Head from "$lib/components/Head.svelte";
     import Requests from "$lib/components/Requests.svelte";
     import Versions from "$lib/components/Versions.svelte";
@@ -127,7 +126,6 @@
                 </div>
             </dl>
         {/if}
-        <Requests />
         <Versions />
     </div>
     <hr class="max-w-2xl m-auto" />
@@ -232,8 +230,8 @@
     <h3 id="top-talkers" class="max-w-2xl m-auto pt-8 pb-4 text-2xl font-bold">
         Top Talkende nach Auftritten und Formaten
     </h3>
-    <!-- <V4_TopTalkers {data} id={"top-talkers"} n={15} {formatOrder} /> -->
     <V4_TopTalkersInteractive id="v4-ia" {data} />
+    <!-- <V4_TopTalkers {data} id={"top-talkers"} n={15} {formatOrder} /> -->
     <div class="max-w-2xl m-auto py-8">
         <p>
             Elmar Theveßen ist der am häufigsten geladene Gast. Alleine durch
@@ -521,42 +519,8 @@
             vermutlich noch verstärken.
         </p>
     </div>
-    <h3
-        id="party-invite-dist-per-month"
-        class="max-w-2xl m-auto pt-8 pb-4 text-2xl font-bold"
-    >
-        Parteibücher über die Zeit
-    </h3>
-    <V17_PartyDistOverTime {data} id={"party-invite-dist-per-month"} />
+
     <div class="max-w-2xl m-auto py-16">
-        <p>
-            Wir können zusätzlich alle Talkshowplätze von Politiker:innen über
-            die Zeit betrachten. Die obrige Darstellung zeigt wie häufig eine
-            Partei in einem Monat in den fünf Talkshows aufgetreten ist.
-            Spannend ist hier der Bereich kurz vor Koalitionsbruch am
-            6.November. Im Oktober 2024 tut sich in der Verteilung der
-            Parteibücher ein Loch auf. Zu dieser Zeit werden fast ausschließlich
-            CDU, SPD, Grüne und FPD eingeladen. Das Phänomen setzt sich im
-            November 2024 fort, nachdem der damalige Bundeskanzler Olaf Scholz
-            seinen Finanzminister aus dem Amt entlässt. Der Trend löst sich erst
-            im Dezember 2024 auf. Vermutlich weil der <i>Ampelbruch</i> medial
-            größtenteils verarbeitet war. <br />
-            Aus der Grafik kann auch auffallen, das die AfD seit März, nicht mehr
-            eingeladen wurde. Die Einstufung als gesichert rechtsextremistisch erfolgte
-            am
-            <a
-                href="https://www.tagesschau.de/inland/innenpolitik/verfassungsschutz-afd-102.html"
-                target="_blank"
-                class="underline"
-            >
-                2.5.2025
-            </a>. Seit der Bundestagswahl wird die AfD nicht mehr in Talkshows
-            eingeladen. Das hat sicher auch mit vergangenen Auftritten zutun,
-            bei denen die Talkshows als Bühne für Verschwörungstheorien und
-            Desinformation genutzt wurde. <br />
-            Die Auftrittsfrequenz der Linken steigt hingegen im Trend eher an. Mit
-            dem Erfolg der Partei scheint eine gewisse Auseinandersetzung mit der
-            Partei stattzufinden.
-        </p>
+        <p></p>
     </div>
 </div>
