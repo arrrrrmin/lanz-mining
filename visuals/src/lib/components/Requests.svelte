@@ -12,17 +12,12 @@
     </h3>
     {#each requestedFeatures as feature}
         <div class="flex gap-2 pb-2">
-            {#if feature.exists}
-                <p>
-                    <a
-                        href={feature.slug}
-                        class="underline hover:text-stone-400"
-                        ><b>{feature.name}</b>: {feature.description}</a
-                    >
-                </p>
-            {:else}
-                <p><b>{feature.name}</b>: {feature.description}</p>
-            {/if}
+            <p>
+                {#if feature.done}
+                    ✔️
+                {/if}
+                <b>{feature.name}</b>: {feature.description}
+            </p>
         </div>
     {/each}
 </dl>
