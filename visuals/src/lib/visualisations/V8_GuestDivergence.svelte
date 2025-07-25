@@ -7,6 +7,10 @@
 
     // Fair data start for all talkshows
     let start = utils.dateContext.full;
+    let selection = [
+        { group: "Politik", selected: true },
+        { group: "Journalismus", selected: true },
+    ];
 
     const changeTimeRange = (currentMinDate) => {
         if (currentMinDate === utils.dateContext.full) {
@@ -126,48 +130,78 @@
             right: getStartEnd(d.right),
         }));
 
-        //return _data;
-        return _data.slice(2);
+        // return _data;
+        let grpsToFilter = selection
+            .filter((d) => !d.selected)
+            .map((d) => d.group);
+        _data = _data.filter((grp) => !grpsToFilter.includes(grp.group));
+        return _data;
     };
 
     let _data = transformData(data.data);
     let allGroups = _data.map((d) => d.group);
-    let xMin = d3.min(
-        _data.filter((d) => d.left.length > 0),
-        (d) => d.left[d.left.length - 1].end,
-    );
-    let xMax = d3.max(
-        _data.filter((d) => d.right.length > 0),
-        (d) => d.right[d.right.length - 1].end,
-    );
-    let outerBound = d3.max([xMin, xMax], (d) => Math.abs(d));
+    const xMin = () => {
+        return d3.min(
+            _data.filter((d) => d.left.length > 0),
+            (d) => d.left[d.left.length - 1].end,
+        );
+    };
+    const xMax = () => {
+        return d3.max(
+            _data.filter((d) => d.right.length > 0),
+            (d) => d.right[d.right.length - 1].end,
+        );
+    };
+    const minLabelThreshold = () => {};
+    let outerBound = d3.max([xMin(), xMax()], (d) => Math.abs(d));
 
     onMount(() => {
+        function selectFilterFn(event) {
+            let targetData = event.target.__attributes.data;
+            targetData.selected = !targetData.selected;
+            selection[selection.indexOf(targetData)] = targetData;
+            event.target.__attributes.data = targetData;
+
+            const new_html = targetData.selected
+                ? `✔️${targetData.group}`
+                : targetData.group;
+            d3.select(event.target).html(new_html);
+            _data = transformData(data.data);
+            outerBound = d3.max([xMin(), xMax()], (d) => Math.abs(d));
+            x.domain([-outerBound, outerBound]);
+            y.domain(_data.map((d) => d.group));
+            update();
+        }
+
+        d3.selectAll(`button#${id}-select-btn`).on("click", selectFilterFn);
+
         const width = 1400;
         const height = 950;
         const gapSize = 5;
-        const margins = { top: 40, bottom: 40 };
+        const margins = { left: 110, top: 40, bottom: 40 };
         const animDelay = 75;
-        const minPerc = _data.length == 15 ? 1.7 : 0.25; // 0.25; // 0.5;
+        const minPerc = () => {
+            return _data.length > 13 ? 1.0 : 0.25;
+        };
+
+        var svg = utils.createSvg(id, width, height, "visible");
 
         var x = d3
             .scaleLinear()
-            .range([100, width - 50])
+            .range([margins.left, width - 50])
             .domain([-outerBound, outerBound]);
-        var y = d3
+        let y = d3
             .scaleBand()
             .range([margins.top, height])
             .padding(0.175)
             .paddingOuter(0.02)
-            .domain(allGroups);
+            .domain(_data.map((d) => d.group));
 
-        var svg = utils.createSvg(id, width, height, "visible");
-
-        const getValueLabel = (d, minPercentage = minPerc) => {
+        const getValueLabel = (d) => {
             var result = Number.parseFloat(
                 Math.abs(d.percentage) * 100,
             ).toFixed(1);
-            if (result < minPercentage) {
+            if (result < minPerc()) {
                 result = "";
             }
             return result;
@@ -186,9 +220,9 @@
 
         const findAlterButtonText = () => {
             if (start == utils.dateContext.full) {
-                return "Seit Koalitionsbruch 👈";
+                return "Während dem Wahlkampf 2025 👈";
             }
-            return "Seit Februar 2024 👈";
+            return "Alle Daten (seit Feb. 2024) 👈";
         };
 
         var legendRects = svg
@@ -223,21 +257,18 @@
 
         utils.setText(legendTexts, 20, 500, "end");
 
-        var gx = svg
-            .append("g")
-            .attr("id", "groups-diverging-axis-g")
-            .attr("transform", `translate(0,${margins.top})`)
-            .call(
-                d3
-                    .axisTop(x)
-                    .tickFormat((d) => Math.round(Math.abs(d) * 100) + "%"),
-            )
-            .call((g) => g.select(".domain").remove())
-            .call((g) =>
-                utils
-                    .setText(g.selectAll(".tick text"), 20, 500, "middle")
-                    .attr("x", 5),
-            );
+        var gx = svg.append("g");
+        // .call(
+        //     d3
+        //         .axisTop(x)
+        //         .tickFormat((d) => Math.round(Math.abs(d) * 100) + "%"),
+        // )
+        // .call((g) => g.select(".domain").remove())
+        // .call((g) =>
+        //     utils
+        //         .setText(g.selectAll(".tick text"), 20, 500, "middle")
+        //         .attr("x", 5),
+        // );
 
         var alterButton = svg
             .append("g")
@@ -248,7 +279,7 @@
             .attr("y", 0)
             .attr("fill", "gray")
             .attr("text-anchor", "end")
-            .text("Seit Koalitionsbruch")
+            .text("Während dem Wahlkampf 2025")
             .style("text-decoration", "underline")
             .on("mouseover", function (event) {
                 d3.select("text#groups-diverging-alternate-text").attr(
@@ -265,19 +296,29 @@
             .on("click", function (event) {
                 changeTimeRange(start);
                 _data = transformData(data.data);
-                outerBound = d3.max([xMin, xMax], (d) => Math.abs(d));
-                xMin = d3.min(
-                    _data.filter((d) => d.left.length > 0),
-                    (d) => d.left[d.left.length - 1].end,
-                );
-                xMax = d3.max(
-                    _data.filter((d) => d.right.length > 0),
-                    (d) => d.right[d.right.length - 1].end,
-                );
+                outerBound = d3.max([xMin(), xMax()], (d) => Math.abs(d));
+                x.domain([-outerBound, outerBound]);
+                y.domain(_data.map((d) => d.group));
                 update();
             });
 
+        utils.setText(alterButton, 20, 500, "end");
+
         const update = () => {
+            gx.attr("id", "groups-diverging-axis-g")
+                .attr("transform", `translate(0,${margins.top})`)
+                .call(
+                    d3
+                        .axisTop(x)
+                        .tickFormat((d) => Math.round(Math.abs(d) * 100) + "%"),
+                )
+                .call((g) => g.select(".domain").remove())
+                .call((g) =>
+                    utils
+                        .setText(g.selectAll(".tick text"), 20, 500, "middle")
+                        .attr("x", 5),
+                );
+
             var barGroups = svg
                 .selectAll("g#groups-diverging-g")
                 .data(_data)
@@ -381,6 +422,20 @@
 </script>
 
 <!-- Container for the chart -->
-<div {id} class="pt-8"></div>
+<div class="pt-8">
+    <div id={`${id}-btn-section`} class="flex flex-wrap gap-2">
+        {#each selection as selected}
+            <button
+                aria-label="Selected"
+                id={`${id}-select-btn`}
+                data={selected}
+                class="flex px-1 rounded-sm hover:text-stone-400 border-1 whitespace-nowrap"
+            >
+                ✔️{selected.group}
+            </button>
+        {/each}
+    </div>
+    <div {id} class="pt-8"></div>
+</div>
 
 <style></style>
