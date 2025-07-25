@@ -506,7 +506,7 @@
         <p>
             Der größte Anteil an konservativen Politiker:innen fällt auf <i
                 >Maybrit Illner</i
-            >. Über alle Formate fällt auf, das CDU und SPD mit Ausnahme von
+            >. Über alle Formate fällt auf, dass CDU und SPD mit Ausnahme von
             Frau Illners Show immer an den ersten beiden Stellen landen. Das
             diese beiden Parteien am häufigsten in Talkshows sitzen, wissen wir
             bereits aus den Grafiken zum Matchmaking. Die Ergebnisse zu Caren
