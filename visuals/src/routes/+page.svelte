@@ -554,7 +554,7 @@
             eingeladen. Das die Afd seit der Bundestagswahl nicht mehr in Talkshows 
             eingeladen wird, hat sicher auch mit vergangenen Auftritten zutun.
             Es konnte der Eindruck entstehen, das die Talkshows als Bühne für 
-            Verschwörungstheorien und Desinformation genutzt wurde. <br />
+            Verschwörungstheorien und Desinformation genutzt wurden. <br />
             Die Auftrittsfrequenz der Linken steigt hingegen im Trend eher an. Mit
             dem Erfolg der Partei scheint eine gewisse Auseinandersetzung mit der
             Partei stattzufinden.

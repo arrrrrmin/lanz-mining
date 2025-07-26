@@ -4,15 +4,15 @@
 </script>
 
 <dl class="pb-6">
-    <h3 class="pt-8 pb-4 text-2xl font-bold">Project versions</h3>
+    <h3 class="pt-8 pb-2 text-2xl font-bold">Projekthistorie</h3>
     {#each projectVersions as version}
         {#if version.slug === $page.url.pathname}
-            <h4 class="pt-4 text-xl font-semibold">
+            <h4 class="pt-2 text-xl font-semibold text-stone-500">
                 {version.name}
             </h4>
         {:else}
             <a href={version.slug} class="underline">
-                <h4 class="pt-4 text-xl font-semibold">
+                <h4 class="pt-2 text-xl font-semibold">
                     {version.name}
                 </h4>
             </a>
