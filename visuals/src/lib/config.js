@@ -8,8 +8,7 @@ const config = {
     tags: ["datavis", "data", "opendata"],
     image: "web-app-manifest-512x512.png",
     imageAlt: "",
-    dataHost: "https://arrrrmin.uber.space",
-    sourceFile: "data/lanz-mining-2025-5-30.csv"
+    dataHost: "https://datapublisher.s3.eu-central-1.amazonaws.com",
 }
 
 export default config;
