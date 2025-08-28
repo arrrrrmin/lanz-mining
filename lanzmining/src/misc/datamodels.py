@@ -8,7 +8,7 @@ from typing_extensions import Self
 
 import polars as pl
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, HttpUrl
 
 
 class Entry(BaseModel):
@@ -16,6 +16,7 @@ class Entry(BaseModel):
     date: datetime.date
     description: str
     talkshow: str
+    src: str
     factcheck: Optional[bool] = None
     length: Optional[int] = None
     # A single guests info
@@ -30,6 +31,7 @@ class Entry(BaseModel):
             "date": pl.Date,
             "description": pl.String,
             "talkshow": pl.String,
+            "src": pl.String,
             "factcheck": pl.Boolean,
             "length": pl.UInt16,
             # A single guests info
@@ -50,15 +52,18 @@ class Episode(BaseModel):
     date: datetime.date
     description: str
     talkshow: str
+    src: HttpUrl
     guests: list[Guest]
     factcheck: Optional[bool] = None
     length: Optional[int] = None
 
     def as_flat_dict(self) -> list[dict[str, Any]]:
         episode = self.model_dump()
+        episode["src"] = str(episode["src"])
         episode.pop("guests")
         entries: list[Entry] = [
-            Entry(**episode, **guest.model_dump()) for guest in self.guests
+            Entry(**episode, **guest.model_dump())
+            for guest in self.guests
         ]
         return [e.model_dump() for e in entries]
 

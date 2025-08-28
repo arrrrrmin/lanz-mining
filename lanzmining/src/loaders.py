@@ -46,7 +46,7 @@ def parse_zdf_length_data(data: str) -> int:
 
 def load_markuslanz_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
-
+    metainfos = frontmatter.load(str(fp)).metadata
     basic_info = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
     # Input looks like this: 2025-06-11T21:15:00.000000+00:00
     basic_info["episode_date"] = datetime.datetime.fromisoformat(
@@ -63,15 +63,18 @@ def load_markuslanz_addins(fp: Path) -> Episode:
         date=basic_info["episode_date"],
         description=basic_info["description"],
         talkshow="markuslanz",
+        src=metainfos["source"],
         factcheck=False,
         length=basic_info["length"],
         guests=guests,
     )
+
     return episode
 
 
 def load_maybritillner_addins(fp: Path) -> Episode:
     analyzer = MarkdownAnalyzer(fp)
+    metainfos = frontmatter.load(str(fp)).metadata
     basic_info = json.loads(analyzer.identify_code_blocks()["Code block"][0]["content"])
     # Input looks like this: 2025-06-11T21:15:00.000000+00:00
     basic_info["episode_date"] = datetime.datetime.fromisoformat(
@@ -85,6 +88,7 @@ def load_maybritillner_addins(fp: Path) -> Episode:
         date=basic_info["episode_date"],
         description=basic_info["episode_description"],
         talkshow="maybritillner",
+        src=metainfos["source"],
         factcheck=False,
         length=basic_info["length"],
         guests=guests,
@@ -102,6 +106,7 @@ def load_maischberger_addins(fp: Path) -> Episode:
         date=date_loader(metainfos["episode_date"]),
         description=metainfos["episode_description"],  # noqa
         talkshow="maischberger",
+        src=metainfos["source"],
         factcheck=bool(metainfos["factcheck"]),  # noqa
         length=metainfos["length"],  # noqa
         guests=guests,
@@ -119,6 +124,7 @@ def load_hartaberfair_addins(fp: Path) -> Episode:
         date=date_loader(metainfos["episode_date"]),
         description=metainfos["episode_description"],  # noqa
         talkshow="hartaberfair",
+        src=metainfos["source"],
         factcheck=bool(metainfos["factcheck"]),  # noqa
         length=metainfos["length"],  # noqa
         guests=guests,
@@ -139,6 +145,7 @@ def load_carenmiosga_episode(fp: Path) -> Episode:
         date=date_loader(metainfos["episode_date"]),
         description=metainfos["episode_description"],  # noqa
         talkshow="carenmiosga",
+        src=metainfos["source"],
         factcheck=bool(metainfos["factcheck"]),  # noqa
         length=metainfos["length"],  # noqa
         guests=guests,

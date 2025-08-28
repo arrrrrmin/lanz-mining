@@ -59,6 +59,8 @@ if __name__ == "__main__":
     print(f"Found '{dataframe_raw["episode_name"].unique().len()}' episodes...")
     print(f"Found '{dataframe_raw.shape[0]}' guests...")
 
+    print(dataframe_raw.shape)
+
     builder = CSVBuilder(dataframe_raw, arguments.merge_file)
 
     if arguments.merge_file:
