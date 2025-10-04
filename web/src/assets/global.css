@@ -1,0 +1,6 @@
+/* node_modules/@observablehq/framework/dist/style/global.css */
+
+@import url("fonts.css");
+
+@import url("observablehq:default.css");
+@import url("observablehq:theme-air.css");
