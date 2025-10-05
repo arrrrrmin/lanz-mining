@@ -19,7 +19,6 @@ export function renderMeta({ title, path, data }) {
     return `
     <title>${metaTitle}</title>
     <link rel="icon" href=${configuration.favicon} type="image/png" sizes="96x96">
-    <link rel="icon1" href=${configuration.image} type="image/svg">
     ${metaTags}
     ${jsonLdTag}
   `;
