@@ -19,6 +19,8 @@ export function renderMeta({ title, path, data }) {
     return `
     <title>${metaTitle}</title>
     <link rel="icon" href=${configuration.favicon} type="image/png" sizes="96x96">
+    <link rel="me" href="https://chaos.social/@arrrrrmin">
+    <meta name="fediverse:creator" content="@arrrrrmin@chaos.social">
     ${metaTags}
     ${jsonLdTag}
   `;
