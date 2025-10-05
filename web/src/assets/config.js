@@ -6,7 +6,7 @@ export const configuration = {
     language: "de",
     datahost: "https://datapublisher.s3.eu-central-1.amazonaws.com",
     favicon: "assets/favicon-96x96.png",
-    image: "assets/web/src/assets/web-app-manifest-512x512.png",
+    image: "assets/web-app-manifest-512x512.png",
     temporalCoverage: {
         start: "2024-02-01",
         end: "2025-07-01",
