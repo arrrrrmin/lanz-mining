@@ -1,0 +1,6 @@
+[[headers]]
+  for = "/*"
+[headers.values]
+  Access-Control-Allow-Origin = "https://arrrrrmin.dev"
+  Access-Control-Allow-Methods = "GET, HEAD, OPTIONS"
+  Access-Control-Allow-Headers = "Content-Type"
