@@ -1,18 +1,23 @@
-import { renderMeta } from "./src/components/head.js";
+import { renderMeta } from './src/components/head.js';
 
 // See https://observablehq.com/framework/config for documentation.
 export default {
-  title: "LanzMining",
-  root: "src",
+  title: 'LanzMining',
+  root: 'src',
   head: renderMeta,
-  theme: "air",
+  theme: 'air',
   toc: true,
   // Drop gstatic links and use fontsource cdn (without tracking)
-  globalStylesheets: ["/assets/global.css"],
-  header: "LanzMining",
-  output: "dist",
+  globalStylesheets: ['/assets/global.css'],
+  header: 'LanzMining',
+  output: 'build',
   pager: false,
   sidebar: false,
+  dynamicPaths: [
+    '/components/charts.js',
+    '/data/fetchLanzMining.js',
+    '/assets/web-app-manifest-512x512.png',
+  ],
 
   // footer: "Built with Observable.", // what to show in the footer (HTML)
   // search: true,

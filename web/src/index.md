@@ -3,35 +3,36 @@ title: LanzMining
 ---
 
 ```js
-import * as d3 from "npm:d3";
+import * as d3 from 'npm:d3';
 
-import { configuration } from "./assets/config.js";
-import { fetchLanzMining } from "./data/fetchLanzMining.js";
+import { configuration } from './assets/config.js';
+import { fetchLanzMining } from './data/fetchLanzMining.js';
 
-import * as charts from "./components/charts.js";
+import * as charts from './components/charts.js';
 ```
 
 ```js
-const dateFormatFn = d3.utcFormat("%Y/%m/%d")
-let data = await fetchLanzMining(configuration.datahost, "lanz-mining-2025-6-30.csv");
-let [start, end] = d3.extent(data, d => d.date);
-let numDaysWithShow = d3.groups(data, d => d.date).length;
-let numEpisodes = d3.groups(data, d => d.episode_name).length;
-let numTalkers = d3.groups(data, d => d.name).length;
-let numRoles = d3.groups(data, d => d.role).length;
+const dateFormatFn = d3.utcFormat('%Y/%m/%d');
+let data = await fetchLanzMining(configuration.datahost, 'lanz-mining-2025-6-30.csv');
+let [start, end] = d3.extent(data, (d) => d.date);
+let numDaysWithShow = d3.groups(data, (d) => d.date).length;
+let numEpisodes = d3.groups(data, (d) => d.episode_name).length;
+let numTalkers = d3.groups(data, (d) => d.name).length;
+let numRoles = d3.groups(data, (d) => d.role).length;
 let numTalkerSeats = data.length;
-let allRoles = new Array(...new Set(data.filter(d => d.role.length > 0).map(d => d.role)));
-let allGroups = new Array(...new Set(data.filter(d => d.group.length > 0).map(d => d.group)))
+let allRoles = new Array(...new Set(data.filter((d) => d.role.length > 0).map((d) => d.role)));
+let allGroups = new Array(...new Set(data.filter((d) => d.group.length > 0).map((d) => d.group)));
 ```
 
-LanzMining ist ein Datenprojekt, um die mediale Teilhabe in deutschen Talkshows des öffentlich-rechtlichen Rundfunks zu erkunden. 
+LanzMining ist ein Datenprojekt, um die mediale Teilhabe in deutschen Talkshows des öffentlich-rechtlichen Rundfunks zu erkunden.
 Es werden gesammelte Daten aus mehr als einem Jahr untersucht und visualisiert. Der Fokus ist dabei mehr auf den Personen als auf den Themen, da das Projekt keine Aufzeichnungen von Talkshowsendungen selbst analysiert, sondern lediglich die _Metadaten_.
-- Von: [@arrrrrmin@chaos.social](https://chaos.social/@arrrrrmin), [@arrrrrmin.bsky.social](https://bsky.app/profile/arrrrrmin.bsky.social)
+
+- Von: [@arrrrrmin@chaos.social](https://chaos.social/@arrrrrmin), [bsky@arrrrrmin.dev](https://bsky.app/profile/arrrrrmin.dev)
 - Code: [[codeberg](https://codeberg.org/arrrrrmin/lanz-mining), [github](https://github.com/arrrrrmin/lanz-mining)]/arrrrrmin/lanz-mining
 - Talk auf der GPN23: [media.ccc.de](https://media.ccc.de/v/gpn23-213-lanzmining-wer-spricht-denn-da-)
 
-
 ## Datenblatt
+
 - Zeitraum: ${dateFormatFn(start)} - ${dateFormatFn(end)} über ${numDaysWithShow} Tage.
 - Episoden: ${numEpisodes}
 - Talkende: ${numTalkers}
@@ -41,6 +42,7 @@ Es werden gesammelte Daten aus mehr als einem Jahr untersucht und visualisiert. 
 ---
 
 ## Daten im Überblick
+
 Jeder Strich ist ein betalkter Tag im Datenzeitraum. Das regelmäßige Sendemuster wird nur von der Sommerpause in Juli und August unterbrochen. Auch Talkshow-Redaktionen wollen Urlaub haben.
 
 <div class="card">
@@ -48,6 +50,7 @@ Jeder Strich ist ein betalkter Tag im Datenzeitraum. Das regelmäßige Sendemust
 </div>
 
 Wenn wir wissen, dass Markus Lanz als einziges Format drei Sendungen die Woche aufzeichnet, ergibt der die nächste Visualisierung Sinn. Sie zeigt die Episoden die pro Format im Datenzeitraum aufgezeichnet wurden.
+
 <div class="card">
     ${resize((width) => charts.episodesPerFormat(data, width))}
 </div>
@@ -61,7 +64,8 @@ Wir können die letzten beiden Diagramme auch kombinieren, um zu sehen welche Fo
 Um diese Zahlen in ein Verhältnis zu setzen, sieht man im nächsten Diagramm, wie viele erste Staffeln von SquidGame ein durchschnittlicher Talk-Content Monat betragen würde. So ein durchschnittlicher Monat kommt auf \~3.7 erste Staffeln von SquidGame.
 
 ## Wer spricht denn da?
-Endlich kommen wir zur eigentlichen Frage "Wer spricht denn da?". 
+
+Endlich kommen wir zur eigentlichen Frage "Wer spricht denn da?".
 
 <div class="card">
     ${resize((width) => charts.talkersList(data, width))}
@@ -71,7 +75,8 @@ Elmar Theveßen ist der am häufigsten geladene Gast. Alleine durch die Auftritt
 So nett diese Grafik sein mag, sie zeigt nur die Top 30 der ${numTalkers} Talkenden. In der nächsten Grafik erhalten wir ein Gefühl für die Verteilung der Gäst:innen zu Auftritten.
 
 ## Werden Talkende öfter geladen?
-Talkende gruppiert nach der Anzahl wie häufig sie im Datenzeitraum aufgetreten sind. 
+
+Talkende gruppiert nach der Anzahl wie häufig sie im Datenzeitraum aufgetreten sind.
 Beispielsweise sind alle Talkenden die 2 mal aufgetreten sind n Prozent aller Talkenden.
 Die überwiegende Mehrheit der Talkenden wird 1-3 mal eingeladen. Nur eine geringe Anzahl
 Personen tritt häufiger in diesen Sendungen auf.
@@ -81,36 +86,42 @@ Personen tritt häufiger in diesen Sendungen auf.
 </div>
 
 Wenn wir diese Gruppen jetzt aber den prozentual Anteil jeder Gruppe an den Auftritten
-über alle Formate insgesamt betrachten, sieht das Bild umgekehrt aus: Die Minderheit die 
+über alle Formate insgesamt betrachten, sieht das Bild umgekehrt aus: Die Minderheit die
 häufiger als drei Auftritte wahrnimmt, absolviert den Großteil aller Auftritte.
 
 <div class="card">
     ${resize((width) => charts.talkersVsAppearences2(data, width))}
 </div>
 
-## Thematische Gruppen 
+## Thematische Gruppen
 
-Damit wir jetzt nicht ${numRoles} visualisieren müssen - man wird ohnehin nichts erkennen - 
+Damit wir jetzt nicht ${numRoles} visualisieren müssen - man wird ohnehin nichts erkennen -
 gruppieren wir die Rollen in Gruppen. Insgesamt sind es ${allGroups.length} Gruppen, die Thematisch - man könnte auch sagen - Kompetenz aufgeteilt sind. Wichtig zum Verständnis, Personen werden nicht zwingend in einer Gruppe verortet. Wer in unterschiedlichen Rollen in unterschiedlichen Formaten angekündigt wird, wird jeweils mit der einzelnen Rolle gruppiert. So können Talkende in unterschiedlichen Gruppen auftauchen, je nachdem wie sie angekündigt werden.
 
 <div class="card" style="padding: 0; max-width: 640;">
 
 ```js
-const groupCounts = d3.groups(data, d => d.group).map(([group, grp]) => ({group, count: grp.length}));
-const groupTable = Inputs.table(groupCounts, {header: {group: "Gruppe", count: "Auftritte"}, rows: 10});
-view(groupTable)
+const groupCounts = d3
+  .groups(data, (d) => d.group)
+  .map(([group, grp]) => ({ group, count: grp.length }));
+const groupTable = Inputs.table(groupCounts, {
+  header: { group: 'Gruppe', count: 'Auftritte' },
+  rows: 10,
+});
+view(groupTable);
 ```
 
 </div>
 
 Wenig verwunderlich werden die Gruppen _Politik_ und _Journalismus_ am häufigsten eingeladen. Polittalk eben.
-Spannender wird es in den kleineren Gruppen. Überraschend liegt die Kultur direkt nach der Wirtschaft. Das ist Frau Maischberger zu verdanken. Wer jetzt allerdings glaubt das es sich hier verstärkt um Schriftsteller:innen und Autor:innen handelt, irrt. Es werden oft fachfremde Kabaretist:innen und Comedians geladen, um das Geschehen mit Journalisten und/oder Sachverständigen zu kommentieren. Daher der Ausschlag. _Hart aber fair_ hat eine Tendez zur _Sonstigen_-Gruppe, denn es werden häufig Betroffene eingeladen, die ihre Perspektive besteuern können. 
+Spannender wird es in den kleineren Gruppen. Überraschend liegt die Kultur direkt nach der Wirtschaft. Das ist Frau Maischberger zu verdanken. Wer jetzt allerdings glaubt das es sich hier verstärkt um Schriftsteller:innen und Autor:innen handelt, irrt. Es werden oft fachfremde Kabaretist:innen und Comedians geladen, um das Geschehen mit Journalisten und/oder Sachverständigen zu kommentieren. Daher der Ausschlag. _Hart aber fair_ hat eine Tendez zur _Sonstigen_-Gruppe, denn es werden häufig Betroffene eingeladen, die ihre Perspektive besteuern können.
 
 ```js
 const groupMode1 = view(
-    Inputs.radio(["Ganzer Zeitraum", "Seit Koalitionsbruch (6.11.24)"], {value: "Ganzer Zeitraum"})
+  Inputs.radio(['Ganzer Zeitraum', 'Seit Koalitionsbruch (6.11.24)'], { value: 'Ganzer Zeitraum' })
 );
 ```
+
 <div class="card">
 ${resize((width) => charts.groupAnalysis1(data, groupMode1, width))}
 </div>
@@ -123,7 +134,7 @@ In der nächsten Grafik sehen wir, welche Talkenden zu welcher Gruppe gehören u
 
 ```js
 const groupMode2 = view(
-    Inputs.radio(["Ganzer Zeitraum", "Seit Koalitionsbruch (6.11.24)"], {value: "Ganzer Zeitraum"})
+  Inputs.radio(['Ganzer Zeitraum', 'Seit Koalitionsbruch (6.11.24)'], { value: 'Ganzer Zeitraum' })
 );
 ```
 
@@ -131,12 +142,11 @@ const groupMode2 = view(
 ${resize((width) => charts.groupAnalysis2(data, groupMode2, width))}
 </div>
 
-
 ## Der Journalismus™
 
 > Kurzer Disclaimer: Das wird hier keine Pauschale Journalismuskritik. Jede kann ihre eigene Haltung zu journalistischer Bereichterstattung oder dem ÖRR entwickelt haben, die Daten sollen nur zeigen, welche Medien und Journalist:innen aus den Daten herausstechen, keine Urteile fällen. Wer das machen möchte, soll sich mit den Publikationen der Schreibenden beschäftigen und auf deren Inhalt eine Haltung entwickeln.
 
-Der folgende Plot zeigt welche Journalisten (aus welchen Medienhäusern) in ÖRR Talkshows das gesprochene Einordnen. Die Farben wiederholen sich weil es zu viele Häuser für die Farbpalette gibt. Pro Zeile ein journalistisches Medium, pro Kreis eine Journalist:in. Je größer ein Kreis, desto häufiger war die Person in einem oder mehreren Formaten aufgetreten und je weiter links, desto kürzer ist der letzte Auftritt her. 
+Der folgende Plot zeigt welche Journalisten (aus welchen Medienhäusern) in ÖRR Talkshows das gesprochene Einordnen. Die Farben wiederholen sich weil es zu viele Häuser für die Farbpalette gibt. Pro Zeile ein journalistisches Medium, pro Kreis eine Journalist:in. Je größer ein Kreis, desto häufiger war die Person in einem oder mehreren Formaten aufgetreten und je weiter links, desto kürzer ist der letzte Auftritt her.
 Bekannte große Medien wie der _Spiegel_, _Zeit_, _TAZ_, _Welt_ oder das _Redaktions Netzwerk Deutschland (RND)_ sind mit einigen Vertretungen sehr weit links in der Grafik, meist jenseits der 50 Tage Marke. Diese Vertretungen finden wir auch in [Top Talkende nach Auftritten und Formaten](#wer-spricht-denn-da) wieder.
 
 <div class="card">
@@ -163,14 +173,14 @@ ${resize((width) => charts.partyDistributionOverTime(data, width))}
 
 <div>
 
-Nach einigen Talks zu dem Thema, habe ich Feedback bekommen, das man sich wünscht zu erfahren, _wer, mit dem, wie oft_. Das ist wirklich interessant und deshalb gibt es folgende Darstellung als Nachtrag. 
+Nach einigen Talks zu dem Thema, habe ich Feedback bekommen, das man sich wünscht zu erfahren, _wer, mit dem, wie oft_. Das ist wirklich interessant und deshalb gibt es folgende Darstellung als Nachtrag.
 
-Aus der Matrix können wir erkennen, wer wen in Talkshows trifft und wie häufig das geschieht. Die Daten reichen leider nur über knapp 1,5 Jahre und deshalb ist die Matrix nur mäßig ergiebig. Mit der Zeit könnte es aber sein das sich hier Muster ergeben werden, also ist es gut diese Darstellung zu haben. 
+Aus der Matrix können wir erkennen, wer wen in Talkshows trifft und wie häufig das geschieht. Die Daten reichen leider nur über knapp 1,5 Jahre und deshalb ist die Matrix nur mäßig ergiebig. Mit der Zeit könnte es aber sein das sich hier Muster ergeben werden, also ist es gut diese Darstellung zu haben.
 
 Die Matrix könnt ihr mit dem Regler übersichtlicher machen, er legt fest wie viele Auftritte eine Person gehabt haben muss um als Zeile (und Spalte) in die Matrix aufgenommen zu werden.
 
 ```js
-const cutoffFreq = view(Inputs.range([5, 13], {step: 1, value: 10}));
+const cutoffFreq = view(Inputs.range([5, 13], { step: 1, value: 10 }));
 ```
 
 </div>
@@ -180,7 +190,7 @@ ${resize((width) => charts.encounterMatrix(data, width, cutoffFreq))}
 </div>
 </div>
 
---- 
+---
 
 ## Mehr
 
@@ -190,5 +200,5 @@ Zur Zeit läuft ein Migrationsprojekt um diese Analyse anhand von WikiData-Infor
 
 ## Kontakt
 
-Wer mit mir Kontakt aufnehmen möchte, kann das gerne via Mastodon: [@arrrrrmin@chaos.social](https://chaos.social/@arrrrrmin) oder Bluesky: 
-[@arrrrrmin.bsky.social](https://bsky.app/profile/arrrrrmin.bsky.social) machen. 
+Wer mit mir Kontakt aufnehmen möchte, kann das gerne via Mastodon: [@arrrrrmin@chaos.social](https://chaos.social/@arrrrrmin) oder Bluesky:
+[@arrrrrmin.bsky.social](https://bsky.app/profile/arrrrrmin.bsky.social) machen.

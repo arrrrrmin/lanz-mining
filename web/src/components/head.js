@@ -2,7 +2,6 @@ import { configuration } from "../assets/config.js";
 
 
 export function renderMeta({ title, path, data }) {
-    console.log(title, path, data);
     const { metaTitle, tags, jsonLd } = generateMetadata({ title, path, data });
 
     const metaTags = tags
@@ -33,7 +32,7 @@ export function generateMetadata({ title, path, data = {} }) {
         description: configuration.description,
         author: configuration.author,
         language: configuration.language,
-        image: `${configuration.url}/_file/${configuration.image}`,
+        image: `${configuration.url}/${configuration.image}`,
     };
 
     const metaTitle = `${title} | ${configuration.subtitle}`;
@@ -94,6 +93,7 @@ export function generateMetadata({ title, path, data = {} }) {
                         "url": image
                     },
                     "sameAs": [
+                        "https://codeberg.org/arrrrrmin/lanz-mining",
                         "https://github.com/arrrrrmin/lanz-mining"
                     ]
                 },

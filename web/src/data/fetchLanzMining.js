@@ -1,11 +1,11 @@
-import * as d3 from "npm:d3";
+import { timeParse, csv } from "npm:d3";
 import * as utils from "../components/utils.js";
 
 
 export async function fetchLanzMining(host, file) {
-    const dateParser = d3.timeParse("%Y-%m-%d");
+    const dateParser = timeParse("%Y-%m-%d");
 
-    const data = await d3.csv(`${host}/${file}`).then((d) => d.map((D) => {
+    const data = await csv(`${host}/${file}`).then((d) => d.map((D) => {
         return {
             index: parseInt(D.index),
             episode_name: D.episode_name,

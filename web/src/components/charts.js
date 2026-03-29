@@ -2,7 +2,7 @@ import * as d3 from "npm:d3";
 import * as Plot from "npm:@observablehq/plot";
 
 import * as utils from "./utils.js";
-import { timeFormatDeLocale } from "./formatting.js";
+// import { fetchLanzMining } from '../data/fetchLanzMining.js';
 
 
 const defaultMargins = { marginTop: 30, marginLeft: 0, marginRight: 0, marginBottom: 0 };
@@ -140,7 +140,12 @@ export function talkingMinutesPerMonth(data, width) {
     });
 }
 
-export function talkersList(data, width) {
+export async function talkersList(
+    data, 
+    width, 
+    title = "Top Talkende nach Auftritten und Formaten", 
+    subtitle = "Der 'Elmar Theveßen-Effekt' kommt fast im Alleingang durch die Redaktion von Markus Lanz zustande"
+) {
     const guestFrequencies = d3.groups(data, d => d.name).map(
         d => ({ name: d[0], children: d[1] })
     ).sort(
@@ -164,23 +169,10 @@ export function talkersList(data, width) {
     });
     _data = _data.sort((a, b) => b.total - a.total);
 
-    return Plot.plot({
-        title: "Top Talkende nach Auftritten und Formaten",
-        subtitle: "Der 'Elmar Theveßen-Effekt' kommt fast im Alleingang durch die Redaktion von Lanz zustande",
-        marginLeft: 110,
-        marginRight: 20,
-        marginTop: 0,
-        marginBottom: 30,
-        width,
-        x: { grid: true },
-        y: { label: null },
-        color: {
-            type: "ordinal",
-            domain: new Array(...new Set(_data.map(d => d.talkshow))),
-            range: new Array(...new Set(_data.map(d => d.fill))),
-            legend: true
-        },
-        marks: [
+    const horizontal = (width > 600);
+    const marks = [];
+    if (horizontal) {
+        marks.push(
             Plot.barX(_data, {
                 x: "count",
                 y: "name",
@@ -188,15 +180,44 @@ export function talkersList(data, width) {
                 r: 3,
                 inset: 0.5,
                 channels: { "Name": "name", "Auftritte": "count", "Gesamt": "total" },
-                sort: {
-                    y: { value: "Gesamt", reduce: "max", order: "descending" },
-                },
-                tip: {
-                    format: { x: false, y: false }
-                },
+                sort: { y: { value: "Gesamt", reduce: "max", order: "descending" }, },
+                tip: { format: { x: false, y: false } },
                 order: "count",
             })
-        ]
+        )
+    } else {
+        marks.push(
+            Plot.barY(_data, {
+                x: "name",
+                y: "count",
+                fill: "talkshow",
+                r: 2,
+                inset: 0.5,
+                channels: { "Name": "name", "Auftritte": "count", "Gesamt": "total" },
+                sort: { y: { value: "Gesamt", reduce: "max", order: "descending" }, },
+                tip: { format: { x: false, y: false } },
+                order: "count",
+            })
+        )
+    }
+
+    return Plot.plot({
+        title: title,
+        subtitle: subtitle,
+        marginLeft: horizontal ? 110 : 20,
+        marginRight: horizontal ? 10 : 0,
+        marginTop: horizontal ? 0 : 20,
+        marginBottom: horizontal ? 30 : 130,
+        width,
+        x: { label: horizontal ? "count": null, grid: horizontal, tickRotate: horizontal ? 0 : -60 },
+        y: { label: horizontal ? null: "count", grid: !horizontal},
+        color: {
+            type: "ordinal",
+            domain: new Array(...new Set(_data.map(d => d.talkshow))),
+            range: new Array(...new Set(_data.map(d => d.fill))),
+            legend: true
+        },
+        marks,
     });
 }
 
