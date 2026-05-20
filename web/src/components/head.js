@@ -24,7 +24,7 @@ export function renderMeta({ title, path, data }) {
     `;
     const isBuild = process.env.npm_lifecycle_event === "build"
     if (isBuild) {
-        head += `<script defer src="https://interim.arrrrrmin.dev/delivery" data-website-id="a559becc-c181-40d6-b329-0d3d913851d1"></script>`;
+        head += `<script defer src="https://interim.arrrrrmin.dev/delivery" data-website-id="60f5cba0-fda4-41ce-95f6-d19690670c66"></script>`;
     }
     return head;
 }
