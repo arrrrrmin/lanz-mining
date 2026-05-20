@@ -15,14 +15,18 @@ export function renderMeta({ title, path, data }) {
 
     const jsonLdTag = `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2)}</script>`;
 
-    return `
-    <title>${metaTitle}</title>
+    let head = `<title>${metaTitle}</title>
     <link rel="icon" href=${configuration.favicon} type="image/png" sizes="96x96">
     <link rel="me" href="https://chaos.social/@arrrrrmin">
     <meta name="fediverse:creator" content="@arrrrrmin@chaos.social">
     ${metaTags}
     ${jsonLdTag}
-  `;
+    `;
+    const isBuild = process.env.npm_lifecycle_event === "build"
+    if (isBuild) {
+        head += `<script defer src="https://interim.arrrrrmin.dev/delivery" data-website-id="a559becc-c181-40d6-b329-0d3d913851d1"></script>`;
+    }
+    return head;
 }
 
 export function generateMetadata({ title, path, data = {} }) {
