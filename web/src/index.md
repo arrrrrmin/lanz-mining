@@ -35,6 +35,8 @@ Es werden gesammelte Daten aus mehr als einem Jahr untersucht und visualisiert. 
 
 Datenseitig arbeiten [@borgnetzwerk](https://mastodon.social/@borgnetzwerk) mit Unterstützung von [@stk](https://chaos.social/@stk), mit einer Datenspende des [Spiegel](spiegel.de) daran Informationen zu einzelnen Episoden in [WikiData](https://www.wikidata.org/) abzubilden. Lanz Mining selbst wird dadurch zu einem reinen Visualisierungs-Projekt. Da freu ich mich schon drauf. Wer an den Entwicklungen interessiert ist, die Crew vom [@borgnetzwerk](https://mastodon.social/@borgnetzwerk) ist auf der [GPN24](https://cfp.gulas.ch/gpn24/schedule/) mit einem [Vortrag](https://cfp.gulas.ch/gpn24/talk/G9VCNN/) und einem [Workshop](https://cfp.gulas.ch/gpn24/talk/YC3FNP/) vertreten.
 
+## Datenblatt
+
 - Zeitraum: ${dateFormatFn(start)} - ${dateFormatFn(end)} 
   - Talkshow-Dichte: ${numDaysWithShow}/${Math.round((end - start) / (1000 * 60 * 60 * 24))} Tage betalkt
 - Episoden: ${numEpisodes}
