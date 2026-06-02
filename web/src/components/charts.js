@@ -2,8 +2,6 @@ import * as d3 from "npm:d3";
 import * as Plot from "npm:@observablehq/plot";
 
 import * as utils from "./utils.js";
-// import { fetchLanzMining } from '../data/fetchLanzMining.js';
-
 
 const defaultMargins = { marginTop: 30, marginLeft: 0, marginRight: 0, marginBottom: 0 };
 
@@ -22,7 +20,7 @@ export function overviewChart(data, width) {
         subtitle: "Wann erscheinen Talkshows in ARD und ZDF über das Jahr gesehen?",
         ...marginX(12),
         width,
-        height: 160,
+        height: 120,
         marks: [
             Plot.ruleX(dates),
             Plot.tip(

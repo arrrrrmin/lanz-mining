@@ -31,9 +31,12 @@ Es werden gesammelte Daten aus mehr als einem Jahr untersucht und visualisiert. 
 - Code: [[codeberg](https://codeberg.org/arrrrrmin/lanz-mining), [github](https://github.com/arrrrrmin/lanz-mining)]/arrrrrmin/lanz-mining
 - Talk auf der GPN23: [media.ccc.de](https://media.ccc.de/v/gpn23-213-lanzmining-wer-spricht-denn-da-)
 
-## Datenblatt
+## Status
 
-- Zeitraum: ${dateFormatFn(start)} - ${dateFormatFn(end)} über ${numDaysWithShow} Tage.
+Datenseitig arbeiten [@borgnetzwerk](https://mastodon.social/@borgnetzwerk) mit Unterstützung von [@stk](https://chaos.social/@stk), mit einer Datenspende des [Spiegel](spiegel.de) daran Informationen zu einzelnen Episoden in [WikiData](https://www.wikidata.org/) abzubilden. Lanz Mining selbst wird dadurch zu einem reinen Visualisierungs-Projekt. Da freu ich mich schon drauf. Wer an den Entwicklungen interessiert ist, die Crew vom [@borgnetzwerk](https://mastodon.social/@borgnetzwerk) ist auf der [GPN24](https://cfp.gulas.ch/gpn24/schedule/) mit einem [Vortrag](https://cfp.gulas.ch/gpn24/talk/G9VCNN/) und einem [Workshop](https://cfp.gulas.ch/gpn24/talk/YC3FNP/) vertreten.
+
+- Zeitraum: ${dateFormatFn(start)} - ${dateFormatFn(end)} 
+  - Talkshow-Dichte: ${numDaysWithShow}/${Math.round((end - start) / (1000 * 60 * 60 * 24))} Tage betalkt
 - Episoden: ${numEpisodes}
 - Talkende: ${numTalkers}
 - Rollen: ${numRoles}
@@ -49,7 +52,7 @@ Jeder Strich ist ein betalkter Tag im Datenzeitraum. Das regelmäßige Sendemust
     ${resize((width) => charts.overviewChart(data, width))}
 </div>
 
-Wenn wir wissen, dass Markus Lanz als einziges Format drei Sendungen die Woche aufzeichnet, ergibt der die nächste Visualisierung Sinn. Sie zeigt die Episoden die pro Format im Datenzeitraum aufgezeichnet wurden.
+Wenn wir wissen, dass Markus Lanz als einziges Format drei Sendungen die Woche aufzeichnet, ergibt die nächste Visualisierung Sinn. Sie zeigt die Episoden die pro Format, die im Datenzeitraum aufgezeichnet wurden.
 
 <div class="card">
     ${resize((width) => charts.episodesPerFormat(data, width))}
@@ -196,7 +199,7 @@ ${resize((width) => charts.encounterMatrix(data, width, cutoffFreq))}
 
 Wer mehr zu dem Thema wissen möchte, der Spiegel hat sich 10 Jahre der Daten vorgenommen und in einen Artikel gegossen: [Talkshow-König Karl, Berlins Balzac und der ewige TV-Schattenkanzlerkandidat](https://www.spiegel.de/kultur/tv/sandra-maischberger-markus-lanz-und-caren-miosga-talkshows-in-der-datenanalyse-a-b7e46530-d826-4424-95c5-6c2f220595b1) (leider nur mit Spiegel+ verfügbar).
 
-Zur Zeit läuft ein Migrationsprojekt um diese Analyse anhand von WikiData-Informationen nachzubauen. So könnte man einige unschöne Eigenschaften von z.B. Gruppen-Analysen bereinigen, weil man die Gruppen bestimmt besser anhand der WikiData-Eigenschaften von Personen bestimmen kann als wenn man versucht sie mit String Pattern Matching zu finden. Die Methode ist jetzt schon nicht perfekt und wird bei größeren Datenmengen sicher zu pflegeintensiv.
+Datenseitig arbeiten [@borgnetzwerk](https://mastodon.social/@borgnetzwerk) mit Unterstützung von [@stk](https://chaos.social/@stk), mit einer Datenspende des [Spiegel](spiegel.de) daran Informationen zu einzelnen Episoden in [WikiData](https://www.wikidata.org/) abzubilden. Lanz Mining selbst wird dadurch zu einem reinen Visualisierungs-Projekt. Da freu ich mich schon drauf.
 
 ## Kontakt
 
