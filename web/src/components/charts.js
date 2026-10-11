@@ -219,6 +219,196 @@ export async function talkersList(
     });
 }
 
+export function talkersVsAppearences(data, width) {
+    const guests = d3.groups(data, d => d.name)
+        .map(([name, grp]) => ({ name: name, count: grp.length, children: grp }));
+
+    function getGuestBins(guests) {
+    const numTotalGuests = guests.length;
+    return d3.groups(guests, d => d.count)
+        .map(([count, grp]) => {
+        const percGuests = grp.length / numTotalGuests * 100;
+        return {
+            name: `Share-Persons-${count}`,
+            appearences: count,
+            nGuests: grp.length,
+            value: percGuests,
+            children: grp.map(g => ({ name: g.name })),
+        }
+        }).sort((a, b) => a.appearences - b.appearences)
+    }
+
+    function getSeatBins(guests) {
+    const numTotalSeats = data.length;
+    return d3.groups(guests, d => d.count)
+        .map(([count, grp]) => {
+            const percSeats = grp.length * count / numTotalSeats * 100;
+            return {
+            name: `Share-Guests-${count}`,
+            appearences: count,
+            nGuests: grp.length,
+            value: percSeats,
+            children: grp.map(g => ({ name: g.name })),
+            }
+        }).sort((a, b) => a.appearences - b.appearences)
+    }
+
+    function getNodesAndLinks(guests) {
+        const guestBins = getGuestBins(guests);
+        const seatBins = getSeatBins(guests);
+        const nodes = [...guestBins.map(d => d.name), ...seatBins.map(d => d.name)];
+        const links = guestBins.map(d => {
+            const target = seatBins.find(b => b.appearences === d.appearences)
+            return {
+            source: d.name,
+            sourceValue: d.value,
+            target: target.name,
+            targetValue: target.value,
+            appearences: d.appearences,
+            }
+        });
+        return {nodes, links}
+    }
+
+    function taperedLink(x0, y0, w0, x1, y1, w1) {
+        const curvature = 0.5;
+        const ym = y0 + (y1 - y0) * curvature;
+
+        return `
+            M ${x0 - w0 / 2},${y0}
+            C ${x0 - w0 / 2},${ym}
+            ${x1 - w1 / 2},${ym}
+            ${x1 - w1 / 2},${y1}
+            L ${x1 + w1 / 2},${y1}
+            C ${x1 + w1 / 2},${ym}
+            ${x0 + w0 / 2},${ym}
+            ${x0 + w0 / 2},${y0}
+            Z
+        `;
+    }
+
+    const margin = {top: 150, bottom: 50};
+    const w = width;
+    const h = width - 200;
+
+    let xSource = 0;
+    let xTarget = 0;
+
+    let {links} = getNodesAndLinks(guests);
+    const appearenceGroups = links.map(d => d.appearences)
+
+    const perc = d3.scaleLinear()
+        .domain([0, 100])
+        .range([0, w-1]);
+    const color = d3.scaleLinear(
+        [0, d3.median(appearenceGroups), d3.max(appearenceGroups)],
+        ["#d3d3d3", "#e9d8a6", "#d00000"])
+        .interpolate(d3.interpolateHcl)
+
+    links = links.map(l => {
+        const x0 = xSource + perc(l.sourceValue) / 2;
+        const x1 = xTarget + perc(l.targetValue) / 2;
+        const w0 = perc(l.sourceValue);
+        const w1 = perc(l.targetValue);
+        const y0 = margin.top;
+        const y1 = h - margin.bottom;
+        xTarget += perc(l.targetValue);
+        xSource += perc(l.sourceValue);
+        return {x0, x1, w0, w1, y0, y1, ...l}
+    })
+
+    const svg = d3.create("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .attr("viewBox", [0, 0, w, h])
+        .attr("style", "font: 14px sans-serif;");
+    const paths = svg.append("g");
+    const legend = svg.append("g");
+
+    paths.selectAll("path.link")
+        .data(links)
+        .join("path")
+        .attr("class", "link")
+        .attr("d", d => taperedLink(
+        d.x0, d.y0, d.w0, d.x1, d.y1, d.w1
+        ))
+        .attr("fill", (d) => color(d.appearences))
+        .attr("stroke", "black");
+
+    const diameter = w / (appearenceGroups.length);
+    const r = diameter / 2;
+    const colorContainers = legend
+        .attr("transform", `translate(0, 0)`)
+        .selectAll("g.color")
+        .data(appearenceGroups)
+        .join("g")
+        .attr("class", "color")
+        .attr("transform", (_, i) => `translate(${i * diameter}, ${r+20})`);
+
+    colorContainers.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", diameter)
+        .attr("height", diameter)
+        .attr("fill", d => color(d))
+        .attr("stroke", "black");
+
+    colorContainers.append("text")
+        .attr("x", r)
+        .attr("y", r)
+        .attr("dy", 3)
+        .attr("text-anchor", "middle")
+        .text(d => d);
+
+    const colorLabel = legend.append("g")
+        .attr("class", "label")
+        .attr("transform", `translate(0, 32)`)
+        .append("text")
+        .text("Talkende gruppiert nach Anzahl der Auftritte")
+
+    const axisTop = legend
+        .append("g")
+        .attr("transform", `translate(0, ${margin.top})`)
+        .call(d3.axisTop(perc).tickSizeOuter(0).tickFormat(d => `${d}%`))
+        .call(g => {
+        g.select(".tick:first-of-type text")
+            .style("text-anchor", "start");
+        g.select(".tick:last-of-type text")
+            .style("text-anchor", "end");
+        })
+        .call(g => g.selectAll(".tick text").attr("font-size", 14))
+
+    svg.append("g")
+        .attr("class", "label-top")
+        .attr("transform", `translate(0, ${margin.top})`)
+        .append("text")
+        .attr("x", 0)
+        .attr("y", -27)
+        .text("% aller Talkenden")
+
+    const axisBottom = legend
+        .append("g")
+        .attr("transform", `translate(0, ${h - margin.bottom})`)
+        .call(d3.axisBottom(perc).tickSizeOuter(0).tickFormat(d => `${d}%`))
+        .call(g => {
+        g.select(".tick:first-of-type text")
+            .style("text-anchor", "start");
+        g.select(".tick:last-of-type text")
+            .style("text-anchor", "end");
+        })
+        .call(g => g.selectAll(".tick text").attr("font-size", 14))
+
+    svg.append("g")
+        .attr("class", "label-bottom")
+        .attr("transform", `translate(0, ${h - margin.bottom})`)
+        .append("text")
+        .attr("x", 0)
+        .attr("y", 40)
+        .text("% aller Auftritte")
+
+    return svg.node();
+}
+
 export function talkersVsAppearences1(data, width) {
     const guests = d3.groups(data, d => d.name)
         .map(([name, grp]) => ({ name: name, count: grp.length, children: grp }));

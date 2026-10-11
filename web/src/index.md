@@ -83,20 +83,18 @@ So nett diese Grafik sein mag, sie zeigt nur die Top 30 der ${numTalkers} Talken
 
 Talkende gruppiert nach der Anzahl wie häufig sie im Datenzeitraum aufgetreten sind.
 Beispielsweise sind alle Talkenden die 2 mal aufgetreten sind n Prozent aller Talkenden.
-Die überwiegende Mehrheit der Talkenden wird 1-3 mal eingeladen. Nur eine geringe Anzahl
-Personen tritt häufiger in diesen Sendungen auf.
+Die überwiegende Mehrheit der Talkenden wird 1-3 mal eingeladen. Nur eine geringe Anzahl an
+Personen tritt häufiger in diesen Sendungen auf. Die Abbildung unten zeigt wie sich das Verhältnis verschiebt. Ein Beispiel, Personen die bis zu alle Talkenden die bis zu 3 Auftritte hatten, machen fast 80% aller geladenen Gäste aus. Auf der unteren Achse sieht man jedoch, das diese 80% Talkenden weniger als 40% der Auftritte absolviert. 
 
 <div class="card">
-    ${resize((width) => charts.talkersVsAppearences1(data, width))}
+  <figure style="max-width: initial;">
+    <h2>Vergleich von Talkenden nach Auftritten</h2>
+    <h3>Oben der Anteil der Gruppe nach Aufrtitten (1-35) an allen Gästen, unten der Anteil an allen Auftritten insgesamt.</h3>
+    ${resize((width) => charts.talkersVsAppearences(data, width))}
+  </figure>
 </div>
 
-Wenn wir diese Gruppen jetzt aber den prozentual Anteil jeder Gruppe an den Auftritten
-über alle Formate insgesamt betrachten, sieht das Bild umgekehrt aus: Die Minderheit die
-häufiger als drei Auftritte wahrnimmt, absolviert den Großteil aller Auftritte.
-
-<div class="card">
-    ${resize((width) => charts.talkersVsAppearences2(data, width))}
-</div>
+In dieser Phasen-Verschiebung sieht man gut das es eine Minderheit der Personen in ÖRR-Talkshows gibt, die eine Mehrheit der Auftritte absolviert. 
 
 ## Thematische Gruppen
 
