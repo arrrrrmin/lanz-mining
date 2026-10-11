@@ -88,7 +88,7 @@ Personen tritt häufiger in diesen Sendungen auf. Die Abbildung unten zeigt wie 
 
 <div class="card">
   <figure style="max-width: initial;">
-    <h2>Vergleich von Talkenden nach Auftritten</h2>
+    <h2>Verhältnis Talkende zu Auftritten</h2>
     <h3>Oben der Anteil der Gruppe nach Aufrtitten (1-35) an allen Gästen, unten der Anteil an allen Auftritten insgesamt.</h3>
     ${resize((width) => charts.talkersVsAppearences(data, width))}
   </figure>
