@@ -289,7 +289,7 @@ export function talkersVsAppearences(data, width) {
 
     const margin = {top: 150, bottom: 50};
     const w = width;
-    const h = width - 200;
+    const h = d3.max([width - 200, 500]);
 
     let xSource = 0;
     let xTarget = 0;
@@ -362,7 +362,7 @@ export function talkersVsAppearences(data, width) {
 
     const colorLabel = legend.append("g")
         .attr("class", "label")
-        .attr("transform", `translate(0, 32)`)
+        .attr("transform", `translate(0, 20)`)
         .append("text")
         .text("Talkende gruppiert nach Anzahl der Auftritte")
 
