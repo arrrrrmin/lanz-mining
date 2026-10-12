@@ -289,7 +289,7 @@ export function talkersVsAppearences(data, width) {
 
     const margin = {top: 150, bottom: 50};
     const w = width;
-    const h = d3.max([width - 200, 500]);
+    const h = d3.max([width - 150, 500]);
 
     let xSource = 0;
     let xTarget = 0;
@@ -301,9 +301,8 @@ export function talkersVsAppearences(data, width) {
         .domain([0, 100])
         .range([0, w-1]);
     const color = d3.scaleLinear(
-        [0, d3.median(appearenceGroups), d3.max(appearenceGroups)],
-        ["#d3d3d3", "#e9d8a6", "#d00000"])
-        .interpolate(d3.interpolateHcl)
+        [1, d3.max(appearenceGroups)],
+        ["white", "#FBBF24"])
 
     links = links.map(l => {
         const x0 = xSource + perc(l.sourceValue) / 2;
